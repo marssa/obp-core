@@ -1,0 +1,1 @@
+This repository contains pre-release version of Open Bridge Platform (OBP) build on the foundation of MARSSA artifacts.
