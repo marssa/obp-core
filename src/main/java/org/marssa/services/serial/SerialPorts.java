@@ -27,7 +27,7 @@ public class SerialPorts {
     void init() {
 
         // TODO: populate from some sane configuration file with uniqueness check
-        registry.put("bu353-port",new RegistryEntry("cu.usbserial",4800,8,false,1));
+        registry.put("bu353-port",new RegistryEntry("/dev/cu.usbserial",4800,8,false,1));
 
     }
 

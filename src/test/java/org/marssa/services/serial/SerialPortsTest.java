@@ -7,8 +7,10 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+
+import static java.nio.charset.StandardCharsets.*;
 
 /**
  * Created by Robert Jaremczak
@@ -29,20 +31,34 @@ public class SerialPortsTest {
 
     @Test
     @Ignore
+    public void cliTestLineReader() throws Exception {
+        SerialPort port = serialPorts.open("bu353-port", "test-suite");
+        Assert.assertNotNull(port);
+
+        try(BufferedReader reader = new BufferedReader(new InputStreamReader(port.getInputStream(), US_ASCII))) {
+            String line;
+            while((line = reader.readLine()) != null) {
+                System.out.println(reader.readLine());
+            }
+        }
+    }
+
+    @Test
+    @Ignore
     public void cliTestIfReceivesFromPort() throws Exception {
         SerialPort port = serialPorts.open("bu353-port", "test-suite");
         Assert.assertNotNull(port);
 
-        InputStream in = port.getInputStream();
-
-        byte[] buffer = new byte[1024];
-        int len = -1;
-        try {
-            while ((len = in.read(buffer)) > -1) {
-                System.out.print(new String(buffer, 0, len));
+        try(InputStream in = port.getInputStream()) {
+            byte[] buffer = new byte[1024];
+            int len = -1;
+            try {
+                while ((len = in.read(buffer)) > -1) {
+                    System.out.print(new String(buffer, 0, len));
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 }
