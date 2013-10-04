@@ -1,4 +1,4 @@
-package org.marssa.services;
+package org.marssa.services.serial;
 
 import gnu.io.CommPortIdentifier;
 import junit.framework.Assert;
