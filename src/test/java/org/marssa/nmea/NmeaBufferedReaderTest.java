@@ -22,21 +22,20 @@ public class NmeaBufferedReaderTest {
     @Test
     public void shouldReadAndMatchProperLines() throws IOException {
         NmeaBufferedReader reader = new NmeaBufferedReader(LINES);
-        NmeaMessage message = reader.readMessage();
+        NmeaLine message = reader.fetchLine();
         Assert.assertNotNull(message);
 
-        Assert.assertEquals("GP", message.getTalkerId());
-        Assert.assertEquals("GSV", message.getType());
+        Assert.assertEquals("GPGSV", message.getName());
 
         String[] data = "3,1,10,32,86,270,19,01,84,237,27,11,59,168,35,20,49,259,16".split(",");
         for(int i=0; i<message.getDataSize(); i++) {
             Assert.assertEquals(data[i], message.getData(i));
         }
 
-        message = reader.readMessage();
+        message = reader.fetchLine();
         Assert.assertNotNull(message);
 
-        message = reader.readMessage();
-        Assert.assertNull(reader.readMessage());
+        message = reader.fetchLine();
+        Assert.assertNull(reader.fetchLine());
     }
 }

@@ -10,5 +10,5 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 class GpsPositionDto {
     String latitude;
     String longitude;
-    String utc;
+    String fixTime;
 }

@@ -1,10 +1,12 @@
 package org.marssa.web.gps;
 
-import org.springframework.http.MediaType;
+import org.marssa.services.gps.GpsReceiver;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.text.DateFormat;
 
 /**
  * Created by Robert Jaremczak
@@ -14,13 +16,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/api/gps")
 public class GpsController {
 
+    @Autowired
+    private GpsReceiver gpsReceiver;
+
     @ResponseBody
     @RequestMapping(value = "/position")
     public GpsPositionDto position() {
         GpsPositionDto dto = new GpsPositionDto();
-        dto.latitude = "12.123123 N";
-        dto.longitude = "56.12 E";
-        dto.utc = "23:02:22";
+        dto.latitude = Double.toString(gpsReceiver.getLatitude());
+        dto.longitude = Double.toString(gpsReceiver.getLongitude());
+        dto.fixTime = DateFormat.getTimeInstance().format(gpsReceiver.getFixTime());
         return dto;
     }
 }

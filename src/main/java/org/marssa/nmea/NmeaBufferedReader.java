@@ -7,9 +7,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.text.CharacterIterator;
-import java.text.StringCharacterIterator;
-import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,16 +16,16 @@ import java.util.regex.Pattern;
  */
 public class NmeaBufferedReader implements AutoCloseable {
 
-    public static final Pattern NMEA_LINE = Pattern.compile("^[$|!](\\w{2})(\\w{3})[,]([\\w|,|\\.]{0,72})(?:[*]([A-F0-9]{2})){0,1}$");
-    public static final int NMEA_TALKER_ID_GROUP = 1;
-    public static final int NMEA_TYPE_GROUP = 2;
-    public static final int NMEA_DATA_GROUP = 3;
-    public static final int NMEA_CHECKSUM_GROUP = 4;
-    public static final String NMEA_DATA_SEPARATOR = ",";
+    public static final Pattern LINE_PATTERN = Pattern.compile("^[$|!](\\w{5})[,]([\\w|,|.|-]{0,72})(?:[*]([A-F0-9]{2})){0,1}$");
+    public static final int LINE_NAME_GROUP = 1;
+    public static final int LINE_DATA_GROUP = 2;
+    public static final int LINE_CHECKSUM_GROUP = 3;
+    public static final String DATA_SEPARATOR = ",";
 
     private static Logger logger = Logger.getLogger(NmeaBufferedReader.class);
 
     private BufferedReader reader;
+    private NmeaLine lastLine;
 
     public NmeaBufferedReader(InputStream is) {
         reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.US_ASCII));
@@ -48,34 +45,45 @@ public class NmeaBufferedReader implements AutoCloseable {
     }
 
     private boolean lineIsValid(String line, Matcher matcher) {
-        if(matcher.groupCount() >= NMEA_CHECKSUM_GROUP) {
-            String str = matcher.group(NMEA_CHECKSUM_GROUP);
+        if(matcher.groupCount() >= LINE_CHECKSUM_GROUP) {
+            String str = matcher.group(LINE_CHECKSUM_GROUP);
             if(str!=null) {
                 byte checksum = Byte.parseByte(str,16);
-                int start = matcher.start(NMEA_TALKER_ID_GROUP);
-                int end = matcher.start(NMEA_CHECKSUM_GROUP)-1;
+                int start = matcher.start(LINE_NAME_GROUP);
+                int end = matcher.start(LINE_CHECKSUM_GROUP)-1;
                 return checksum == calculateChecksum(line.substring(start,end));
             }
         }
         return true;
     }
 
-    public NmeaMessage readMessage() throws IOException {
+    public boolean lineReady() throws IOException {
         String line;
         while((line = reader.readLine()) != null) {
-            Matcher matcher = NMEA_LINE.matcher(line);
+            Matcher matcher = LINE_PATTERN.matcher(line);
             if(matcher.matches()) {
                 if(lineIsValid(line, matcher)) {
-                    return new NmeaMessage(
-                            matcher.group(NMEA_TALKER_ID_GROUP),
-                            matcher.group(NMEA_TYPE_GROUP),
-                            matcher.group(NMEA_DATA_GROUP).split(NMEA_DATA_SEPARATOR));
+                    lastLine = new NmeaLine(
+                            matcher.group(LINE_NAME_GROUP),
+                            matcher.group(LINE_DATA_GROUP).split(DATA_SEPARATOR));
+                    return true;
                 } else {
                     logger.warn("checksum error in line: "+line);
                 }
             } else {
                 logger.warn("malformed line: "+line);
             }
+        }
+        return false;
+    }
+
+    public NmeaLine getLine() {
+        return lastLine;
+    }
+
+    public NmeaLine fetchLine() throws IOException {
+        if(lineReady()) {
+            return getLine();
         }
         return null;
     }
