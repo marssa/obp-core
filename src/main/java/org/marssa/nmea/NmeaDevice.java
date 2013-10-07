@@ -2,6 +2,7 @@ package org.marssa.nmea;
 
 import gnu.io.*;
 import org.apache.log4j.Logger;
+import org.marssa.utils.RxTxUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,14 +23,19 @@ public class NmeaDevice {
     SerialPort port;
 
     public NmeaDevice(String portName) throws Exception {
-        CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
-        if (portIdentifier.isCurrentlyOwned()) {
-            throw new IllegalAccessError("port "+portName+" is currently in use");
-        }
+        logger.info("open NMEA device on port "+portName);
+        try {
+            CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
+            if (portIdentifier.isCurrentlyOwned()) {
+                throw new IllegalAccessError("port "+portName+" is currently in use");
+            }
 
-        this.port = (SerialPort)portIdentifier.open(portName,TIMEOUT_MS);
-        this.port.setSerialPortParams(BAUD_RATE,DATA_BITS,STOP_BITS,PARITY);
-        logger.info("open NMEA device on port "+port.getName());
+            this.port = (SerialPort)portIdentifier.open(portName,TIMEOUT_MS);
+            this.port.setSerialPortParams(BAUD_RATE,DATA_BITS,STOP_BITS,PARITY);
+        } catch (NoSuchPortException e) {
+            RxTxUtil.dumpAvailablePorts();
+            throw e;
+        }
     }
 
     public NmeaBufferedReader getReader() throws IOException {

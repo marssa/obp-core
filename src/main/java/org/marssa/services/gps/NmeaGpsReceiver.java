@@ -5,7 +5,9 @@ import org.marssa.nmea.GPGLL;
 import org.marssa.nmea.GPGLLParser;
 import org.marssa.nmea.NmeaBufferedReader;
 import org.marssa.nmea.NmeaDevice;
+import org.marssa.utils.RxTxUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -29,6 +31,9 @@ public class NmeaGpsReceiver implements GpsReceiver {
     private double latitude;
     private double longitude;
     private long fixTime;
+
+    @Value("${marssa.gps.nmea.portName}")
+    private String portName;
 
     @Autowired
     private GPGLLParser gpgllParser;
@@ -72,9 +77,11 @@ public class NmeaGpsReceiver implements GpsReceiver {
 
     @PostConstruct
     public void init() throws Exception {
-        device = new NmeaDevice("/dev/cu.usbserial");
+        logger.info("init NMEA GPS receiver at port "+portName);
+        device = new NmeaDevice(portName);
         listener = new Listener();
         new Thread(listener).start();
+        logger.info("listener started");
     }
 
     @PreDestroy
