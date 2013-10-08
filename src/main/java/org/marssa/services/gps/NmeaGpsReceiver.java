@@ -78,15 +78,21 @@ public class NmeaGpsReceiver implements GpsReceiver {
     @PostConstruct
     public void init() throws Exception {
         logger.info("init NMEA GPS receiver at port "+portName);
-        device = new NmeaDevice(portName);
-        listener = new Listener();
-        new Thread(listener).start();
-        logger.info("listener started");
+        try {
+            device = new NmeaDevice(portName);
+            listener = new Listener();
+            new Thread(listener).start();
+            logger.info("listener started");
+        } catch(Exception e) {
+            logger.error("error binding to NMEA device, no live data will be provided.");
+        }
     }
 
     @PreDestroy
     public void destroy() throws InterruptedException {
-        listener.stop();
+        if(listener!=null) {
+            listener.stop();
+        }
     }
 
     @Override

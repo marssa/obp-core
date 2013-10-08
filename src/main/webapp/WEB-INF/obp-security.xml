@@ -7,6 +7,10 @@
            http://www.springframework.org/schema/security
            http://www.springframework.org/schema/security/spring-security-3.1.xsd">
 
+    <http pattern="/styles/**" security="none"/>
+    <http pattern="/images/**" security="none"/>
+    <http pattern="/scripts/**" security="none"/>
+
     <http>
         <intercept-url pattern="/**" access="ROLE_USER" />
         <form-login />
