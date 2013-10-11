@@ -1,28 +1,28 @@
 * {
-    font-family: Helvetica, sans-serif;
+    font-family: sans-serif;
     font-weight: 100;
-    color: aliceblue;
+    color: white;
     background: cornflowerblue;
 }
 
 h1 {
-    font-size: 40pt;
-    display: inline;
-    color: white;
-}
-
-h3 {
+    font-size: 4em;
     display: inline;
 }
 
 hr {
     height: 1px;
     background-color: lightblue;
-    border:none
+    border:none;
+    margin: 1px;
 }
 
 .liveData {
     font-weight: normal;
     color: white;
     margin-left: 10px;
+}
+
+.faded {
+    opacity: 0.5;
 }

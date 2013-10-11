@@ -1,7 +1,5 @@
 package org.marssa.utils;
 
-import static org.marssa.utils.AngleUtil.ddmmToDegrees;
-
 /**
  * Created by Robert Jaremczak
  * Date: 2013-10-6
@@ -15,10 +13,13 @@ public final class LatitudeUtil {
     public static final String NORTH_DIRECTION = "N";
     public static final String SOUTH_DIRECTION = "S";
 
-    public static final double parseDDMM(double ddmm, String direction) {
+    private LatitudeUtil() {
+    }
+
+    public static final double fromDDMM(double ddmm, String direction) {
         switch(direction) {
-            case SOUTH_DIRECTION: return ddmmToDegrees(-ddmm);
-            case NORTH_DIRECTION: return ddmmToDegrees(ddmm);
+            case SOUTH_DIRECTION: return AngleUtil.fromDDMM(-ddmm);
+            case NORTH_DIRECTION: return AngleUtil.fromDDMM(ddmm);
             default: throw new IllegalArgumentException("invalid direction code " + direction);
         }
     }

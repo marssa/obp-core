@@ -11,4 +11,6 @@ class GpsPositionDto {
     String latitude;
     String longitude;
     String fixTime;
+    String trueNorthHeading;
+    String velocityOverGround;
 }

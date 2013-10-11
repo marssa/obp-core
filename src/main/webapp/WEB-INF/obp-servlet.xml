@@ -13,6 +13,7 @@
 
     <context:annotation-config/>
     <mvc:annotation-driven/>
+    <context:property-placeholder location="classpath:local.properties, classpath:obp.properties"/>
     <context:component-scan base-package="org.marssa.web"/>
 
     <mvc:resources mapping="/styles/**" location="/styles/" />

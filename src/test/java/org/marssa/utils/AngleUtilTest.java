@@ -11,6 +11,6 @@ public class AngleUtilTest {
 
     @Test
     public void testDdmmToDegreesConversion() {
-        Assert.assertEquals(-49.50, AngleUtil.ddmmToDegrees(-4930.00));
+        Assert.assertEquals(-49.50, AngleUtil.fromDDMM(-4930.00));
     }
 }

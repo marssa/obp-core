@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
  */
 
 public interface GpsReceiver {
+    public long getFixTime();
     public double getLatitude();
     public double getLongitude();
-    public long getFixTime();
+    public double getTrueNorthHeading();
+    public double getVelocityOverGround();
 }

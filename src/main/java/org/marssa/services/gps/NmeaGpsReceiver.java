@@ -1,11 +1,7 @@
 package org.marssa.services.gps;
 
 import org.apache.log4j.Logger;
-import org.marssa.nmea.GPGLL;
-import org.marssa.nmea.GPGLLParser;
-import org.marssa.nmea.NmeaBufferedReader;
-import org.marssa.nmea.NmeaDevice;
-import org.marssa.utils.RxTxUtil;
+import org.marssa.nmea.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -13,9 +9,8 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.util.Date;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Created by Robert Jaremczak
@@ -28,15 +23,17 @@ public class NmeaGpsReceiver implements GpsReceiver {
     private NmeaDevice device;
     private Listener listener;
 
-    private double latitude;
-    private double longitude;
-    private long fixTime;
+    private AtomicReference<GPGLL> lastGPGLL = new AtomicReference<>();
+    private AtomicReference<GPVTG> lastGPVGT = new AtomicReference<>();
 
     @Value("${marssa.gps.nmea.portName}")
     private String portName;
 
     @Autowired
-    private GPGLLParser gpgllParser;
+    private ParserGPGLL parserGPGLL;
+
+    @Autowired
+    private ParserGPVTG parserGPGVT;
 
     class Listener implements Runnable {
 
@@ -56,12 +53,13 @@ public class NmeaGpsReceiver implements GpsReceiver {
                 stop = false;
                 try {
                     while(!stop && reader.lineReady()) {
-                        if(gpgllParser.matchesLine(reader.getLine())) {
-                            GPGLL gpgll = gpgllParser.parseLine(reader.getLine());
-                            latitude = gpgll.getLatitude();
-                            longitude = gpgll.getLongitude();
-                            fixTime = gpgll.getFixTime();
-                            logger.debug("GPGLL: "+gpgll.getLatitude()+" "+gpgll.getLongitude()+" "+ DateFormat.getTimeInstance().format(new Date(fixTime)));
+                        NmeaLine line = reader.getLine();
+                        if(parserGPGLL.matchesLine(line)) {
+                            lastGPGLL.set(parserGPGLL.parseLine(line));
+                            logger.debug("parsed: "+lastGPGLL.get());
+                        } else if(parserGPGVT.matchesLine(line)) {
+                            lastGPVGT.set(parserGPGVT.parseLine(line));
+                            logger.debug("parsed: " + lastGPVGT.get());
                         }
                     }
                     done.countDown();
@@ -97,16 +95,26 @@ public class NmeaGpsReceiver implements GpsReceiver {
 
     @Override
     public double getLatitude() {
-        return latitude;
+        return lastGPGLL.get().getLatitude();
     }
 
     @Override
     public double getLongitude() {
-        return longitude;
+        return lastGPGLL.get().getLongitude();
+    }
+
+    @Override
+    public double getTrueNorthHeading() {
+        return lastGPVGT.get().getTrueNorthHeading();
+    }
+
+    @Override
+    public double getVelocityOverGround() {
+        return lastGPVGT.get().getVelocityOverGround();
     }
 
     @Override
     public long getFixTime() {
-        return fixTime;
+        return lastGPGLL.get().getFixTime();
     }
 }

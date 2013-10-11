@@ -10,8 +10,8 @@ import java.io.InputStream;
  * Created by Robert Jaremczak
  * Date: 2013-10-6
  */
-public class GPGLLParserTest {
-    private GPGLLParser parser = new GPGLLParser();
+public class ParserGPGLLTest {
+    private ParserGPGLL parser = new ParserGPGLL();
 
     @Test
     public void testAgainstSampleFile() throws IOException {

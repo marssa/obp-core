@@ -23,30 +23,40 @@
                 data: "user=success",
                 success: function(data){
                     $("#fixTime").fadeOut();
-                    $("#latitude").text(data.latitude);
-                    $("#longitude").text(data.longitude);
                     $("#fixTime").text(data.fixTime);
                     $("#fixTime").fadeIn();
+                    $("#latitude").text(data.latitude);
+                    $("#longitude").text(data.longitude);
+                    $("#trueNorthHeading").text(data.trueNorthHeading);
+                    $("#velocityOverGround").text(data.velocityOverGround);
                 }
             });
         }    </script>
     <body>
         <h1>Live GPS Data</h1>
         <hr/>
-        <h3 style="color:lightblue">OBP version pre-0.1 (build: 20131008173501)</h3>
+        <span class="faded">OBP-${buildId}</span>
         <br/><br/><br/>
         <table>
             <tr>
+                <td>Fixing time</td>
+                <td><span class="liveData" id="fixTime">-</span> UTC</td>
+            </tr>
+            <tr>
                 <td>Latitude</td>
-                <td><span class="liveData" id="latitude">-</span></td>
+                <td><span class="liveData" id="latitude">-</span> &deg;</td>
             </tr>
             <tr>
                 <td>Longitude</td>
-                <td><span class="liveData" id="longitude">-</span></td>
+                <td><span class="liveData" id="longitude">-</span> &deg;</td>
             </tr>
             <tr>
-                <td>Fixing time</td>
-                <td><span class="liveData" id="fixTime">-</span></td>
+                <td>True North heading</td>
+                <td><span class="liveData" id="trueNorthHeading">-</span>  &deg;</td>
+            </tr>
+            <tr>
+                <td>Velocity over ground</td>
+                <td><span class="liveData" id="velocityOverGround">-</span> m/s</td>
             </tr>
         </table>
     </body>

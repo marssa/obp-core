@@ -10,6 +10,9 @@ import org.apache.log4j.Logger;
 public final class RxTxUtil {
     private static final Logger logger = Logger.getLogger(RxTxUtil.class);
 
+    private RxTxUtil() {
+    }
+
     private static String getPortTypeName ( int portType )
     {
         switch ( portType )
