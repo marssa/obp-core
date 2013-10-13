@@ -1,5 +1,6 @@
 package org.marssa.nmea;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.marssa.utils.VelocityUtil;
 import org.springframework.stereotype.Service;
 
@@ -21,8 +22,8 @@ public class ParserGPVTG implements NmeaLineParser<GPVTG> {
     @Override
     public GPVTG parseLine(NmeaLine line) {
         return new GPVTG(
-                Double.parseDouble(line.getData(0)),
-                VelocityUtil.fromKmPerHour(Double.parseDouble(line.getData(6)))
+                NumberUtils.toDouble(line.getData(0), Double.NaN),
+                VelocityUtil.fromKmPerHour(NumberUtils.toDouble(line.getData(6)))
         );
     }
 }

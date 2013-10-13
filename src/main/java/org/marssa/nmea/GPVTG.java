@@ -5,6 +5,7 @@ package org.marssa.nmea;
  * Date: 2013-10-11
  */
 public class GPVTG {
+    public static final GPVTG DUMMY = new GPVTG(Double.NaN,Double.NaN);
     private double trueNorthHeading;
     private double velocityOverGround;
 
@@ -19,5 +20,9 @@ public class GPVTG {
 
     public double getVelocityOverGround() {
         return velocityOverGround;
+    }
+
+    public String toString() {
+        return trueNorthHeading+" "+velocityOverGround+" m/s";
     }
 }

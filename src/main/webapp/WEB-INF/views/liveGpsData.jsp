@@ -29,6 +29,16 @@
                     $("#longitude").text(data.longitude);
                     $("#trueNorthHeading").text(data.trueNorthHeading);
                     $("#velocityOverGround").text(data.velocityOverGround);
+
+                    var html = "<table style='margin: 0'>";
+                    for(var i in data.satellitesInView) {
+                        var sat = data.satellitesInView[i];
+                        html += "<tr><td><span class='liveData'>"+
+                                sat.id+" - elevation:"+sat.elevation+" azimuth:"+sat.azimuth+" S/N:"+sat.snr;
+                                "</span></td></tr>";
+                    }
+                    html += "</table>"
+                    $("#satellitesInView").html(html);
                 }
             });
         }    </script>
@@ -57,6 +67,10 @@
             <tr>
                 <td>Velocity over ground</td>
                 <td><span class="liveData" id="velocityOverGround">-</span> m/s</td>
+            </tr>
+            <tr>
+                <td>Satellites in view</td>
+                <td><span class="liveData" id="satellitesInView">-</span></td>
             </tr>
         </table>
     </body>

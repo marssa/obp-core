@@ -17,6 +17,10 @@ hr {
     margin: 1px;
 }
 
+td {
+    vertical-align: top;
+}
+
 .liveData {
     font-weight: normal;
     color: white;

@@ -2,6 +2,8 @@ package org.marssa.services.gps;
 
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Created by Robert Jaremczak
  * Date: 2013-10-4
@@ -13,4 +15,5 @@ public interface GpsReceiver {
     public double getLongitude();
     public double getTrueNorthHeading();
     public double getVelocityOverGround();
+    public List<GpsSatellite> getSatellitesInView();
 }

@@ -9,6 +9,11 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -25,6 +30,7 @@ public class NmeaGpsReceiver implements GpsReceiver {
 
     private AtomicReference<GPGLL> lastGPGLL = new AtomicReference<>();
     private AtomicReference<GPVTG> lastGPVGT = new AtomicReference<>();
+    private ConcurrentMap<Byte,GPGSV.SV> receivedSVs = new ConcurrentHashMap<>();
 
     @Value("${marssa.gps.nmea.portName}")
     private String portName;
@@ -34,6 +40,9 @@ public class NmeaGpsReceiver implements GpsReceiver {
 
     @Autowired
     private ParserGPVTG parserGPGVT;
+
+    @Autowired
+    private ParserGPGSV parserGPGSV;
 
     class Listener implements Runnable {
 
@@ -56,15 +65,16 @@ public class NmeaGpsReceiver implements GpsReceiver {
                         NmeaLine line = reader.getLine();
                         if(parserGPGLL.matchesLine(line)) {
                             lastGPGLL.set(parserGPGLL.parseLine(line));
-                            logger.debug("parsed: "+lastGPGLL.get());
                         } else if(parserGPGVT.matchesLine(line)) {
                             lastGPVGT.set(parserGPGVT.parseLine(line));
-                            logger.debug("parsed: " + lastGPVGT.get());
+                        } else if(parserGPGSV.matchesLine(line)) {
+                            updateReceivedSvs(parserGPGSV.parseLine(line));
                         }
                     }
+                } catch (Exception e) {
+                    logger.fatal("listener error in line "+reader.getLine(),e);
+                } finally {
                     done.countDown();
-                } catch (IOException e) {
-                    logger.fatal("listener error",e);
                 }
             } catch (Exception e) {
                 logger.fatal("listener error",e);
@@ -73,13 +83,22 @@ public class NmeaGpsReceiver implements GpsReceiver {
         }
     }
 
+    private void updateReceivedSvs(GPGSV msg) {
+        for(int i=0; i<msg.getSvSize(); i++) {
+            GPGSV.SV sv = msg.getSv(i);
+            receivedSVs.putIfAbsent(sv.getId(),sv);
+        }
+    }
+
     @PostConstruct
     public void init() throws Exception {
+        lastGPGLL.set(GPGLL.DUMMY);
+        lastGPVGT.set(GPVTG.DUMMY);
         logger.info("init NMEA GPS receiver at port "+portName);
         try {
             device = new NmeaDevice(portName);
             listener = new Listener();
-            new Thread(listener).start();
+            new Thread(listener,"NMEA GPS listener").start();
             logger.info("listener started");
         } catch(Exception e) {
             logger.error("error binding to NMEA device, no live data will be provided.");
@@ -111,6 +130,16 @@ public class NmeaGpsReceiver implements GpsReceiver {
     @Override
     public double getVelocityOverGround() {
         return lastGPVGT.get().getVelocityOverGround();
+    }
+
+    @Override
+    public List<GpsSatellite> getSatellitesInView() {
+        List<GpsSatellite> list = new ArrayList<>();
+        for(Map.Entry<Byte,GPGSV.SV> entry : receivedSVs.entrySet()) {
+            GPGSV.SV sv = entry.getValue();
+            list.add(new GpsSatellite(sv.getId(),sv.getElevation(),sv.getAzimuth(),sv.getSnr()));
+        }
+        return list;
     }
 
     @Override

@@ -7,14 +7,12 @@ import java.util.List;
 
 /**
  * Created by Robert Jaremczak
- * Date: 2013-10-4
+ * Date: 2013-10-13
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.NON_PRIVATE)
-class GpsPositionDto {
-    double latitude;
-    double longitude;
-    String fixTime;
-    double trueNorthHeading;
-    double velocityOverGround;
-    List<GpsSatelliteDto> satellitesInView = new ArrayList<>();
+class GpsSatelliteDto {
+    int id;
+    double elevation;
+    double azimuth;
+    double snr;
 }

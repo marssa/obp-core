@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
  * Date: 2013-10-5
  */
 public class GPGLL {
+    public static final GPGLL DUMMY = new GPGLL(Double.NaN,Double.NaN,0);
     private double latitude;
     private double longitude;
     private long fixTime;
@@ -27,5 +28,9 @@ public class GPGLL {
 
     public long getFixTime() {
         return fixTime;
+    }
+
+    public String toString() {
+        return latitude+" "+longitude;
     }
 }
