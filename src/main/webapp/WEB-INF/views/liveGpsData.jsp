@@ -5,48 +5,12 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="obp" tagdir="/WEB-INF/tags/obp"%>
+
 <html>
-    <head>
-        <title>OBP - Live GPS Data</title>
-        <link rel="stylesheet" href="<c:url value="/styles/obp.css"/>"/>
-        <script src="<c:url value="/scripts/jquery-2.0.3.min.js"/>"></script>
-    </head>
-    <script type="text/javascript">
-        $(document).ready(function() {
-            setInterval("ajaxd()",3000);
-        });
-
-        function ajaxd() {
-            $.ajax({
-                type: "GET",
-                url: "<c:url value="/api/gps/position"/>",
-                data: "user=success",
-                success: function(data){
-                    $("#fixTime").fadeOut();
-                    $("#fixTime").text(data.fixTime);
-                    $("#fixTime").fadeIn();
-                    $("#latitude").text(data.latitude);
-                    $("#longitude").text(data.longitude);
-                    $("#trueNorthHeading").text(data.trueNorthHeading);
-                    $("#velocityOverGround").text(data.velocityOverGround);
-
-                    var html = "<table style='margin: 0'>";
-                    for(var i in data.satellitesInView) {
-                        var sat = data.satellitesInView[i];
-                        html += "<tr><td><span class='liveData'>"+
-                                sat.id+" - elevation:"+sat.elevation+" azimuth:"+sat.azimuth+" S/N:"+sat.snr;
-                                "</span></td></tr>";
-                    }
-                    html += "</table>"
-                    $("#satellitesInView").html(html);
-                }
-            });
-        }    </script>
+<%@ include file="/WEB-INF/fragments/head.jspf"%>
     <body>
-        <h1>Live GPS Data</h1>
-        <hr/>
-        <span class="faded">OBP-${buildId}</span>
-        <br/><br/><br/>
+        <obp:header headline="Live GPS data"/>
         <table>
             <tr>
                 <td>Fixing time</td>
@@ -69,9 +33,55 @@
                 <td><span class="liveData" id="velocityOverGround">-</span> m/s</td>
             </tr>
             <tr>
-                <td>Satellites in view</td>
-                <td><span class="liveData" id="satellitesInView">-</span></td>
+                <td colspan="2">
+                    Satellites in view<br/>
+                    <div id="satellitesInView">
+                    </div>
+                </td>
             </tr>
         </table>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                setInterval("ajaxd()",3000);
+            });
+
+            function ajaxd() {
+                $.ajax({
+                    type: "GET",
+                    url: "<c:url value="/api/gps/position"/>",
+                    data: "user=success",
+                    success: function(data){
+                        $("#fixTime").fadeOut();
+                        $("#fixTime").text(data.fixTime);
+                        $("#fixTime").fadeIn();
+                        $("#latitude").text(data.latitude);
+                        $("#longitude").text(data.longitude);
+                        $("#trueNorthHeading").text(data.trueNorthHeading);
+                        $("#velocityOverGround").text(data.velocityOverGround);
+
+                        var html = "<table class='tabularData'>"+
+                                "<tr>"+
+                                "<th>#</th>"+
+                                "<th>sat ID</th>"+
+                                "<th>elevation<br>[&deg;]</th>"+
+                                "<th>azimuth<br>[&deg;]</th>"+
+                                "<th>s/n<br>[dbm]</th>"+
+                                "</tr>";
+                        for(var i in data.satellitesInView) {
+                            var sat = data.satellitesInView[i];
+                            html += "<tr>";
+                            html += "<td>"+(Number(i)+1)+"</td>";
+                            html += "<td>"+sat.id+"</td>";
+                            html += "<td>"+sat.elevation+"</td>";
+                            html += "<td>"+sat.azimuth+"</td>";
+                            html += "<td>"+sat.snr+"</td>";
+                            html += "</tr>";
+                        }
+                        html += "</table>"
+                        $("#satellitesInView").html(html);
+                    }
+                });
+            }
+        </script>
     </body>
 </html>

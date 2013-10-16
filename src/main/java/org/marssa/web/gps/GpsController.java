@@ -1,5 +1,6 @@
 package org.marssa.web.gps;
 
+import org.marssa.ObpConfig;
 import org.marssa.services.gps.GpsReceiver;
 import org.marssa.services.gps.GpsSatellite;
 import org.marssa.utils.TimeUtil;
@@ -19,9 +20,6 @@ import java.util.List;
  */
 @Controller
 public class GpsController {
-
-    @Value("${build.id}")
-    private String buildId;
 
     @Autowired
     private GpsReceiver gpsReceiver;
@@ -53,9 +51,7 @@ public class GpsController {
     }
 
     @RequestMapping("/liveGpsData")
-    public ModelAndView liveData() {
-        ModelAndView mav = new ModelAndView("liveGpsData");
-        mav.addObject("buildId",buildId);
-        return mav;
+    public String liveData() {
+        return "liveGpsData";
     }
 }

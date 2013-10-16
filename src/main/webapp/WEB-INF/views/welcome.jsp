@@ -5,12 +5,15 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="obp" tagdir="/WEB-INF/tags/obp"%>
+
 <html>
-<head>
-    <title>Open Bridge Platform (OBP)</title>
-    <link rel="stylesheet" href="<c:url value="/styles/obp.css"/>"/>
-</head>
+<%@ include file="/WEB-INF/fragments/head.jspf"%>
 <body>
-<jsp:include page="header.jsp"/>
+<obp:header headline="Open Bridge Platform"/>
+<div style="display: table; width: 30em">
+    <div class="button" onclick="location.href='<c:url value="/liveGpsData"/>'">live GPS data</div>
+    <div class="button" onclick="location.href='<c:url value="/logout"/>'">logout</div>
+</div>
 </body>
 </html>

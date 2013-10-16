@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +38,7 @@ public class NmeaGpsReceiver implements GpsReceiver {
     private ParserGPGLL parserGPGLL;
 
     @Autowired
-    private ParserGPVTG parserGPGVT;
+    private ParserGPVTG parserGPVTG;
 
     @Autowired
     private ParserGPGSV parserGPGSV;
@@ -63,10 +62,12 @@ public class NmeaGpsReceiver implements GpsReceiver {
                 try {
                     while(!stop && reader.lineReady()) {
                         NmeaLine line = reader.getLine();
+                        logger.debug(line);
                         if(parserGPGLL.matchesLine(line)) {
                             lastGPGLL.set(parserGPGLL.parseLine(line));
-                        } else if(parserGPGVT.matchesLine(line)) {
-                            lastGPVGT.set(parserGPGVT.parseLine(line));
+                        } else if(parserGPVTG.matchesLine(line)) {
+                            logger.info(line);
+                            lastGPVGT.set(parserGPVTG.parseLine(line));
                         } else if(parserGPGSV.matchesLine(line)) {
                             updateReceivedSvs(parserGPGSV.parseLine(line));
                         }

@@ -2,11 +2,11 @@
     font-family: sans-serif;
     font-weight: 100;
     color: white;
-    background: cornflowerblue;
+    background: #5f859f;
 }
 
 h1 {
-    font-size: 4em;
+    font-size: 2.5em;
     display: inline;
 }
 
@@ -21,12 +21,60 @@ td {
     vertical-align: top;
 }
 
+form, td {
+    vertical-align: baseline;
+}
+
+.inputField {
+    padding: 10px 20px;
+    font-weight: normal;
+    font-size: 1em;
+    border: 2px solid white;
+    border-radius: 20px;
+}
+
 .liveData {
     font-weight: normal;
     color: white;
-    margin-left: 10px;
+}
+
+table.tabularData {
+    border-width: 1px;
+    background-color: #6f9dba;
+    font-size: 120%;
+}
+
+table.tabularData th {
+    color: white;
+    font-family: monospace;
+    text-align: center;
+    vertical-align: text-top;
+    padding-left: 2px;
+    margin-left: 4px;
+}
+
+table.tabularData td {
+    font-family: monospace;
+    color: #b1e2ff;
+    text-align: right;
+    padding-left: 2px;
+    margin-left: 4px;
 }
 
 .faded {
-    opacity: 0.5;
+    color: #aad7f3;
+}
+
+.button {
+    padding: 10px 20px;
+    font-weight: normal;
+    font-size: 1em;
+    border: 2px solid white;
+    border-radius: 20px;
+    margin: 10px;
+}
+
+.button:hover {
+    background-color: #6f9dba;
+    cursor: hand;
 }
