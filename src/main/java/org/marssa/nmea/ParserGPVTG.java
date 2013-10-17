@@ -1,7 +1,7 @@
 package org.marssa.nmea;
 
 import org.apache.commons.lang3.math.NumberUtils;
-import org.marssa.utils.VelocityUtil;
+import org.marssa.utils.VelocityUtils;
 import org.springframework.stereotype.Service;
 
 /**
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 public class ParserGPVTG implements NmeaLineParser<GPVTG> {
     @Override
     public boolean matchesLine(NmeaLine line) {
-        return line.getName().equals("GPVTG") &&
+        return line.getName().equals(GPVTG.SIGNATURE) &&
                 line.getDataSize() >= 8 &&
                 line.getData(1).equals("T") &&
                 line.getData(7).equals("K");
@@ -23,7 +23,7 @@ public class ParserGPVTG implements NmeaLineParser<GPVTG> {
     public GPVTG parseLine(NmeaLine line) {
         return new GPVTG(
                 NumberUtils.toDouble(line.getData(0), Double.NaN),
-                VelocityUtil.fromKmPerHour(NumberUtils.toDouble(line.getData(6)))
+                VelocityUtils.fromKmPerHour(NumberUtils.toDouble(line.getData(6)))
         );
     }
 }

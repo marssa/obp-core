@@ -9,17 +9,17 @@ package org.marssa.utils;
  * N = positive angle
  */
 
-public final class LatitudeUtil {
+public final class LatitudeUtils {
     public static final String NORTH_DIRECTION = "N";
     public static final String SOUTH_DIRECTION = "S";
 
-    private LatitudeUtil() {
+    private LatitudeUtils() {
     }
 
     public static final double fromDDMM(double ddmm, String direction) {
         switch(direction) {
-            case SOUTH_DIRECTION: return AngleUtil.fromDDMM(-ddmm);
-            case NORTH_DIRECTION: return AngleUtil.fromDDMM(ddmm);
+            case SOUTH_DIRECTION: return AngleUtils.fromDDMM(-ddmm);
+            case NORTH_DIRECTION: return AngleUtils.fromDDMM(ddmm);
             default: throw new IllegalArgumentException("invalid direction code " + direction);
         }
     }

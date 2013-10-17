@@ -13,7 +13,7 @@ public interface GpsReceiver {
     public long getFixTime();
     public double getLatitude();
     public double getLongitude();
-    public double getTrueNorthHeading();
+    public double getTrueNorthCourse();
     public double getVelocityOverGround();
     public List<GpsSatellite> getSatellitesInView();
 }

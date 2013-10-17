@@ -22,7 +22,7 @@ public class ParserGPVTGTest {
         Assert.assertNotNull(line);
         Assert.assertTrue(parser.matchesLine(line));
         GPVTG msg = parser.parseLine(line);
-        Assert.assertEquals(336.45, msg.getTrueNorthHeading(), 0.00001);
+        Assert.assertEquals(336.45, msg.getTrueNorthCourse(), 0.00001);
         Assert.assertEquals(1000.00/3600.00, msg.getVelocityOverGround(), 0.00001);
     }
 }

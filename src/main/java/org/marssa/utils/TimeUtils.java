@@ -15,17 +15,19 @@ import org.joda.time.format.ISODateTimeFormat;
  *
  */
 
-public final class TimeUtil {
+public final class TimeUtils {
     public static final DateTimeFormatter UTC_TIME_FORMATTER = DateTimeFormat.forPattern("HH:mm:ss").withZoneUTC();
 
-    private TimeUtil() {
+    private TimeUtils() {
     }
 
-    public static final long fromUtcHHMMSS(int hhmmss) {
+    public static final long fromUtcHHMMSS(double time) {
+        int hhmmss = (int)time;
         MutableDateTime mdt = MutableDateTime.now(DateTimeZone.UTC);
         mdt.setSecondOfMinute(hhmmss % 100);
         mdt.setMinuteOfHour((hhmmss / 100) % 100);
         mdt.setHourOfDay(hhmmss / 10000);
+        mdt.setMillisOfSecond((int)((time - hhmmss) * 1000));
         return mdt.toDateTime().getMillis();
     }
 

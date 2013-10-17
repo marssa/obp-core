@@ -1,15 +1,12 @@
 package org.marssa.web.gps;
 
-import org.marssa.ObpConfig;
 import org.marssa.services.gps.GpsReceiver;
 import org.marssa.services.gps.GpsSatellite;
-import org.marssa.utils.TimeUtil;
+import org.marssa.utils.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,10 +25,10 @@ public class GpsController {
     @RequestMapping("/api/gps/position")
     public GpsPositionDto position() {
         GpsPositionDto dto = new GpsPositionDto();
-        dto.fixTime = TimeUtil.toUtcString(gpsReceiver.getFixTime());
+        dto.fixTime = TimeUtils.toUtcString(gpsReceiver.getFixTime());
         dto.latitude = gpsReceiver.getLatitude();
         dto.longitude = gpsReceiver.getLongitude();
-        dto.trueNorthHeading = gpsReceiver.getTrueNorthHeading();
+        dto.trueNorthCourse = gpsReceiver.getTrueNorthCourse();
         dto.velocityOverGround = gpsReceiver.getVelocityOverGround();
         dto.satellitesInView = repack(gpsReceiver.getSatellitesInView());
         return dto;

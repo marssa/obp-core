@@ -14,7 +14,7 @@ class GpsPositionDto {
     double latitude;
     double longitude;
     String fixTime;
-    double trueNorthHeading;
+    double trueNorthCourse;
     double velocityOverGround;
     List<GpsSatelliteDto> satellitesInView = new ArrayList<>();
 }

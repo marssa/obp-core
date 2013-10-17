@@ -17,10 +17,6 @@ hr {
     margin: 1px;
 }
 
-td {
-    vertical-align: top;
-}
-
 form, td {
     vertical-align: baseline;
 }
@@ -41,24 +37,25 @@ form, td {
 table.tabularData {
     border-width: 1px;
     background-color: #6f9dba;
-    font-size: 120%;
 }
 
 table.tabularData th {
     color: white;
-    font-family: monospace;
     text-align: center;
     vertical-align: text-top;
-    padding-left: 2px;
-    margin-left: 4px;
+    padding: 5px 10px;
 }
 
 table.tabularData td {
-    font-family: monospace;
     color: #b1e2ff;
     text-align: right;
-    padding-left: 2px;
-    margin-left: 4px;
+    padding: 2px 10px;
+}
+
+table.dataList td {
+    color: white;
+    text-align: left;
+    padding: 2px 5px;
 }
 
 .faded {

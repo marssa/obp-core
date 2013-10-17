@@ -10,9 +10,9 @@ public class GPGLL extends NmeaMessage {
     public static final GPGLL DUMMY = new GPGLL(Double.NaN,Double.NaN,0);
     public static final String SIGNATURE = "GPGLL";
 
+    private long fixTime;
     private double latitude;
     private double longitude;
-    private long fixTime;
 
     protected GPGLL(double latitude, double longitude, long fixTime) {
         this.latitude = latitude;

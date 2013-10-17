@@ -4,9 +4,9 @@ package org.marssa.utils;
  * Created by Robert Jaremczak
  * Date: 2013-10-6
  */
-public final class AngleUtil {
+public final class AngleUtils {
 
-    private AngleUtil() {
+    private AngleUtils() {
     }
 
     public static final double fromDDMM(double ddmm) {

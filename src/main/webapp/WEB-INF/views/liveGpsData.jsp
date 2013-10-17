@@ -11,38 +11,38 @@
 <%@ include file="/WEB-INF/fragments/head.jspf"%>
     <body>
         <obp:header headline="Live GPS data"/>
-        <table>
+        <table class="dataList">
             <tr>
-                <td>Fixing time</td>
-                <td><span class="liveData" id="fixTime">-</span> UTC</td>
+                <td>Fixing time:</td>
+                <td><span id="fixTime">-</span> UTC</td>
             </tr>
             <tr>
-                <td>Latitude</td>
-                <td><span class="liveData" id="latitude">-</span> &deg;</td>
+                <td>Latitude:</td>
+                <td><span id="latitude">-</span> &deg;</td>
             </tr>
             <tr>
-                <td>Longitude</td>
-                <td><span class="liveData" id="longitude">-</span> &deg;</td>
+                <td>Longitude:</td>
+                <td><span id="longitude">-</span> &deg;</td>
             </tr>
             <tr>
-                <td>True North heading</td>
-                <td><span class="liveData" id="trueNorthHeading">-</span>  &deg;</td>
+                <td>True North course:</td>
+                <td><span id="trueNorthCourse">-</span>  &deg;</td>
             </tr>
             <tr>
-                <td>Velocity over ground</td>
-                <td><span class="liveData" id="velocityOverGround">-</span> m/s</td>
+                <td>Velocity over ground:</td>
+                <td><span id="velocityOverGround">-</span> m/s</td>
             </tr>
             <tr>
-                <td colspan="2">
-                    <br>Satellites in view<br/>
-                    <div id="satellitesInView">
-                    </div>
-                </td>
+                <td>Magnetic variation:</td>
+                <td><span id="magneticVariation">-</span> m/s</td>
             </tr>
         </table>
+        <br>Satellites in view:<br>
+        <div id="satellitesInView"></div>
         <script type="text/javascript">
             $(document).ready(function() {
                 setInterval("ajaxd()",3000);
+                ajaxd();
             });
 
             function ajaxd() {
@@ -56,7 +56,7 @@
                         $("#fixTime").fadeIn();
                         $("#latitude").text(data.latitude);
                         $("#longitude").text(data.longitude);
-                        $("#trueNorthHeading").text(data.trueNorthHeading);
+                        $("#trueNorthCourse").text(data.trueNorthCourse);
                         $("#velocityOverGround").text(data.velocityOverGround);
 
                         var html = "<table class='tabularData'>"+

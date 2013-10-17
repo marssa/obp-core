@@ -7,10 +7,10 @@ import org.apache.log4j.Logger;
  * Created by Robert Jaremczak
  * Date: 2013-10-7
  */
-public final class RxTxUtil {
-    private static final Logger logger = Logger.getLogger(RxTxUtil.class);
+public final class RxTxUtils {
+    private static final Logger logger = Logger.getLogger(RxTxUtils.class);
 
-    private RxTxUtil() {
+    private RxTxUtils() {
     }
 
     private static String getPortTypeName ( int portType )

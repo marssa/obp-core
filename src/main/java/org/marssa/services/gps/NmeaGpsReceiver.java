@@ -8,11 +8,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -27,9 +23,11 @@ public class NmeaGpsReceiver implements GpsReceiver {
     private NmeaDevice device;
     private Listener listener;
 
-    private AtomicReference<GPGLL> lastGPGLL = new AtomicReference<>();
-    private AtomicReference<GPVTG> lastGPVGT = new AtomicReference<>();
+    private AtomicReference<GPGLL> lastGPGLL = new AtomicReference<>(GPGLL.DUMMY);
     private AggregateGPGSV aggregateGPGSV = new AggregateGPGSV();
+
+    private volatile double trueNorthCourse;
+    private volatile double velocityOverGround;
 
     @Value("${marssa.gps.nmea.portName}")
     private String portName;
@@ -42,6 +40,9 @@ public class NmeaGpsReceiver implements GpsReceiver {
 
     @Autowired
     private ParserGPGSV parserGPGSV;
+
+    @Autowired
+    private ParserGPRMC parserGPRMC;
 
     class Listener implements Runnable {
 
@@ -66,8 +67,13 @@ public class NmeaGpsReceiver implements GpsReceiver {
                         if(parserGPGLL.matchesLine(line)) {
                             lastGPGLL.set(parserGPGLL.parseLine(line));
                         } else if(parserGPVTG.matchesLine(line)) {
-                            logger.info(line);
-                            lastGPVGT.set(parserGPVTG.parseLine(line));
+                            GPVTG gpvtg = parserGPVTG.parseLine(line);
+                            trueNorthCourse = gpvtg.getTrueNorthCourse();
+                            velocityOverGround = gpvtg.getVelocityOverGround();
+                        } else if(parserGPRMC.matchesLine(line)) {
+                            GPRMC gprmc = parserGPRMC.parseLine(line);
+                            trueNorthCourse = gprmc.getTrueNorthCourse();
+                            velocityOverGround = gprmc.getVelocityOverGround();
                         } else if(parserGPGSV.matchesLine(line)) {
                             aggregateGPGSV.update(parserGPGSV.parseLine(line));
                         }
@@ -86,13 +92,11 @@ public class NmeaGpsReceiver implements GpsReceiver {
 
     @PostConstruct
     public void init() throws Exception {
-        lastGPGLL.set(GPGLL.DUMMY);
-        lastGPVGT.set(GPVTG.DUMMY);
         logger.info("init NMEA GPS receiver at port "+portName);
         try {
             device = new NmeaDevice(portName);
             listener = new Listener();
-            new Thread(listener,"NMEA GPS listener").start();
+            new Thread(listener,"listener").start();
             logger.info("listener started");
         } catch(Exception e) {
             logger.error("error binding to NMEA device, no live data will be provided.");
@@ -117,13 +121,13 @@ public class NmeaGpsReceiver implements GpsReceiver {
     }
 
     @Override
-    public double getTrueNorthHeading() {
-        return lastGPVGT.get().getTrueNorthHeading();
+    public double getTrueNorthCourse() {
+        return trueNorthCourse;
     }
 
     @Override
     public double getVelocityOverGround() {
-        return lastGPVGT.get().getVelocityOverGround();
+        return velocityOverGround;
     }
 
     @Override

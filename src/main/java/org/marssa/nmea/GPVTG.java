@@ -8,16 +8,16 @@ public class GPVTG extends NmeaMessage {
     public static final GPVTG DUMMY = new GPVTG(Double.NaN,Double.NaN);
     public static final String SIGNATURE = "GPVTG";
 
-    private double trueNorthHeading;
+    private double trueNorthCourse;
     private double velocityOverGround;
 
-    public GPVTG(double trueNorthHeading, double velocityOverGround) {
-        this.trueNorthHeading = trueNorthHeading;
+    public GPVTG(double trueNorthCourse, double velocityOverGround) {
+        this.trueNorthCourse = trueNorthCourse;
         this.velocityOverGround = velocityOverGround;
     }
 
-    public double getTrueNorthHeading() {
-        return trueNorthHeading;
+    public double getTrueNorthCourse() {
+        return trueNorthCourse;
     }
 
     public double getVelocityOverGround() {
@@ -25,7 +25,7 @@ public class GPVTG extends NmeaMessage {
     }
 
     public String toString() {
-        return trueNorthHeading+" "+velocityOverGround+" m/s";
+        return trueNorthCourse +" "+velocityOverGround+" m/s";
     }
 
     @Override

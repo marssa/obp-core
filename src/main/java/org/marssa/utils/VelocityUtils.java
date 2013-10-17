@@ -4,11 +4,11 @@ package org.marssa.utils;
  * Created by Robert Jaremczak
  * Date: 2013-10-11
  */
-public final class VelocityUtil {
+public final class VelocityUtils {
     public static final double KNOT_MPS = 0.514444444; // m/s
     public static final double KMPH_MPS = 0.277777778; // m/s
 
-    private VelocityUtil() {
+    private VelocityUtils() {
     }
 
     public static final double fromKnots(double knots) {

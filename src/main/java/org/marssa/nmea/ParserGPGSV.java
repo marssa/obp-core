@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 public class ParserGPGSV implements NmeaLineParser<GPGSV> {
     @Override
     public boolean matchesLine(NmeaLine line) {
-        return line.getName().equals("GPGSV") && line.getDataSize() >= 7;
+        return line.getName().equals(GPGSV.SIGNATURE) && line.getDataSize() >= 7;
     }
 
     private GPGSV.SV[] parseSvs(NmeaLine line) {

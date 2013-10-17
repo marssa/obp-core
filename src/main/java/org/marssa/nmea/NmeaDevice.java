@@ -2,10 +2,9 @@ package org.marssa.nmea;
 
 import gnu.io.*;
 import org.apache.log4j.Logger;
-import org.marssa.utils.RxTxUtil;
+import org.marssa.utils.RxTxUtils;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * Created by Robert Jaremczak
@@ -33,7 +32,7 @@ public class NmeaDevice {
             this.port = (SerialPort)portIdentifier.open(portName,TIMEOUT_MS);
             this.port.setSerialPortParams(BAUD_RATE,DATA_BITS,STOP_BITS,PARITY);
         } catch (NoSuchPortException e) {
-            RxTxUtil.dumpAvailablePorts();
+            RxTxUtils.dumpAvailablePorts();
             throw e;
         }
     }
