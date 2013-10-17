@@ -4,7 +4,8 @@ package org.marssa.nmea;
  * Created by Robert Jaremczak
  * Date: 2013-10-13
  */
-public class GPGSV {
+public class GPGSV extends NmeaMessage {
+    public static final String SIGNATURE = "GPGSV";
 
     public static class SV {
         private byte id;
@@ -68,6 +69,12 @@ public class GPGSV {
         return sv.length;
     }
 
+    @Override
+    public String getSignature() {
+        return SIGNATURE;
+    }
+
+    @Override
     public String toString() {
         return getTotalSatellitesInView()+" visible satellites";
     }

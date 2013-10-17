@@ -29,7 +29,7 @@ public class NmeaGpsReceiver implements GpsReceiver {
 
     private AtomicReference<GPGLL> lastGPGLL = new AtomicReference<>();
     private AtomicReference<GPVTG> lastGPVGT = new AtomicReference<>();
-    private ConcurrentMap<Byte,GPGSV.SV> receivedSVs = new ConcurrentHashMap<>();
+    private AggregateGPGSV aggregateGPGSV = new AggregateGPGSV();
 
     @Value("${marssa.gps.nmea.portName}")
     private String portName;
@@ -69,7 +69,7 @@ public class NmeaGpsReceiver implements GpsReceiver {
                             logger.info(line);
                             lastGPVGT.set(parserGPVTG.parseLine(line));
                         } else if(parserGPGSV.matchesLine(line)) {
-                            updateReceivedSvs(parserGPGSV.parseLine(line));
+                            aggregateGPGSV.update(parserGPGSV.parseLine(line));
                         }
                     }
                 } catch (Exception e) {
@@ -81,13 +81,6 @@ public class NmeaGpsReceiver implements GpsReceiver {
                 logger.fatal("listener error",e);
             }
             logger.info("listener stopped.");
-        }
-    }
-
-    private void updateReceivedSvs(GPGSV msg) {
-        for(int i=0; i<msg.getSvSize(); i++) {
-            GPGSV.SV sv = msg.getSv(i);
-            receivedSVs.putIfAbsent(sv.getId(),sv);
         }
     }
 
@@ -135,12 +128,7 @@ public class NmeaGpsReceiver implements GpsReceiver {
 
     @Override
     public List<GpsSatellite> getSatellitesInView() {
-        List<GpsSatellite> list = new ArrayList<>();
-        for(Map.Entry<Byte,GPGSV.SV> entry : receivedSVs.entrySet()) {
-            GPGSV.SV sv = entry.getValue();
-            list.add(new GpsSatellite(sv.getId(),sv.getElevation(),sv.getAzimuth(),sv.getSnr()));
-        }
-        return list;
+        return aggregateGPGSV.getSatellitesInView();
     }
 
     @Override

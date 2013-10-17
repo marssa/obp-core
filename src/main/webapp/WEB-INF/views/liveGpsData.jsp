@@ -34,7 +34,7 @@
             </tr>
             <tr>
                 <td colspan="2">
-                    Satellites in view<br/>
+                    <br>Satellites in view<br/>
                     <div id="satellitesInView">
                     </div>
                 </td>
@@ -74,13 +74,17 @@
                             html += "<td>"+sat.id+"</td>";
                             html += "<td>"+sat.elevation+"</td>";
                             html += "<td>"+sat.azimuth+"</td>";
-                            html += "<td>"+sat.snr+"</td>";
+                            html += "<td>"+avoidNaN(sat.snr)+"</td>";
                             html += "</tr>";
                         }
                         html += "</table>"
                         $("#satellitesInView").html(html);
                     }
                 });
+            }
+
+            function avoidNaN(num) {
+                return isNaN(num) ? "n/a" : String(num);
             }
         </script>
     </body>

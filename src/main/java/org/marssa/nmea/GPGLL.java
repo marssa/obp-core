@@ -6,8 +6,10 @@ import java.util.regex.Pattern;
  * Created by Robert Jaremczak
  * Date: 2013-10-5
  */
-public class GPGLL {
+public class GPGLL extends NmeaMessage {
     public static final GPGLL DUMMY = new GPGLL(Double.NaN,Double.NaN,0);
+    public static final String SIGNATURE = "GPGLL";
+
     private double latitude;
     private double longitude;
     private long fixTime;
@@ -32,5 +34,10 @@ public class GPGLL {
 
     public String toString() {
         return latitude+" "+longitude;
+    }
+
+    @Override
+    public String getSignature() {
+        return SIGNATURE;
     }
 }
