@@ -31,6 +31,9 @@ public class GpsController {
         dto.trueNorthCourse = gpsReceiver.getTrueNorthCourse();
         dto.velocityOverGround = gpsReceiver.getVelocityOverGround();
         dto.satellitesInView = repack(gpsReceiver.getSatellitesInView());
+        dto.numSatellitesInView = gpsReceiver.getNumberOfSatellitesInView();
+        dto.fixQuality = gpsReceiver.getFixQuality();
+        dto.altitude = gpsReceiver.getAltitude();
         return dto;
     }
 

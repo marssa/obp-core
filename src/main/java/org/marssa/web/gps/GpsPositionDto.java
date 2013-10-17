@@ -1,6 +1,7 @@
 package org.marssa.web.gps;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import org.marssa.nmea.GPGGA;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,4 +18,7 @@ class GpsPositionDto {
     double trueNorthCourse;
     double velocityOverGround;
     List<GpsSatelliteDto> satellitesInView = new ArrayList<>();
+    GPGGA.FixQuality fixQuality;
+    byte numSatellitesInView;
+    double altitude;
 }

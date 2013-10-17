@@ -1,0 +1,100 @@
+package org.marssa.nmea;
+
+import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.log4j.Logger;
+
+/**
+ * Created by Robert Jaremczak
+ * Date: 2013-10-17
+ */
+public class GPGGA extends NmeaMessage {
+    public static final String SIGNATURE = "GPGGA";
+
+    private static Logger logger = Logger.getLogger(GPGGA.class);
+
+    public static enum FixQuality {
+        UNKNOWN(Byte.MIN_VALUE),INVALID(0),GPSFIX(1),DGPSFIX(2);
+
+        private byte code;
+
+        FixQuality(int code) {
+            this.code=(byte)code;
+        }
+
+        public static FixQuality fromString(String str) {
+            byte v = NumberUtils.toByte(str, Byte.MIN_VALUE);
+            for(FixQuality fq : FixQuality.values()) {
+                if(fq.code==v) {
+                    return fq;
+                }
+            }
+            logger.error("undefined code "+str);
+            return UNKNOWN;
+        }
+
+    }
+
+    private long fixTime;
+    private double latitude;
+    private double longitude;
+    private FixQuality fixQuality;
+    private byte numberOfSatellitesInView;
+    private double hdop;
+    private double altitude;
+    private long timeSinceLastDgpsUpdate;
+    private String refDgpsStationId;
+
+    public GPGGA(long fixTime, double latitude, double longitude, String fixQuality, byte numberOfSatellitesInView,
+                 double hdop, double altitude, long timeSinceLastDgpsUpdate, String refDgpsStationId) {
+        this.fixTime = fixTime;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.fixQuality = FixQuality.fromString(fixQuality);
+        this.numberOfSatellitesInView = numberOfSatellitesInView;
+        this.hdop = hdop;
+        this.altitude = altitude;
+        this.timeSinceLastDgpsUpdate = timeSinceLastDgpsUpdate;
+        this.refDgpsStationId = refDgpsStationId;
+    }
+
+    public long getFixTime() {
+        return fixTime;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public FixQuality getFixQuality() {
+        return fixQuality;
+    }
+
+    public byte getNumberOfSatellitesInView() {
+        return numberOfSatellitesInView;
+    }
+
+    public double getHdop() {
+        return hdop;
+    }
+
+    public double getAltitude() {
+        return altitude;
+    }
+
+    public long getTimeSinceLastDgpsUpdate() {
+        return timeSinceLastDgpsUpdate;
+    }
+
+    public String getRefDgpsStationId() {
+        return refDgpsStationId;
+    }
+
+    @Override
+    public String getSignature() {
+        return SIGNATURE;
+    }
+}

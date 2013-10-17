@@ -46,7 +46,8 @@ public class NmeaLineScanner implements Iterator<String> {
     }
 
     public long nextUtcHHMMSS() {
-        return TimeUtils.fromUtcHHMMSS((int) NumberUtils.toDouble(next()));
+        double d = NumberUtils.toDouble(next());
+        return TimeUtils.fromUtcHHMMSS((int)d) + (int)((d - (int)d) * 1000);
     }
 
     public double nextVelocityKnots() {
@@ -55,5 +56,19 @@ public class NmeaLineScanner implements Iterator<String> {
 
     public double nextDouble() {
         return NumberUtils.toDouble(next());
+    }
+
+    public byte nextByte() {
+        return NumberUtils.toByte(next());
+    }
+
+    public double nextAltitude() {
+        double alt = NumberUtils.toDouble(next(), Double.NaN);
+        String unit = next();
+        return unit.equals("M") ? alt : Double.NaN;
+    }
+
+    public long nextLong() {
+        return NumberUtils.toLong(next());
     }
 }

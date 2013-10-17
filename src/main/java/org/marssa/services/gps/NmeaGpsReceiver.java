@@ -23,11 +23,16 @@ public class NmeaGpsReceiver implements GpsReceiver {
     private NmeaDevice device;
     private Listener listener;
 
-    private AtomicReference<GPGLL> lastGPGLL = new AtomicReference<>(GPGLL.DUMMY);
     private AggregateGPGSV aggregateGPGSV = new AggregateGPGSV();
-
+    private volatile long fixTime;
+    private volatile double latitude;
+    private volatile double longitude;
     private volatile double trueNorthCourse;
     private volatile double velocityOverGround;
+    private GPGGA.FixQuality fixQuality;
+    private byte numberOfSatellitesInView;
+    private double hdop;
+    private double altitude;
 
     @Value("${marssa.gps.nmea.portName}")
     private String portName;
@@ -43,6 +48,9 @@ public class NmeaGpsReceiver implements GpsReceiver {
 
     @Autowired
     private ParserGPRMC parserGPRMC;
+
+    @Autowired
+    private ParserGPGGA parserGPGGA;
 
     class Listener implements Runnable {
 
@@ -65,13 +73,29 @@ public class NmeaGpsReceiver implements GpsReceiver {
                         NmeaLine line = reader.getLine();
                         logger.debug(line);
                         if(parserGPGLL.matchesLine(line)) {
-                            lastGPGLL.set(parserGPGLL.parseLine(line));
+                            GPGLL gpgll = parserGPGLL.parseLine(line);
+                            fixTime = gpgll.getFixTime();
+                            latitude = gpgll.getLatitude();
+                            longitude = gpgll.getLongitude();
                         } else if(parserGPVTG.matchesLine(line)) {
                             GPVTG gpvtg = parserGPVTG.parseLine(line);
                             trueNorthCourse = gpvtg.getTrueNorthCourse();
                             velocityOverGround = gpvtg.getVelocityOverGround();
-                        } else if(parserGPRMC.matchesLine(line)) {
+                        } else if(parserGPGGA.matchesLine(line)) {
+                            GPGGA gpgga = parserGPGGA.parseLine(line);
+                            fixTime = gpgga.getFixTime();
+                            latitude = gpgga.getLatitude();
+                            longitude = gpgga.getLongitude();
+                            numberOfSatellitesInView = gpgga.getNumberOfSatellitesInView();
+                            hdop = gpgga.getHdop();
+                            altitude = gpgga.getAltitude();
+                            fixQuality = gpgga.getFixQuality();
+                        }
+                        else if(parserGPRMC.matchesLine(line)) {
                             GPRMC gprmc = parserGPRMC.parseLine(line);
+                            fixTime = gprmc.getFixTime();
+                            latitude = gprmc.getLatitude();
+                            longitude = gprmc.getLongitude();
                             trueNorthCourse = gprmc.getTrueNorthCourse();
                             velocityOverGround = gprmc.getVelocityOverGround();
                         } else if(parserGPGSV.matchesLine(line)) {
@@ -112,12 +136,12 @@ public class NmeaGpsReceiver implements GpsReceiver {
 
     @Override
     public double getLatitude() {
-        return lastGPGLL.get().getLatitude();
+        return latitude;
     }
 
     @Override
     public double getLongitude() {
-        return lastGPGLL.get().getLongitude();
+        return longitude;
     }
 
     @Override
@@ -136,7 +160,29 @@ public class NmeaGpsReceiver implements GpsReceiver {
     }
 
     @Override
-    public long getFixTime() {
-        return lastGPGLL.get().getFixTime();
+    public GPGGA.FixQuality getFixQuality() {
+        return fixQuality;
     }
+
+    @Override
+    public byte getNumberOfSatellitesInView() {
+        return numberOfSatellitesInView;
+    }
+
+    @Override
+    public double getHdop() {
+        return hdop;
+    }
+
+    @Override
+    public double getAltitude() {
+        return altitude;
+    }
+
+    @Override
+    public long getFixTime() {
+        return fixTime;
+    }
+
+
 }

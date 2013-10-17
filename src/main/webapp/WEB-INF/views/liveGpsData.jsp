@@ -14,30 +14,42 @@
         <table class="dataList">
             <tr>
                 <td>Fixing time:</td>
-                <td><span id="fixTime">-</span> UTC</td>
+                <td><span id="fixTime">n/a</span> UTC</td>
+            </tr>
+            <tr>
+                <td>Quality of Fix:</td>
+                <td><span id="fixQuality">n/a</span></td>
             </tr>
             <tr>
                 <td>Latitude:</td>
-                <td><span id="latitude">-</span> &deg;</td>
+                <td><span id="latitude">n/a</span> &deg;</td>
             </tr>
             <tr>
                 <td>Longitude:</td>
-                <td><span id="longitude">-</span> &deg;</td>
+                <td><span id="longitude">n/a</span> &deg;</td>
             </tr>
             <tr>
                 <td>True North course:</td>
-                <td><span id="trueNorthCourse">-</span>  &deg;</td>
+                <td><span id="trueNorthCourse">n/a</span> &deg;</td>
+            </tr>
+            <tr>
+                <td>Altitude:</td>
+                <td><span id="altitude">n/a</span> m</td>
             </tr>
             <tr>
                 <td>Velocity over ground:</td>
-                <td><span id="velocityOverGround">-</span> m/s</td>
+                <td><span id="velocityOverGround">n/a</span> m/s</td>
             </tr>
             <tr>
                 <td>Magnetic variation:</td>
-                <td><span id="magneticVariation">-</span> m/s</td>
+                <td><span id="magneticVariation">n/a</span> &deg;</td>
+            </tr>
+            <tr>
+                <td>Horizontal misalignment:</td>
+                <td><span id="hdop">n/a</span> &deg;</td>
             </tr>
         </table>
-        <br>Satellites in view:<br>
+        <br>Satellites in view (effective <span id="numSatellitesInView"></span>):<br>
         <div id="satellitesInView"></div>
         <script type="text/javascript">
             $(document).ready(function() {
@@ -58,6 +70,9 @@
                         $("#longitude").text(data.longitude);
                         $("#trueNorthCourse").text(data.trueNorthCourse);
                         $("#velocityOverGround").text(data.velocityOverGround);
+                        $("#numSatellitesInView").text(data.numSatellitesInView);
+                        $("#altitude").text(data.altitude);
+                        $("#fixQuality").text(data.fixQuality);
 
                         var html = "<table class='tabularData'>"+
                                 "<tr>"+

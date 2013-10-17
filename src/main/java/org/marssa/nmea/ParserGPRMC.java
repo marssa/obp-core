@@ -1,9 +1,6 @@
 package org.marssa.nmea;
 
-import org.marssa.utils.*;
 import org.springframework.stereotype.Service;
-
-import java.util.Iterator;
 
 /**
  * Created by Robert Jaremczak

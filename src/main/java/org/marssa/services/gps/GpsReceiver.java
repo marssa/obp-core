@@ -1,5 +1,6 @@
 package org.marssa.services.gps;
 
+import org.marssa.nmea.GPGGA;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,4 +17,8 @@ public interface GpsReceiver {
     public double getTrueNorthCourse();
     public double getVelocityOverGround();
     public List<GpsSatellite> getSatellitesInView();
+    public GPGGA.FixQuality getFixQuality();
+    public byte getNumberOfSatellitesInView();
+    public double getHdop();
+    public double getAltitude();
 }
