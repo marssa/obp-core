@@ -2,6 +2,7 @@ package org.marssa.web.gps;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import org.marssa.nmea.GPGGA;
+import org.marssa.nmea.GPGSA;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.List;
  * Date: 2013-10-4
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.NON_PRIVATE)
-class GpsPositionDto {
+class GpsAllDto {
     double latitude;
     double longitude;
     String fixTime;
@@ -19,6 +20,11 @@ class GpsPositionDto {
     double velocityOverGround;
     List<GpsSatelliteDto> satellitesInView = new ArrayList<>();
     GPGGA.FixQuality fixQuality;
+    GPGSA.FixType fixType;
+    GPGSA.FixMode fixMode;
     byte numSatellitesInView;
     double altitude;
+    double pdop;
+    double hdop;
+    double vdop;
 }

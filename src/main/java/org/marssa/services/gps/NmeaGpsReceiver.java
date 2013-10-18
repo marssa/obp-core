@@ -30,8 +30,12 @@ public class NmeaGpsReceiver implements GpsReceiver {
     private volatile double trueNorthCourse;
     private volatile double velocityOverGround;
     private GPGGA.FixQuality fixQuality;
+    private GPGSA.FixMode fixMode;
+    private GPGSA.FixType fixType;
     private byte numberOfSatellitesInView;
+    private double pdop;
     private double hdop;
+    private double vdop;
     private double altitude;
 
     @Value("${marssa.gps.nmea.portName}")
@@ -51,6 +55,9 @@ public class NmeaGpsReceiver implements GpsReceiver {
 
     @Autowired
     private ParserGPGGA parserGPGGA;
+
+    @Autowired
+    private ParserGPGSA parserGPGSA;
 
     class Listener implements Runnable {
 
@@ -90,14 +97,21 @@ public class NmeaGpsReceiver implements GpsReceiver {
                             hdop = gpgga.getHdop();
                             altitude = gpgga.getAltitude();
                             fixQuality = gpgga.getFixQuality();
-                        }
-                        else if(parserGPRMC.matchesLine(line)) {
+                        } else if(parserGPRMC.matchesLine(line)) {
                             GPRMC gprmc = parserGPRMC.parseLine(line);
                             fixTime = gprmc.getFixTime();
                             latitude = gprmc.getLatitude();
                             longitude = gprmc.getLongitude();
                             trueNorthCourse = gprmc.getTrueNorthCourse();
                             velocityOverGround = gprmc.getVelocityOverGround();
+                        } else if(parserGPGSA.matchesLine(line)) {
+                            GPGSA gpgsa = parserGPGSA.parseLine(line);
+                            fixMode = gpgsa.getFixMode();
+                            fixType = gpgsa.getFixType();
+                            pdop = gpgsa.getPdop();
+                            hdop = gpgsa.getHdop();
+                            vdop = gpgsa.getVdop();
+                            numberOfSatellitesInView = gpgsa.getNumberOfSatellitesInView();
                         } else if(parserGPGSV.matchesLine(line)) {
                             aggregateGPGSV.update(parserGPGSV.parseLine(line));
                         }
@@ -165,12 +179,32 @@ public class NmeaGpsReceiver implements GpsReceiver {
     }
 
     @Override
+    public GPGSA.FixMode getFixMode() {
+        return fixMode;
+    }
+
+    @Override
+    public GPGSA.FixType getFixType() {
+        return fixType;
+    }
+
+    @Override
     public byte getNumberOfSatellitesInView() {
         return numberOfSatellitesInView;
     }
 
     @Override
-    public double getHdop() {
+    public double getPDop() {
+        return pdop;
+    }
+
+    @Override
+    public double getVDop() {
+        return vdop;
+    }
+
+    @Override
+    public double getHDop() {
         return hdop;
     }
 

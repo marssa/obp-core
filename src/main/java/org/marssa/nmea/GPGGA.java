@@ -13,23 +13,22 @@ public class GPGGA extends NmeaMessage {
     private static Logger logger = Logger.getLogger(GPGGA.class);
 
     public static enum FixQuality {
-        UNKNOWN(Byte.MIN_VALUE),INVALID(0),GPSFIX(1),DGPSFIX(2);
+        NA(""),INVALID("0"),GPSFIX("1"),DGPSFIX("2");
 
-        private byte code;
+        private String code;
 
-        FixQuality(int code) {
-            this.code=(byte)code;
+        FixQuality(String code) {
+            this.code=code;
         }
 
         public static FixQuality fromString(String str) {
-            byte v = NumberUtils.toByte(str, Byte.MIN_VALUE);
             for(FixQuality fq : FixQuality.values()) {
-                if(fq.code==v) {
+                if(fq.code.equals(str)) {
                     return fq;
                 }
             }
             logger.error("undefined code "+str);
-            return UNKNOWN;
+            return NA;
         }
 
     }

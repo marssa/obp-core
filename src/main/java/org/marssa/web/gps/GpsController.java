@@ -22,9 +22,9 @@ public class GpsController {
     private GpsReceiver gpsReceiver;
 
     @ResponseBody
-    @RequestMapping("/api/gps/position")
-    public GpsPositionDto position() {
-        GpsPositionDto dto = new GpsPositionDto();
+    @RequestMapping("/api/gps/all")
+    public GpsAllDto position() {
+        GpsAllDto dto = new GpsAllDto();
         dto.fixTime = TimeUtils.toUtcString(gpsReceiver.getFixTime());
         dto.latitude = gpsReceiver.getLatitude();
         dto.longitude = gpsReceiver.getLongitude();
@@ -33,7 +33,12 @@ public class GpsController {
         dto.satellitesInView = repack(gpsReceiver.getSatellitesInView());
         dto.numSatellitesInView = gpsReceiver.getNumberOfSatellitesInView();
         dto.fixQuality = gpsReceiver.getFixQuality();
+        dto.fixMode = gpsReceiver.getFixMode();
+        dto.fixType = gpsReceiver.getFixType();
         dto.altitude = gpsReceiver.getAltitude();
+        dto.pdop = gpsReceiver.getPDop();
+        dto.hdop = gpsReceiver.getHDop();
+        dto.vdop = gpsReceiver.getVDop();
         return dto;
     }
 

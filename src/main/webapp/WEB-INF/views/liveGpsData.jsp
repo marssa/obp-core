@@ -17,8 +17,16 @@
                 <td><span id="fixTime">n/a</span> UTC</td>
             </tr>
             <tr>
-                <td>Quality of Fix:</td>
+                <td>Fix quality:</td>
                 <td><span id="fixQuality">n/a</span></td>
+            </tr>
+            <tr>
+                <td>Fix mode:</td>
+                <td><span id="fixMode">n/a</span></td>
+            </tr>
+            <tr>
+                <td>Fix type:</td>
+                <td><span id="fixType">n/a</span></td>
             </tr>
             <tr>
                 <td>Latitude:</td>
@@ -45,8 +53,16 @@
                 <td><span id="magneticVariation">n/a</span> &deg;</td>
             </tr>
             <tr>
-                <td>Horizontal misalignment:</td>
-                <td><span id="hdop">n/a</span> &deg;</td>
+                <td>Position DOP:</td>
+                <td><span id="pdop">n/a</span></td>
+            </tr>
+            <tr>
+                <td>Horizontal DOP:</td>
+                <td><span id="hdop">n/a</span></td>
+            </tr>
+            <tr>
+                <td>Vertical DOP:</td>
+                <td><span id="vdop">n/a</span></td>
             </tr>
         </table>
         <br>Satellites in view (effective <span id="numSatellitesInView"></span>):<br>
@@ -60,7 +76,7 @@
             function ajaxd() {
                 $.ajax({
                     type: "GET",
-                    url: "<c:url value="/api/gps/position"/>",
+                    url: "<c:url value="/api/gps/all"/>",
                     data: "user=success",
                     success: function(data){
                         $("#fixTime").fadeOut();
@@ -73,6 +89,11 @@
                         $("#numSatellitesInView").text(data.numSatellitesInView);
                         $("#altitude").text(data.altitude);
                         $("#fixQuality").text(data.fixQuality);
+                        $("#fixMode").text(data.fixMode);
+                        $("#fixType").text(data.fixType);
+                        $("#pdop").text(data.pdop);
+                        $("#hdop").text(data.hdop);
+                        $("#vdop").text(data.vdop);
 
                         var html = "<table class='tabularData'>"+
                                 "<tr>"+
