@@ -17,18 +17,11 @@ public class ParserGPGLL implements NmeaLineParser<GPGLL> {
         return line.getName().equals(GPGLL.SIGNATURE) && line.getDataSize() >= 4;
     }
 
-    private long parseFixUtc(NmeaLine line) {
-        if(line.getDataSize()>4) {
-            return TimeUtils.fromUtcHHMMSS((int) Double.parseDouble(line.getData(4)));
-        }
-        return 0;
-    }
-
     @Override
-    public GPGLL parseLine(NmeaLine line) {
+    public GPGLL parseLine(NmeaLineScanner scanner) {
         return new GPGLL(
-                LatitudeUtils.fromDDMM(Double.parseDouble(line.getData(0)), line.getData(1)),
-                LongitudeUtil.fromDDMM(Double.parseDouble(line.getData(2)), line.getData(3)),
-                parseFixUtc(line));
+                scanner.nextLatitudeDDMM(),
+                scanner.nextLongitudeDDMM(),
+                scanner.hasNext() ? scanner.nextUtcHHMMSS() : 0);
     }
 }

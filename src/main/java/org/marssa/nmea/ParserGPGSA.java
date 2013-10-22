@@ -24,14 +24,13 @@ public class ParserGPGSA implements NmeaLineParser<GPGSA> {
     }
 
     @Override
-    public GPGSA parseLine(NmeaLine line) {
-        NmeaLineScanner sc = line.scanner();
+    public GPGSA parseLine(NmeaLineScanner scanner) {
         return new GPGSA(
-                GPGSA.FixMode.fromString(sc.next()),
-                GPGSA.FixType.fromString(sc.next()),
-                parseSatelliteChannels(sc),
-                sc.nextDouble(),
-                sc.nextDouble(),
-                sc.nextDouble());
+                GPGSA.FixMode.fromString(scanner.next()),
+                GPGSA.FixType.fromString(scanner.next()),
+                parseSatelliteChannels(scanner),
+                scanner.nextDouble(),
+                scanner.nextDouble(),
+                scanner.nextDouble());
     }
 }

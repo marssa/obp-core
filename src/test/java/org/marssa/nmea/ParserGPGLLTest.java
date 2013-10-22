@@ -21,7 +21,7 @@ public class ParserGPGLLTest {
         while(reader.lineReady()) {
             if(parser.matchesLine(reader.getLine())) {
                 count++;
-                GPGLL msg = parser.parseLine(reader.getLine());
+                GPGLL msg = parser.parseLine(reader.getLine().scanner());
             } else {
                 Assert.assertFalse(reader.getLine().equals("GPGLL"));
             }

@@ -17,17 +17,16 @@ public class ParserGPGGA implements NmeaLineParser<GPGGA> {
     }
 
     @Override
-    public GPGGA parseLine(NmeaLine line) {
-        NmeaLineScanner sc = line.scanner();
+    public GPGGA parseLine(NmeaLineScanner scanner) {
         return new GPGGA(
-                sc.nextUtcHHMMSS(),
-                sc.nextLatitudeDDMM(),
-                sc.nextLongitudeDDMM(),
-                sc.next(),
-                sc.nextByte(),
-                sc.nextDouble(),
-                sc.nextAltitude(),
-                sc.nextLong(),
-                sc.next());
+                scanner.nextUtcHHMMSS(),
+                scanner.nextLatitudeDDMM(),
+                scanner.nextLongitudeDDMM(),
+                scanner.next(),
+                scanner.nextByte(),
+                scanner.nextDouble(),
+                scanner.nextAltitude(),
+                scanner.nextLong(),
+                scanner.next());
     }
 }

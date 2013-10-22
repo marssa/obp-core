@@ -18,6 +18,15 @@ public class NmeaLineScanner implements Iterator<String> {
         pointer = 0;
     }
 
+    public NmeaLineScanner skip(int tokens) {
+        this.pointer += tokens;
+        return this;
+    }
+
+    public int getTokentLeft() {
+        return tokens.length - pointer;
+    }
+
     @Override
     public boolean hasNext() {
         return pointer < tokens.length;
@@ -56,6 +65,10 @@ public class NmeaLineScanner implements Iterator<String> {
 
     public double nextDouble() {
         return NumberUtils.toDouble(next());
+    }
+
+    public double nextDoubleOrNaN() {
+        return NumberUtils.toDouble(next(), Double.NaN);
     }
 
     public byte nextByte() {

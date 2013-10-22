@@ -19,16 +19,15 @@ public class ParserGPRMC implements NmeaLineParser {
     }
 
     @Override
-    public GPRMC parseLine(NmeaLine line) {
-        NmeaLineScanner sc = line.scanner();
+    public GPRMC parseLine(NmeaLineScanner scanner) {
         return new GPRMC(
-                sc.next(),
-                detectWarningFlag(sc.next()),
-                sc.nextLatitudeDDMM(),
-                sc.nextLongitudeDDMM(),
-                sc.nextVelocityKnots(),
-                sc.nextDouble(),
-                sc.next(),
-                sc.nextAzimuthDegrees());
+                scanner.next(),
+                detectWarningFlag(scanner.next()),
+                scanner.nextLatitudeDDMM(),
+                scanner.nextLongitudeDDMM(),
+                scanner.nextVelocityKnots(),
+                scanner.nextDouble(),
+                scanner.next(),
+                scanner.nextAzimuthDegrees());
     }
 }

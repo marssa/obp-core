@@ -1,8 +1,7 @@
-package org.marssa.services.gps;
+package org.marssa.gps;
 
 import org.marssa.nmea.GPGGA;
 import org.marssa.nmea.GPGSA;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 

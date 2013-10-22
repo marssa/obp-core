@@ -23,7 +23,7 @@ public class ParserGPGGATest {
         NmeaLine line = reader.fetchLine();
         Assert.assertNotNull(line);
         Assert.assertTrue(parser.matchesLine(line));
-        GPGGA gpgga = parser.parseLine(line);
+        GPGGA gpgga = parser.parseLine(line.scanner());
         Assert.assertEquals(new DateTime(DateTimeZone.UTC).withTime(8, 44, 21, 963).getMillis(), gpgga.getFixTime());
         Assert.assertEquals(GPGGA.FixQuality.INVALID, gpgga.getFixQuality());
         Assert.assertEquals(3, gpgga.getNumberOfSatellitesInView());

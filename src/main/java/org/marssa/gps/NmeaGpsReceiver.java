@@ -1,4 +1,4 @@
-package org.marssa.services.gps;
+package org.marssa.gps;
 
 import org.apache.log4j.Logger;
 import org.marssa.nmea.*;
@@ -10,7 +10,6 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Created by Robert Jaremczak
@@ -78,18 +77,19 @@ public class NmeaGpsReceiver implements GpsReceiver {
                 try {
                     while(!stop && reader.lineReady()) {
                         NmeaLine line = reader.getLine();
+                        NmeaLineScanner scanner = line.scanner();
                         logger.debug(line);
                         if(parserGPGLL.matchesLine(line)) {
-                            GPGLL gpgll = parserGPGLL.parseLine(line);
+                            GPGLL gpgll = parserGPGLL.parseLine(scanner);
                             fixTime = gpgll.getFixTime();
                             latitude = gpgll.getLatitude();
                             longitude = gpgll.getLongitude();
                         } else if(parserGPVTG.matchesLine(line)) {
-                            GPVTG gpvtg = parserGPVTG.parseLine(line);
+                            GPVTG gpvtg = parserGPVTG.parseLine(scanner);
                             trueNorthCourse = gpvtg.getTrueNorthCourse();
                             velocityOverGround = gpvtg.getVelocityOverGround();
                         } else if(parserGPGGA.matchesLine(line)) {
-                            GPGGA gpgga = parserGPGGA.parseLine(line);
+                            GPGGA gpgga = parserGPGGA.parseLine(scanner);
                             fixTime = gpgga.getFixTime();
                             latitude = gpgga.getLatitude();
                             longitude = gpgga.getLongitude();
@@ -98,14 +98,14 @@ public class NmeaGpsReceiver implements GpsReceiver {
                             altitude = gpgga.getAltitude();
                             fixQuality = gpgga.getFixQuality();
                         } else if(parserGPRMC.matchesLine(line)) {
-                            GPRMC gprmc = parserGPRMC.parseLine(line);
+                            GPRMC gprmc = parserGPRMC.parseLine(scanner);
                             fixTime = gprmc.getFixTime();
                             latitude = gprmc.getLatitude();
                             longitude = gprmc.getLongitude();
                             trueNorthCourse = gprmc.getTrueNorthCourse();
                             velocityOverGround = gprmc.getVelocityOverGround();
                         } else if(parserGPGSA.matchesLine(line)) {
-                            GPGSA gpgsa = parserGPGSA.parseLine(line);
+                            GPGSA gpgsa = parserGPGSA.parseLine(scanner);
                             fixMode = gpgsa.getFixMode();
                             fixType = gpgsa.getFixType();
                             pdop = gpgsa.getPdop();
@@ -113,7 +113,7 @@ public class NmeaGpsReceiver implements GpsReceiver {
                             vdop = gpgsa.getVdop();
                             numberOfSatellitesInView = gpgsa.getNumberOfSatellitesInView();
                         } else if(parserGPGSV.matchesLine(line)) {
-                            aggregateGPGSV.update(parserGPGSV.parseLine(line));
+                            aggregateGPGSV.update(parserGPGSV.parseLine(scanner));
                         }
                     }
                 } catch (Exception e) {

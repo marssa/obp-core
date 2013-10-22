@@ -6,5 +6,5 @@ package org.marssa.nmea;
  */
 public interface NmeaLineParser<T> {
     public boolean matchesLine(NmeaLine line);
-    public T parseLine(NmeaLine line);
+    public T parseLine(NmeaLineScanner scanner);
 }

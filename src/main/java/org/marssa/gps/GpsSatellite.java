@@ -1,4 +1,4 @@
-package org.marssa.services.gps;
+package org.marssa.gps;
 
 /**
  * Created by Robert Jaremczak

@@ -13,7 +13,14 @@ public class ObpConfig {
     @Value("${build.id}")
     private String buildId;
 
+    @Value("${google.api.key}")
+    private String googleApiKey;
+
     public String getBuildId() {
         return buildId;
+    }
+
+    public String getGoogleApiKey() {
+        return googleApiKey;
     }
 }

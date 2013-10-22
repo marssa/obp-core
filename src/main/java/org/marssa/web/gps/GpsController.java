@@ -1,7 +1,7 @@
 package org.marssa.web.gps;
 
-import org.marssa.services.gps.GpsReceiver;
-import org.marssa.services.gps.GpsSatellite;
+import org.marssa.gps.GpsReceiver;
+import org.marssa.gps.GpsSatellite;
 import org.marssa.utils.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,8 +22,17 @@ public class GpsController {
     private GpsReceiver gpsReceiver;
 
     @ResponseBody
+    @RequestMapping("/api/gps/position")
+    public GpsCoordinatesDto position() {
+        GpsCoordinatesDto dto = new GpsCoordinatesDto();
+        dto.latitude = gpsReceiver.getLatitude();
+        dto.longitude = gpsReceiver.getLongitude();
+        return dto;
+    }
+
+    @ResponseBody
     @RequestMapping("/api/gps/all")
-    public GpsAllDto position() {
+    public GpsAllDto all() {
         GpsAllDto dto = new GpsAllDto();
         dto.fixTime = TimeUtils.toUtcString(gpsReceiver.getFixTime());
         dto.latitude = gpsReceiver.getLatitude();

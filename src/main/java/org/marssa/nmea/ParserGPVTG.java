@@ -20,10 +20,9 @@ public class ParserGPVTG implements NmeaLineParser<GPVTG> {
     }
 
     @Override
-    public GPVTG parseLine(NmeaLine line) {
+    public GPVTG parseLine(NmeaLineScanner scanner) {
         return new GPVTG(
-                NumberUtils.toDouble(line.getData(0), Double.NaN),
-                VelocityUtils.fromKmPerHour(NumberUtils.toDouble(line.getData(6)))
-        );
+                scanner.nextDoubleOrNaN(),
+                scanner.skip(5).nextDouble());
     }
 }

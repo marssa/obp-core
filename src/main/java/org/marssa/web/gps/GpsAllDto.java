@@ -12,9 +12,7 @@ import java.util.List;
  * Date: 2013-10-4
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.NON_PRIVATE)
-class GpsAllDto {
-    double latitude;
-    double longitude;
+class GpsAllDto extends GpsCoordinatesDto {
     String fixTime;
     double trueNorthCourse;
     double velocityOverGround;

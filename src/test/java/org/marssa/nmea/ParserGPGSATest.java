@@ -23,7 +23,7 @@ public class ParserGPGSATest {
         NmeaLine line = reader.fetchLine();
         Assert.assertNotNull(line);
         Assert.assertTrue(parser.matchesLine(line));
-        GPGSA gpgsa = parser.parseLine(line);
+        GPGSA gpgsa = parser.parseLine(line.scanner());
         Assert.assertEquals(GPGSA.FixMode.AUTO, gpgsa.getFixMode());
         Assert.assertEquals(GPGSA.FixType.FIX3D, gpgsa.getFixType());
 

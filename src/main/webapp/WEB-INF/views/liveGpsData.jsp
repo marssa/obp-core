@@ -10,10 +10,10 @@
 <html>
 <%@ include file="/WEB-INF/fragments/head.jspf"%>
     <body>
-        <obp:header headline="Live GPS data"/>
+        <obp:header headline="Live GPS data" btnHome="true"/>
         <table class="dataList">
             <tr>
-                <td>Fixing time:</td>
+                <td>Fix time:</td>
                 <td><span id="fixTime">n/a</span> UTC</td>
             </tr>
             <tr>

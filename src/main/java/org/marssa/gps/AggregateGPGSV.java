@@ -1,7 +1,6 @@
-package org.marssa.services.gps;
+package org.marssa.gps;
 
 import org.marssa.nmea.GPGSV;
-import org.marssa.services.gps.GpsSatellite;
 
 import java.util.ArrayList;
 import java.util.HashMap;

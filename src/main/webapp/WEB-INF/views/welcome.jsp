@@ -12,6 +12,7 @@
 <body>
 <obp:header headline="Open Bridge Platform"/>
 <div style="display: table; width: 25em">
+    <div class="button" onclick="location.href='<c:url value="/simpleMapView"/>'">simple map view</div>
     <div class="button" onclick="location.href='<c:url value="/liveGpsData"/>'">live GPS data</div>
     <div class="button" onclick="location.href='<c:url value="/logout"/>'">logout</div>
 </div>

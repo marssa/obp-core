@@ -15,26 +15,25 @@ public class ParserGPGSV implements NmeaLineParser<GPGSV> {
         return line.getName().equals(GPGSV.SIGNATURE) && line.getDataSize() >= 7;
     }
 
-    private GPGSV.SV[] parseSvs(NmeaLine line) {
-        byte num = (byte)((line.getDataSize() - 3) / 4);
+    private GPGSV.SV[] parseSvs(NmeaLineScanner scanner) {
+        int num = scanner.getTokentLeft() / 4;
         GPGSV.SV sv[] = new GPGSV.SV[num];
-        int item = 3;
         for(int i=0; i<num; i++) {
             sv[i] = new GPGSV.SV(
-                    Byte.parseByte(line.getData(item++)),
-                    NumberUtils.toDouble(line.getData(item++), Double.NaN),
-                    NumberUtils.toDouble(line.getData(item++), Double.NaN),
-                    NumberUtils.toDouble(line.getData(item++), Double.NaN));
+                    scanner.nextByte(),
+                    scanner.nextDoubleOrNaN(),
+                    scanner.nextDoubleOrNaN(),
+                    scanner.nextDoubleOrNaN());
         }
         return sv;
     }
 
     @Override
-    public GPGSV parseLine(NmeaLine line) {
+    public GPGSV parseLine(NmeaLineScanner scanner) {
         return new GPGSV(
-                Byte.parseByte(line.getData(0)),
-                Byte.parseByte(line.getData(1)),
-                Byte.parseByte(line.getData(2)),
-                parseSvs(line));
+                scanner.nextByte(),
+                scanner.nextByte(),
+                scanner.nextByte(),
+                parseSvs(scanner));
     }
 }

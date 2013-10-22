@@ -2,11 +2,10 @@
     font-family: sans-serif;
     font-weight: 100;
     color: white;
-    background: #5f859f;
 }
 
 h1 {
-    font-size: 2.5em;
+    font-size: 2em;
     display: inline;
 }
 
@@ -51,6 +50,7 @@ table.tabularData td {
     color: #b1e2ff;
     text-align: right;
     padding: 2px 10px;
+    background-color: #5f859f;
 }
 
 table.dataList td {
@@ -75,4 +75,37 @@ table.dataList td {
 .button:hover {
     background-color: #6f9dba;
     cursor: hand;
+}
+
+.toolbtn {
+    font-weight: bold;
+    font-size: 2em;
+    color: #aad7f3;
+}
+
+.toolbtn:hover {
+    cursor: pointer;
+    color: white;
+}
+
+.toolbtn_title {
+    font-size: 80%;
+    color: #aad7f3;
+    position: relative;
+    top: -8px;
+}
+
+html {
+    height: 100%
+}
+
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background: #5f859f;
+}
+
+#map-canvas {
+    height: 100%;
 }

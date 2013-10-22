@@ -21,7 +21,7 @@ public class ParserGPGSVTest {
         NmeaLine line = reader.fetchLine();
         Assert.assertNotNull(line);
         Assert.assertTrue(parser.matchesLine(line));
-        GPGSV msg = parser.parseLine(line);
+        GPGSV msg = parser.parseLine(line.scanner());
         Assert.assertEquals(1, msg.getSentenceNumber());
         Assert.assertEquals(3, msg.getTotalSentences());
         Assert.assertEquals(12, msg.getTotalSatellitesInView());
