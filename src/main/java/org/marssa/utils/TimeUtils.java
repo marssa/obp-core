@@ -34,4 +34,8 @@ public final class TimeUtils {
     public static final String toUtcString(long time) {
         return UTC_TIME_FORMATTER.print(time);
     }
+
+    public static final long currentUtc() {
+        return DateTime.now(DateTimeZone.UTC).getMillis();
+    }
 }

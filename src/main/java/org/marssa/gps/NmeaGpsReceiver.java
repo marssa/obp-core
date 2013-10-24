@@ -1,6 +1,8 @@
 package org.marssa.gps;
 
 import org.apache.log4j.Logger;
+import org.marssa.data.Vicinity;
+import org.marssa.data.Instrument;
 import org.marssa.nmea.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -8,15 +10,19 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
+
+import static org.marssa.data.AttributeNames.*;
 
 /**
  * Created by Robert Jaremczak
  * Date: 2013-10-5
  */
 @Service
-public class NmeaGpsReceiver implements GpsReceiver {
+public class NmeaGpsReceiver extends Instrument implements GpsReceiver {
     private static Logger logger = Logger.getLogger(NmeaGpsReceiver.class);
 
     private NmeaDevice device;
@@ -37,8 +43,8 @@ public class NmeaGpsReceiver implements GpsReceiver {
     private double vdop;
     private double altitude;
 
-    @Value("${marssa.gps.nmea.portName}")
-    private String portName;
+    @Value("${marssa.local.nmeaGpsReceiver.uri}")
+    private String uri;
 
     @Autowired
     private ParserGPGLL parserGPGLL;
@@ -57,6 +63,17 @@ public class NmeaGpsReceiver implements GpsReceiver {
 
     @Autowired
     private ParserGPGSA parserGPGSA;
+
+    @Autowired
+    private Vicinity vicinity;
+
+    @Autowired
+    public NmeaGpsReceiver(
+            @Value("${marssa.local.nmeaGpsReceiver.uuid}") UUID uuid,
+            @Value("${marssa.local.nmeaGpsReceiver.name}") String name,
+            @Value("${marssa.local.nmeaGpsReceiver.description}") String description) {
+        super(uuid, name, description, Arrays.asList(LATITUDE,LONGITUDE,ALTITUDE, VELOCITY_OVER_GROUND,TRUE_NORTH_COURSE));
+    }
 
     class Listener implements Runnable {
 
@@ -84,10 +101,12 @@ public class NmeaGpsReceiver implements GpsReceiver {
                             fixTime = gpgll.getFixTime();
                             latitude = gpgll.getLatitude();
                             longitude = gpgll.getLongitude();
+                            updateInstrumentData();
                         } else if(parserGPVTG.matchesLine(line)) {
                             GPVTG gpvtg = parserGPVTG.parseLine(scanner);
                             trueNorthCourse = gpvtg.getTrueNorthCourse();
                             velocityOverGround = gpvtg.getVelocityOverGround();
+                            updateInstrumentData();
                         } else if(parserGPGGA.matchesLine(line)) {
                             GPGGA gpgga = parserGPGGA.parseLine(scanner);
                             fixTime = gpgga.getFixTime();
@@ -97,6 +116,7 @@ public class NmeaGpsReceiver implements GpsReceiver {
                             hdop = gpgga.getHdop();
                             altitude = gpgga.getAltitude();
                             fixQuality = gpgga.getFixQuality();
+                            updateInstrumentData();
                         } else if(parserGPRMC.matchesLine(line)) {
                             GPRMC gprmc = parserGPRMC.parseLine(scanner);
                             fixTime = gprmc.getFixTime();
@@ -104,6 +124,7 @@ public class NmeaGpsReceiver implements GpsReceiver {
                             longitude = gprmc.getLongitude();
                             trueNorthCourse = gprmc.getTrueNorthCourse();
                             velocityOverGround = gprmc.getVelocityOverGround();
+                            updateInstrumentData();
                         } else if(parserGPGSA.matchesLine(line)) {
                             GPGSA gpgsa = parserGPGSA.parseLine(scanner);
                             fixMode = gpgsa.getFixMode();
@@ -112,8 +133,10 @@ public class NmeaGpsReceiver implements GpsReceiver {
                             hdop = gpgsa.getHdop();
                             vdop = gpgsa.getVdop();
                             numberOfSatellitesInView = gpgsa.getNumberOfSatellitesInView();
+                            updateInstrumentData();
                         } else if(parserGPGSV.matchesLine(line)) {
                             aggregateGPGSV.update(parserGPGSV.parseLine(scanner));
+                            updateInstrumentData();
                         }
                     }
                 } catch (Exception e) {
@@ -128,17 +151,27 @@ public class NmeaGpsReceiver implements GpsReceiver {
         }
     }
 
+    protected void updateInstrumentData() {
+        setAttribute(LATITUDE, latitude);
+        setAttribute(LONGITUDE, longitude);
+        setAttribute(ALTITUDE, altitude);
+        setAttribute(TRUE_NORTH_COURSE, trueNorthCourse);
+        setAttribute(VELOCITY_OVER_GROUND, velocityOverGround);
+        touch();
+    }
+
     @PostConstruct
     public void init() throws Exception {
-        logger.info("init NMEA GPS receiver at port "+portName);
+        logger.info("init NMEA GPS receiver at port "+ uri);
         try {
-            device = new NmeaDevice(portName);
+            device = new NmeaDevice(uri);
             listener = new Listener();
             new Thread(listener,"listener").start();
             logger.info("listener started");
         } catch(Exception e) {
             logger.error("error binding to NMEA device, no live data will be provided.");
         }
+
     }
 
     @PreDestroy
