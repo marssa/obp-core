@@ -15,7 +15,11 @@
 
     <http>
         <intercept-url pattern="/**" access="ROLE_USER" />
-        <form-login login-page="/login" default-target-url="/loginSucceeded" authentication-failure-url="/loginFailed" />
+        <form-login login-page="/login"
+                    default-target-url="/loginSucceeded"
+                    authentication-failure-url="/loginFailed"
+                    authentication-failure-handler-ref="authenticationFailed"
+                    authentication-success-handler-ref="authenticationSuccessful"/>
         <logout logout-url="/logout" />
     </http>
 

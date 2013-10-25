@@ -44,6 +44,10 @@ public class LogEntry {
         return timestamp;
     }
 
+    public Date getTimestampAsDate() {
+        return new Date(timestamp);
+    }
+
     public Level getLevel() {
         return level;
     }

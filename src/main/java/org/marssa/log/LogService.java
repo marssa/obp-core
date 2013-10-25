@@ -23,36 +23,29 @@ public class LogService {
     @Autowired
     private LogDao logDao;
 
-    @PostConstruct
-    @Transactional
-    public void init() {
-        //logSystemStart();
-    }
-
-    @PreDestroy
-    @Transactional
-    public void destroy() {
-        //logSystemStop();
-    }
-
     @Transactional
     public void logSystemStart() {
-        logDao.save(new LogEntry(LogEntry.Level.INFO,ORIGIN_SYSTEM,"system start"));
+        logDao.save(new LogEntry(LogEntry.Level.INFO,ORIGIN_SYSTEM,"system started"));
     }
 
     @Transactional
     public void logSystemStop() {
-        logDao.save(new LogEntry(LogEntry.Level.INFO,ORIGIN_SYSTEM,"system stop"));
+        logDao.save(new LogEntry(LogEntry.Level.INFO,ORIGIN_SYSTEM,"system stopped"));
     }
 
     @Transactional
-    public void logUserLoggerIn(String username) {
+    public void logUserLoggedIn(String username) {
         logDao.save(new LogEntry(LogEntry.Level.INFO,ORIGIN_SYSTEM,"user "+username+" logged in"));
     }
 
     @Transactional
-    public void logUserLogInFailed(String username) {
-        logDao.save(new LogEntry(LogEntry.Level.WARN,ORIGIN_SYSTEM,"failed log-in attempt of "+username));
+    public void logUserLoggedOut(String username) {
+        logDao.save(new LogEntry(LogEntry.Level.INFO,ORIGIN_SYSTEM,"user "+username+" logged out"));
+    }
+
+    @Transactional
+    public void logUserLogInFailed() {
+        logDao.save(new LogEntry(LogEntry.Level.WARN,ORIGIN_SYSTEM,"log-in attempt failed"));
     }
 
     @Transactional

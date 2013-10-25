@@ -29,15 +29,7 @@ public class LogController {
     @Autowired
     private LogService logService;
 
-    @ResponseBody
-    @RequestMapping("/api/log/today")
-    public List<LogDto> todaySystemEntries() {
-        DateTime now = DateTime.now(DateTimeZone.UTC);
-        List<LogEntry> entries = logService.selectEntries(
-                LogService.ORIGIN_SYSTEM,
-                now.withTime(0,0,0,0).getMillis(),
-                now.withTime(23,59,59,999).getMillis());
-
+    private List<LogDto> repack(List<LogEntry> entries) {
         List<LogDto> dtos = new ArrayList<>(entries.size());
         for(LogEntry logEntry : entries) {
             LogDto dto = new LogDto();
@@ -51,6 +43,18 @@ public class LogController {
         return dtos;
     }
 
+    @ResponseBody
+    @RequestMapping("/api/log/today")
+    public List<LogDto> todaySystemEntries() {
+        DateTime now = DateTime.now(DateTimeZone.UTC);
+        List<LogEntry> entries = logService.selectEntries(
+                LogService.ORIGIN_SYSTEM,
+                now.withTime(0,0,0,0).getMillis(),
+                now.withTime(23,59,59,999).getMillis());
+
+        return repack(entries);
+    }
+
     @RequestMapping("/todaySystemLog")
     public String todaySystemLog(ModelMap model) {
         DateTime now = DateTime.now(DateTimeZone.UTC);
@@ -60,7 +64,6 @@ public class LogController {
                 now.withTime(23,59,59,999).getMillis());
 
         model.addAttribute("logEntries", entries);
-
         return "todaySystemLog";
     }
 }
