@@ -1,4 +1,4 @@
-package org.marssa.data;
+package org.marssa.obp;
 
 /**
  * Created by Robert Jaremczak

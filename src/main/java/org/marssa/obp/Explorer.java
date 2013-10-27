@@ -1,4 +1,4 @@
-package org.marssa.data;
+package org.marssa.obp;
 
 import java.util.UUID;
 
@@ -8,10 +8,10 @@ import java.util.UUID;
  */
 public abstract class Explorer extends Identifiable {
 
-    protected Vicinity vicinity;
+    protected Realm realm;
 
-    public Explorer(UUID uuid, String name, String description, Vicinity vicinity) {
+    public Explorer(UUID uuid, String name, String description, Realm realm) {
         super(uuid, name, description);
-        this.vicinity = vicinity;
+        this.realm = realm;
     }
 }

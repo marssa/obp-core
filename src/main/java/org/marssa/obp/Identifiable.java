@@ -1,4 +1,4 @@
-package org.marssa.data;
+package org.marssa.obp;
 
 import java.util.UUID;
 
@@ -27,5 +27,10 @@ public class Identifiable {
 
     public String getDescription() {
         return description;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

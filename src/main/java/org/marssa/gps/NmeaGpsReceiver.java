@@ -1,8 +1,8 @@
 package org.marssa.gps;
 
 import org.apache.log4j.Logger;
-import org.marssa.data.Vicinity;
-import org.marssa.data.Instrument;
+import org.marssa.obp.Realm;
+import org.marssa.obp.Instrument;
 import org.marssa.nmea.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 
-import static org.marssa.data.AttributeNames.*;
+import static org.marssa.obp.AttributeNames.*;
 
 /**
  * Created by Robert Jaremczak
@@ -65,7 +65,7 @@ public class NmeaGpsReceiver extends Instrument implements GpsReceiver {
     private ParserGPGSA parserGPGSA;
 
     @Autowired
-    private Vicinity vicinity;
+    private Realm realm;
 
     @Autowired
     public NmeaGpsReceiver(
@@ -168,10 +168,11 @@ public class NmeaGpsReceiver extends Instrument implements GpsReceiver {
             listener = new Listener();
             new Thread(listener,"listener").start();
             logger.info("listener started");
+            status = Status.OPERATIONAL;
         } catch(Exception e) {
             logger.error("error binding to NMEA device, no live data will be provided.");
+            status = Status.MALFUNCTION;
         }
-
     }
 
     @PreDestroy
@@ -179,6 +180,7 @@ public class NmeaGpsReceiver extends Instrument implements GpsReceiver {
         if(listener!=null) {
             listener.stop();
         }
+        status = Status.OFF;
     }
 
     @Override

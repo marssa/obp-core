@@ -1,4 +1,4 @@
-package org.marssa.data;
+package org.marssa.obp;
 
 import org.marssa.utils.TimeUtils;
 
@@ -13,8 +13,14 @@ import java.util.concurrent.ConcurrentMap;
 public abstract class Instrument extends Identifiable {
     public static final String NO_VALUE = "0";
 
+    public static enum Status {
+        OFF, MALFUNCTION, UNRELIABLE, OPERATIONAL;
+    }
+
     private long updateTime;
     private ConcurrentMap<String, Object> attributesMap;
+
+    protected volatile Status status = Status.OFF;
 
     public Instrument(UUID uuid, String name, String description, Collection<String> availableAttributes) {
         super(uuid, name, description);
@@ -36,8 +42,20 @@ public abstract class Instrument extends Identifiable {
         return true;
     }
 
-    public Set<String> getAvailableAttributes() {
-        return Collections.unmodifiableSet(attributesMap.keySet());
+    public Status getStatus() {
+        return status;
+    }
+
+    public boolean isWorking() {
+        return status!=Status.OFF && status!=Status.MALFUNCTION;
+    }
+
+    public List<String> getAttributeNames() {
+        return new ArrayList(attributesMap.keySet());
+    }
+
+    public List<Map.Entry<String, Object>> getAttributeEntries() {
+        return new ArrayList(attributesMap.entrySet());
     }
 
     public String getString(String attribute) {

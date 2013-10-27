@@ -20,7 +20,7 @@ public class LoginController {
     private LogService logService;
 
     @RequestMapping("/login")
-    public String login(HttpServletRequest request) {
+    public String login() {
         return "login";
     }
 

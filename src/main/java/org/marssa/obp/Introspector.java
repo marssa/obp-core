@@ -1,5 +1,6 @@
-package org.marssa.data;
+package org.marssa.obp;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,21 +14,21 @@ import java.util.UUID;
 
 @Component
 public class Introspector extends Explorer {
+    private static Logger logger = Logger.getLogger(Introspector.class);
 
     @Autowired
     private Body localBody;
 
     @Autowired
-    public Introspector(Vicinity vicinity) {
-        super(UUID.randomUUID(), "introspector", "discovers local bodies", vicinity);
+    public Introspector(Realm realm) {
+        super(UUID.randomUUID(), "introspector", "discovers local bodies", realm);
     }
 
     @PostConstruct
     protected void init() {
-        vicinity.addBody(localBody);
+        logger.info("introspection started ...");
+        realm.addBody(localBody);
+        logger.info("introspection finished.");
     }
 
-    public Body getLocalBody() {
-        return localBody;
-    }
 }

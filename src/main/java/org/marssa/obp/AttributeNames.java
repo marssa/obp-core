@@ -1,4 +1,4 @@
-package org.marssa.data;
+package org.marssa.obp;
 
 /**
  * Created by Robert Jaremczak
@@ -14,6 +14,9 @@ public final class AttributeNames {
     LONGITUDE = "longitude",
     TRUE_NORTH_COURSE = "trueNorthCourse",
     VELOCITY_OVER_GROUND = "velocityOverGround",
-    ALTITUDE = "altitude";
-
+    ALTITUDE = "altitude",
+    TEMPERATURE = "temperature",
+    WIND_SPEED = "wind speed",
+    RELATIVE_HUMIDITY = "relative humidity",
+    ATMOSPHERIC_PRESSURE = "atmospheric pressure";
 }
