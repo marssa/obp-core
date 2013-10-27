@@ -7,3 +7,6 @@ Units used across the project are unified and base on primitive types whenever p
 - longitude : angle in degrees with fraction (W is negative angle)
 - azimuth : angle in degrees with fraction
 - velocity : meters per second
+- altitude : meters
+- air pressure : pascals
+- relative humidity : percents
