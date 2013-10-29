@@ -12,25 +12,35 @@ import java.util.concurrent.ConcurrentMap;
  */
 public abstract class Instrument extends Identifiable {
     public static final String NO_VALUE = "0";
+    public static final byte MIN_RELIABILITY = 0, MAX_RELIABILITY = 100;
 
     public static enum Status {
-        OFF, MALFUNCTION, UNRELIABLE, OPERATIONAL;
+        OFF, MALFUNCTION, OPERATIONAL;
     }
 
     private long updateTime;
     private ConcurrentMap<String, Object> attributesMap;
+    private volatile int reliability = MIN_RELIABILITY;
+    private volatile Status status = Status.OFF;
 
-    protected volatile Status status = Status.OFF;
-
-    public Instrument(UUID uuid, String name, String description, Collection<String> availableAttributes) {
+    public Instrument(UUID uuid, String name, String description, Collection<String> attributeNames) {
         super(uuid, name, description);
-
-        attributesMap = new ConcurrentHashMap<>(availableAttributes.size());
-        for(String attribute : availableAttributes) {
-            attributesMap.put(attribute, NO_VALUE);
+        List<String> allAttributeNames = buildAllAttributeNames(attributeNames);
+        attributesMap = new ConcurrentHashMap<>(allAttributeNames.size());
+        for(String attributeName : allAttributeNames) {
+            attributesMap.put(attributeName, NO_VALUE);
         }
 
-        touch();
+        updateTime = TimeUtils.currentUtc();
+    }
+
+    private List<String> buildAllAttributeNames(Collection<String> attributeNames) {
+        List<String> allAttributeNames = new ArrayList<>();
+        allAttributeNames.add(AttributeNames.UPDATE_TIME);
+        allAttributeNames.add(AttributeNames.DATA_STALE);
+        allAttributeNames.add(AttributeNames.RELIABILITY);
+        allAttributeNames.addAll(attributeNames);
+        return allAttributeNames;
     }
 
     public boolean providesAll(String... attributes) {
@@ -44,6 +54,10 @@ public abstract class Instrument extends Identifiable {
 
     public Status getStatus() {
         return status;
+    }
+
+    protected void setStatus(Status status) {
+        this.status = status;
     }
 
     public boolean isWorking() {
@@ -70,8 +84,16 @@ public abstract class Instrument extends Identifiable {
         attributesMap.replace(key, value);
     }
 
-    protected void touch() {
-        updateTime = TimeUtils.currentUtc();
+    public int getReliability() {
+        return reliability;
+    }
+
+    protected void updateStandardInstrumentData(int reliability) {
+        this.updateTime = TimeUtils.currentUtc();
+        this.reliability = reliability;
+        setAttribute(AttributeNames.UPDATE_TIME, updateTime);
+        setAttribute(AttributeNames.RELIABILITY, reliability);
+        setAttribute(AttributeNames.DATA_STALE, Boolean.FALSE.toString());
     }
 
     public long getUpdateTime() {

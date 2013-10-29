@@ -29,27 +29,20 @@ public class RandomDummyInstrument extends Instrument {
     public RandomDummyInstrument(String name, String description, Map<String, DoubleRange> attributes) {
         super(UUID.randomUUID(), name, description, attributes.keySet());
         this.attributes = attributes;
-        this.status = Status.OPERATIONAL;
+        setStatus(Status.OPERATIONAL);
     }
 
-    @Override
-    public String getString(String attribute) {
-        return Double.toString(getDouble(attribute));
-    }
-
-    @Override
-    public Double getDouble(String attribute) {
-        return attributes.get(attribute).getRandomValue();
+    private void update() {
+        updateStandardInstrumentData(100);
+        for(Map.Entry<String, DoubleRange> entry : attributes.entrySet()) {
+            setAttribute(entry.getKey(), entry.getValue().getRandomValue());
+        }
     }
 
     @Override
     public List<Map.Entry<String, Object>> getAttributeEntries() {
-        List<Map.Entry<String, Object>> entries = new ArrayList<>();
-        for(Map.Entry<String, DoubleRange> entry : attributes.entrySet()) {
-            entries.add(new AbstractMap.SimpleImmutableEntry<String,Object>(
-                    entry.getKey(),
-                    entry.getValue().getRandomValue()));
-        }
-        return entries;
+        // TODO: instead updating here add a timer-task simulating periodical readouts
+        update();
+        return super.getAttributeEntries();
     }
 }

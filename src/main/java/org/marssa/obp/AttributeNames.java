@@ -16,7 +16,10 @@ public final class AttributeNames {
     VELOCITY_OVER_GROUND = "velocityOverGround",
     ALTITUDE = "altitude",
     TEMPERATURE = "temperature",
-    WIND_SPEED = "wind speed",
-    RELATIVE_HUMIDITY = "relative humidity",
-    ATMOSPHERIC_PRESSURE = "atmospheric pressure";
+    WIND_SPEED = "windSpeed",
+    RELATIVE_HUMIDITY = "relativeHumidity",
+    ATMOSPHERIC_PRESSURE = "atmosphericPressure",
+    RELIABILITY = "reliability",
+    UPDATE_TIME = "lastUpdate",
+    DATA_STALE = "dataStale";
 }

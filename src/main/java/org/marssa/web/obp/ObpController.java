@@ -19,7 +19,7 @@ public class ObpController {
 
     @RequestMapping("/realm/details")
     public String realmDetails(ModelMap model) {
-        model.addAttribute("realm",realm);
+        model.addAttribute("realm", realm);
         return "realmDetails";
     }
 }

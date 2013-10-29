@@ -151,13 +151,18 @@ public class NmeaGpsReceiver extends Instrument implements GpsReceiver {
         }
     }
 
-    protected void updateInstrumentData() {
+    private int calculateReliability() {
+        return Math.min(numberOfSatellitesInView,5) * MAX_RELIABILITY / 5;
+    }
+
+    private void updateInstrumentData() {
+        updateStandardInstrumentData(calculateReliability());
+
         setAttribute(LATITUDE, latitude);
         setAttribute(LONGITUDE, longitude);
         setAttribute(ALTITUDE, altitude);
         setAttribute(TRUE_NORTH_COURSE, trueNorthCourse);
         setAttribute(VELOCITY_OVER_GROUND, velocityOverGround);
-        touch();
     }
 
     @PostConstruct
@@ -168,10 +173,10 @@ public class NmeaGpsReceiver extends Instrument implements GpsReceiver {
             listener = new Listener();
             new Thread(listener,"listener").start();
             logger.info("listener started");
-            status = Status.OPERATIONAL;
+            setStatus(Status.OPERATIONAL);
         } catch(Exception e) {
             logger.error("error binding to NMEA device, no live data will be provided.");
-            status = Status.MALFUNCTION;
+            setStatus(Status.MALFUNCTION);
         }
     }
 
@@ -180,7 +185,7 @@ public class NmeaGpsReceiver extends Instrument implements GpsReceiver {
         if(listener!=null) {
             listener.stop();
         }
-        status = Status.OFF;
+        setStatus(Status.OFF);
     }
 
     @Override

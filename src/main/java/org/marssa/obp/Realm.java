@@ -1,7 +1,6 @@
 package org.marssa.obp;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -38,7 +37,12 @@ public class Realm {
 
     public void addBody(Body body) {
         bodies.put(body.getUuid(), body);
-        logger.info("added body "+body);
+        logger.info("add body "+body);
+    }
+
+    public void removeBody(Body body) {
+        bodies.remove(body.getUuid());
+        logger.info("remove body " + body);
     }
 
 }

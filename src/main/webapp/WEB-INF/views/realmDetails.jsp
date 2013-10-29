@@ -11,12 +11,12 @@
 <head>
     <link rel="stylesheet" href="<c:url value="/styles/obp.css"/>"/>
     <script src="<c:url value="/scripts/jquery-2.0.3.min.js"/>"></script>
-    <meta http-equiv="refresh" content="5"/>
+    <meta http-equiv="refresh" content="3"/>
 </head>
 <body>
 <obp:header headline="Realm details" btnHome="true"/>
 <c:forEach items="${realm.bodies}" var="body">
-    <h3>${body.name} (local: ${body.local})</h3>
+    <h3>discovered body</h3>
     <table class='tabularData'>
         <tr>
             <td>name</td>
@@ -27,13 +27,19 @@
             <td>${body.uuid}</td>
         </tr>
         <tr>
+            <td>local instance</td>
+            <td>${body.local}</td>
+        </tr>
+        <tr>
             <td>description</td>
             <td>${body.description}</td>
         </tr>
         <c:forEach items="${body.instruments}" var="instrument">
             <tr>
-                <td colspan="2" style="text-align: left"><span style="color: white">${instrument.name}</span>
-                    <br>UUID: ${instrument.uuid}<br>${instrument.description}</td>
+                <td colspan="2" style="text-align: left">
+                    instrument: <span style="color: white">${instrument.name}</span>
+                    <br>UUID: ${instrument.uuid}<br>${instrument.description}
+                </td>
             </tr>
             <tr>
                 <td>status</td>
