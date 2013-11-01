@@ -11,7 +11,8 @@
 <%@ include file="/WEB-INF/fragments/head.jspf"%>
 <body>
 <obp:header headline="Open Bridge Platform"/>
-<div style="display: table; width: 25em">
+<div style="display: table; width: 20em">
+    <div class="button" onclick="location.href='<c:url value="/simple/view"/>'">simple view</div>
     <div class="button" onclick="location.href='<c:url value="/realm/details"/>'">local realm info</div>
     <div class="button" onclick="location.href='<c:url value="/simpleMapView"/>'">local position on map</div>
     <div class="button" onclick="location.href='<c:url value="/liveGpsData"/>'">local GPS receiver</div>
