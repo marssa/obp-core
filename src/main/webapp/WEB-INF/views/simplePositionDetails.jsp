@@ -9,9 +9,9 @@
 
 <html>
 <%@ include file="/WEB-INF/fragments/head.jspf"%>
-    <body style="text-align: center">
+    <body style="text-align: left">
     <div style="display: inline-block; width: 20em">
-        <div class="button" onclick="location.href='<c:url value="/simple/map"/>'">back</div>
+        <div class="button" onclick="location.href='<c:url value="/simple/map"/>'">map</div>
     </div>
         <table class="dataList">
             <tr>
@@ -78,7 +78,7 @@
             function ajaxd() {
                 $.ajax({
                     type: "GET",
-                    url: "<c:url value="/api/gps/all"/>",
+                    url: "<c:url value="/simple/gps/all"/>",
                     data: "user=success",
                     success: function(data){
                         $("#fixTime").fadeOut();

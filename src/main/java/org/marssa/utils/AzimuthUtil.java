@@ -1,5 +1,7 @@
 package org.marssa.utils;
 
+import java.text.DecimalFormat;
+
 /**
  * Created by Robert Jaremczak
  * Date: 2013-10-6
@@ -23,5 +25,13 @@ public final class AzimuthUtil {
             case "": return ddmm;
             default: throw new IllegalArgumentException("invalid direction code " + direction);
         }
+    }
+
+    public static final String toStringShort(double azimuth) {
+        return new DecimalFormat(AngleUtils.SHORT_ANGLE_FORMAT).format(azimuth)+" "+direction(azimuth);
+    }
+
+    private static String direction(double azimuth) {
+        return azimuth >= 0 ? AzimuthUtil.EAST_DIRECTION : AzimuthUtil.WEST_DIRECTION;
     }
 }

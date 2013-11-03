@@ -1,5 +1,7 @@
 package org.marssa.utils;
 
+import java.text.DecimalFormat;
+
 /**
  * Created by Robert Jaremczak
  * Date: 2013-10-6
@@ -22,5 +24,13 @@ public final class LatitudeUtils {
             case NORTH_DIRECTION: return AngleUtils.fromDDMM(ddmm);
             default: throw new IllegalArgumentException("invalid direction code " + direction);
         }
+    }
+
+    public static final String toStringShort(double latitude) {
+        return new DecimalFormat(AngleUtils.SHORT_ANGLE_FORMAT).format(latitude)+" "+direction(latitude);
+    }
+
+    private static String direction(double latitude) {
+        return latitude >= 0 ? NORTH_DIRECTION : SOUTH_DIRECTION;
     }
 }

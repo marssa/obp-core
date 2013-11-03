@@ -2,7 +2,7 @@ package org.marssa.web.obp;
 
 import org.marssa.gps.GpsReceiver;
 import org.marssa.obp.Realm;
-import org.marssa.utils.TimeUtils;
+import org.marssa.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -51,14 +51,19 @@ public class ObpController {
         return "simpleMap";
     }
 
+    private String currentGpsPosition() {
+        return LatitudeUtils.toStringShort(gpsReceiver.getLatitude())+" "+
+                LongitudeUtil.toStringShort(gpsReceiver.getLongitude());
+    }
+
     @ResponseBody
     @RequestMapping("/simple/viewDataFeed")
     public ViewDataFeed all() {
         ViewDataFeed dto = new ViewDataFeed();
         dto.latitude = gpsReceiver.getLatitude();
         dto.longitude = gpsReceiver.getLongitude();
-        dto.position = gpsReceiver.getLatitude()+" "+gpsReceiver.getLongitude();
-        dto.speed = Integer.toString((int)gpsReceiver.getVelocityOverGround());
+        dto.position = currentGpsPosition();
+        dto.speed = VelocityUtils.toStringKnots(gpsReceiver.getVelocityOverGround());
         dto.heading = Integer.toString((int)gpsReceiver.getTrueNorthCourse());
         return dto;
     }

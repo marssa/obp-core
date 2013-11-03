@@ -41,7 +41,7 @@
         }
 
         .propValue {
-            font-size: 15px;
+            font-size: 14px;
             font-weight: normal;
         }
     </style>
@@ -85,7 +85,7 @@
                 <span class="propValue">...</span>
             </div>
             <br>
-            <div class="obpButton" onclick="location.href='<c:url value="/login"/>'">
+            <div class="obpButton" onclick="location.href='<c:url value="/"/>'">
                 <span class="propButton">Home</span></br>
             </div>
         </td>
@@ -103,11 +103,9 @@
             url: "<c:url value="/simple/viewDataFeed"/>",
             data: "user=success",
             success: function(data){
-                $("#position,#heading,#speed").fadeOut("fast");
                 $("#position").text(data.position);
-                $("#heading").text(data.heading);
-                $("#speed").text(data.speed);
-                $("#position,#heading,#speed").fadeIn("fast");
+                $("#heading").text(data.heading+" °");
+                $("#speed").text(data.speed+" kts");
             }
         });
     }

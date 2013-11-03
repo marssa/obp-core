@@ -23,7 +23,7 @@
 
         .shortButton:hover {
             background-color: #6f9dba;
-            cursor: hand;
+            cursor: pointer;
         }
     </style>
     <script src="<c:url value="/scripts/jquery-2.0.3.min.js"/>"></script>
@@ -77,7 +77,7 @@
 </head>
 <body style="text-align: center">
 <div style="display: inline-block; width: 10em">
-    <div class="shortButton" onclick="location.href='<c:url value="/simple/view"/>'">back</div>
+    <div class="shortButton" onclick="location.href='<c:url value="/simple/view"/>'">values</div>
 </div>
 <div style="display: inline-block; width: 10em">
     <div class="shortButton" onclick="location.href='<c:url value="/simple/positionDetails"/>'">details</div>

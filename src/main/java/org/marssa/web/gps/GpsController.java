@@ -31,7 +31,7 @@ public class GpsController {
     }
 
     @ResponseBody
-    @RequestMapping("/api/gps/all")
+    @RequestMapping(value = {"/api/gps/all","/simple/gps/all"})
     public GpsAllDto all() {
         GpsAllDto dto = new GpsAllDto();
         dto.fixTime = TimeUtils.toUtcString(gpsReceiver.getFixTime());
