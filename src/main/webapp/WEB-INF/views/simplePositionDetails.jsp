@@ -10,7 +10,7 @@
 <html>
 <%@ include file="/WEB-INF/fragments/head.jspf"%>
     <body style="text-align: left">
-    <div style="display: inline-block; width: 20em">
+    <div style="display: inline-block; width: 80%">
         <div class="button" onclick="location.href='<c:url value="/simple/map"/>'">map</div>
     </div>
         <table class="dataList">

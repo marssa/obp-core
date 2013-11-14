@@ -175,7 +175,7 @@ public class NmeaGpsReceiver extends Instrument implements GpsReceiver {
             logger.info("listener started");
             setStatus(Status.OPERATIONAL);
         } catch(Exception e) {
-            logger.error("error binding to NMEA device, no live data will be provided.");
+            logger.error("error binding to NMEA device, no live data will be provided.",e);
             setStatus(Status.MALFUNCTION);
         }
     }
