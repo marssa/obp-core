@@ -1,6 +1,5 @@
 package org.marssa.nmea;
 
-import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.log4j.Logger;
 
 /**
@@ -13,7 +12,7 @@ public class GPGGA extends NmeaMessage {
     private static Logger logger = Logger.getLogger(GPGGA.class);
 
     public static enum FixQuality {
-        NA(""),INVALID("0"),GPSFIX("1"),DGPSFIX("2");
+        NA(""),INVALID("0"),GPSFIX("1"),DGPSFIX("2"),ESTIMATED("6");
 
         private String code;
 
