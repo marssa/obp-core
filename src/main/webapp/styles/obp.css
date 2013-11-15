@@ -107,6 +107,21 @@ body {
     color: white;
 }
 
+.shortButton {
+    padding: 10px 20px;
+    font-weight: normal;
+    font-size: 1em;
+    border: 2px solid white;
+    border-radius: 20px;
+    margin: 10px;
+    color: white;
+}
+
+.shortButton:hover {
+    background-color: #6f9dba;
+    cursor: pointer;
+}
+
 #map-canvas {
     height: 100%;
 }

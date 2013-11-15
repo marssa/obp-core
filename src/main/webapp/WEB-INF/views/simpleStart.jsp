@@ -12,14 +12,10 @@
     <script src="<c:url value="/scripts/jquery-2.0.3.min.js"/>"></script>
     <style>
         .obpButton {
-            display: table-cell;
             text-align: center;
             vertical-align: middle;
             background: #5f859f;
-            font-size: 100px;
-            height: 280px;
-            width: 280px;
-            border-radius: 30px;
+            position: absolute;
         }
 
         .obpButton:hover {
@@ -28,15 +24,52 @@
         }
     </style>
 </head>
+<script>
+    var widthUnit, heightUnit;
+    var docWidth, docHeight;
+
+    function initMetrics() {
+        docWidth = $(document).width();
+        docHeight = $(document).height();
+
+        if(docWidth > docHeight) {
+            heightUnit = docHeight / 10;
+            widthUnit = heightUnit;
+        } else {
+            widthUnit = docWidth / 10;
+            heightUnit = widthUnit;
+        }
+    }
+
+    function doLayout() {
+        initMetrics();
+
+        var btnWidth = widthUnit * 3;
+        var btnHeight = heightUnit * 3;
+
+        $("#centralButton")
+                .height(btnHeight)
+                .width(btnWidth)
+                .css("line-height", btnHeight+"px")
+                .css("border-radius", btnHeight/8)
+                .css("font-size", btnHeight/3)
+                .css("left",(docWidth - btnWidth)/2)
+                .css("top",(docHeight - btnHeight)/2);
+    }
+
+    $(function() {
+        doLayout();
+    })
+
+    $(window).resize(function() {
+        doLayout();
+    })
+
+</script>
 <body style="background: white; font-family: sans-serif; color: white">
-<table align="center" style="height: 100%; width: 280px; text-align: center">
-    <tr>
-        <td>
-            <div class="obpButton" onclick="location.href='<c:url value="/simple/view"/>'">
-                OBP
-            </div>
-        </td>
-    </tr>
+    <div id="centralButton" class="obpButton" onclick="location.href='<c:url value="/simple/view"/>'">
+        OBP
+    </div>
 </table>
 </body>
 </html>

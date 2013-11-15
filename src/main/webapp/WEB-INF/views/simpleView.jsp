@@ -47,7 +47,7 @@
     </style>
 </head>
 <body style="background: #5f859f; font-family: sans-serif; color: black">
-<table align="center" style="height: 100%; width: 280px; text-align: center">
+<table id="mainTable" align="center" style="height: 100%; width: 100%; text-align: center">
     <tr>
         <td>
             <div class="obpButton" onclick="location.href='<c:url value="/simple/map"/>'">
@@ -66,7 +66,7 @@
             </div>
             <br>
             <div class="obpButton" onclick="location.href='<c:url value="/simple/start"/>'">
-                <span class="propButton">Back</span></br>
+                <span class="propButton">OBP</span></br>
             </div>
         </td>
         <td>
@@ -86,16 +86,12 @@
             </div>
             <br>
             <div class="obpButton" onclick="location.href='<c:url value="/"/>'">
-                <span class="propButton">Home</span></br>
+                <span class="propButton">LogIn</span></br>
             </div>
         </td>
     </tr>
 </table>
 <script type="text/javascript">
-    $(document).ready(function() {
-        setInterval("ajaxd()",3000);
-        ajaxd();
-    });
 
     function ajaxd() {
         $.ajax({
@@ -113,6 +109,50 @@
     function avoidNaN(num) {
         return isNaN(num) ? "n/a" : String(num);
     }
+
+    var widthUnit, heightUnit;
+    var docWidth, docHeight;
+
+    function initMetrics() {
+        docWidth = $(document).width();
+        docHeight = $(document).height();
+
+        if(docWidth > docHeight) {
+            heightUnit = docHeight / 10;
+            widthUnit = heightUnit;
+        } else {
+            widthUnit = docWidth / 10;
+            heightUnit = widthUnit;
+        }
+    }
+
+    function doLayout() {
+        initMetrics();
+
+        var tabWidth = $("#mainTable").width();
+        var tabHeight = $("#mainTable").height();
+        var cellHeight = tabHeight/4 - 40;
+        var cellWidth = tabWidth/2 - 20;
+
+        $(".obpButton")
+                .width(cellWidth)
+                .height(cellHeight)
+                .css("border-radius", cellHeight/8);
+
+        $(".propLabel,.propButton").css("font-size", cellHeight/4);
+        $(".propValue").css("font-size", cellHeight/6);
+    }
+
+    $(window).resize(function() {
+        doLayout();
+    })
+
+    $(function() {
+        setInterval("ajaxd()",3000);
+        ajaxd();
+        doLayout();
+    })
+
 </script>
 </body>
 </html>

@@ -76,10 +76,10 @@
     </script>
 </head>
 <body style="text-align: center">
-<div style="display: inline-block; width: 10em">
-    <div class="shortButton" onclick="location.href='<c:url value="/simple/view"/>'">values</div>
+<div style="display: inline-block; width: 150px">
+    <div class="shortButton" onclick="location.href='<c:url value="/simple/view"/>'">back</div>
 </div>
-<div style="display: inline-block; width: 10em">
+<div style="display: inline-block; width: 150px">
     <div class="shortButton" onclick="location.href='<c:url value="/simple/positionDetails"/>'">details</div>
 </div>
 <div style="height: 87%" id="map-canvas"/>
