@@ -12,7 +12,14 @@ public class GPGGA extends NmeaMessage {
     private static Logger logger = Logger.getLogger(GPGGA.class);
 
     public static enum FixQuality {
-        NA(""),INVALID("0"),GPSFIX("1"),DGPSFIX("2"),ESTIMATED("6");
+        NA(""),
+        INVALID("0"),
+        GPSFIX("1"),
+        DGPSFIX("2"),
+        PPSFIX("3"),
+        RTK_INT("4"),
+        RTK_FLOAT("5"),
+        ESTIMATED("6");
 
         private String code;
 
