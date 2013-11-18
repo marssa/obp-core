@@ -1,53 +1,35 @@
 package org.marssa.obp;
 
-import org.apache.log4j.Logger;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-
 /**
  * Created by Robert Jaremczak
  * Date: 2013-10-24
  */
-public class Body extends Identifiable {
-    private static Logger logger = Logger.getLogger(Body.class);
+public class Body {
+    private String name;
+    private double latitude;
+    private double longitude;
 
-    private ConcurrentMap<UUID,Instrument> instruments = new ConcurrentHashMap<>();
-    private boolean local;
-
-    public Body(UUID uuid, String name, String description, boolean local) {
-        super(uuid, name, description);
-        this.local = local;
+    public Body(String name, double latitude, double longitude) {
+        this.name = name;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
-    public List<Instrument> getInstruments() {
-        return new ArrayList<>(instruments.values());
+    public Body(String name) {
+        this.name = name;
+        this.latitude = Double.NaN;
+        this.longitude = Double.NaN;
     }
 
-    public List<Instrument> findInstrumentsProviding(String... attributes) {
-        List<Instrument> matches = new ArrayList<>();
-        for(Instrument instrument : instruments.values()) {
-            if(instrument.providesAll(attributes)) {
-                matches.add(instrument);
-            }
-        }
-        return matches;
+    public String getName() {
+        return name;
     }
 
-    public void attachInstrument(Instrument instrument) {
-        logger.info("body "+this+": attach instrument "+instrument);
-        instruments.put(instrument.getUuid(), instrument);
+    public double getLatitude() {
+        return latitude;
     }
 
-    public void detachInstrument(UUID uuid) {
-        logger.info("body "+this+": deattach instrument "+instruments.get(uuid));
-        instruments.remove(uuid);
-    }
-
-    public boolean isLocal() {
-        return local;
+    public double getLongitude() {
+        return longitude;
     }
 }

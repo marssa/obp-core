@@ -5,6 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -13,22 +16,22 @@ import java.util.UUID;
  */
 
 @Component
-public class Introspector extends Explorer {
+public class Introspector extends BasicExplorer {
     private static Logger logger = Logger.getLogger(Introspector.class);
 
-    @Autowired
-    private Body localBody;
+    private List<Body> bodies;
 
-    @Autowired
-    public Introspector(Realm realm) {
-        super(UUID.randomUUID(), "introspector", "discovers local bodies", realm);
+    public Introspector() {
+        super(UUID.randomUUID(), "introspector", "discovers local bodies");
     }
 
     @PostConstruct
     protected void init() {
-        logger.info("introspection started ...");
-        realm.addBody(localBody);
-        logger.info("introspection finished.");
+        bodies = Collections.unmodifiableList(Arrays.asList(new Body("own")));
     }
 
+    @Override
+    public List<Body> scan() {
+        return bodies;
+    }
 }

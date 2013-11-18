@@ -1,17 +1,11 @@
 package org.marssa.obp;
 
-import java.util.UUID;
+import java.util.List;
 
 /**
  * Created by Robert Jaremczak
- * Date: 2013-10-24
+ * Date: 2013-11-18
  */
-public abstract class Explorer extends Identifiable {
-
-    protected Realm realm;
-
-    public Explorer(UUID uuid, String name, String description, Realm realm) {
-        super(uuid, name, description);
-        this.realm = realm;
-    }
+public interface Explorer extends Identified {
+    List<Body> scan();
 }

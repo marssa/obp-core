@@ -6,25 +6,28 @@ import java.util.UUID;
  * Created by Robert Jaremczak
  * Date: 2013-10-24
  */
-public class Identifiable {
+public class BasicIdentified implements Identified {
     private UUID uuid;
     private String name;
     private String description;
 
-    public Identifiable(UUID uuid, String name, String description) {
+    public BasicIdentified(UUID uuid, String name, String description) {
         this.uuid = uuid;
         this.name = name;
         this.description = description;
     }
 
+    @Override
     public UUID getUuid() {
         return uuid;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public String getDescription() {
         return description;
     }

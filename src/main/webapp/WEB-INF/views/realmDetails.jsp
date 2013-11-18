@@ -15,47 +15,18 @@
 </head>
 <body>
 <obp:header headline="Realm details" btnHome="true"/>
-<c:forEach items="${realm.bodies}" var="body">
-    <h3>discovered body</h3>
-    <table class='tabularData'>
+<h3>&nbsp;&nbsp;&nbsp;${realm.name}</h3>
+<table class='tabularData'>
+    <c:forEach items="${realm.allAttributeValues}" var="entry">
         <tr>
-            <td>name</td>
-            <td>${body.name}</td>
+            <td style="text-align: right">
+                <span style="color: white">${entry.key}</span>
+            </td>
+            <td style="text-align: left">
+                ${entry.value}
+            </td>
         </tr>
-        <tr>
-            <td>UUID</td>
-            <td>${body.uuid}</td>
-        </tr>
-        <tr>
-            <td>local instance</td>
-            <td>${body.local}</td>
-        </tr>
-        <tr>
-            <td>description</td>
-            <td>${body.description}</td>
-        </tr>
-        <c:forEach items="${body.instruments}" var="instrument">
-            <tr>
-                <td colspan="2" style="text-align: left">
-                    instrument: <span style="color: white">${instrument.name}</span>
-                    <br>UUID: ${instrument.uuid}<br>${instrument.description}
-                </td>
-            </tr>
-            <tr>
-                <td>status</td>
-                <td>${instrument.status}</td>
-            </tr>
-            <c:if test="${instrument.working}">
-                <c:forEach items="${instrument.attributeEntries}" var="entry">
-                    <tr>
-                        <td>${entry.key}</td>
-                        <td>${entry.value}</td>
-                    </tr>
-                </c:forEach>
-            </c:if>
-            </tr>
-        </c:forEach>
-    </table>
-</c:forEach>
+    </c:forEach>
+</table>
 </body>
 </html>

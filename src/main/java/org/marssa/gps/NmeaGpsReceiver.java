@@ -1,9 +1,9 @@
 package org.marssa.gps;
 
 import org.apache.log4j.Logger;
-import org.marssa.obp.Realm;
-import org.marssa.obp.Instrument;
 import org.marssa.nmea.*;
+import org.marssa.obp.BasicInstrument;
+import org.marssa.obp.LocalObpInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,7 @@ import static org.marssa.obp.AttributeNames.*;
  * Date: 2013-10-5
  */
 @Service
-public class NmeaGpsReceiver extends Instrument implements GpsReceiver {
+public class NmeaGpsReceiver extends BasicInstrument implements GpsReceiver {
     private static Logger logger = Logger.getLogger(NmeaGpsReceiver.class);
 
     private NmeaDevice device;
@@ -65,14 +65,12 @@ public class NmeaGpsReceiver extends Instrument implements GpsReceiver {
     private ParserGPGSA parserGPGSA;
 
     @Autowired
-    private Realm realm;
-
-    @Autowired
     public NmeaGpsReceiver(
+            @Value("${obp.local.uuid}") UUID parentUuid,
             @Value("${marssa.local.nmeaGpsReceiver.uuid}") UUID uuid,
             @Value("${marssa.local.nmeaGpsReceiver.name}") String name,
             @Value("${marssa.local.nmeaGpsReceiver.description}") String description) {
-        super(uuid, name, description, Arrays.asList(LATITUDE,LONGITUDE,ALTITUDE, VELOCITY_OVER_GROUND,TRUE_NORTH_COURSE));
+        super(parentUuid, uuid, name, description, Arrays.asList(LATITUDE,LONGITUDE,ALTITUDE, VELOCITY_OVER_GROUND,TRUE_NORTH_COURSE));
     }
 
     class Listener implements Runnable {
@@ -151,8 +149,16 @@ public class NmeaGpsReceiver extends Instrument implements GpsReceiver {
         }
     }
 
-    private int calculateReliability() {
-        return Math.min(numberOfSatellitesInView,5) * MAX_RELIABILITY / 5;
+    private Reliability calculateReliability() {
+        if(numberOfSatellitesInView<3) {
+            return Reliability.NONE;
+        } else if(numberOfSatellitesInView<4) {
+            return Reliability.MEDIUM;
+        } else if(numberOfSatellitesInView<5) {
+            return Reliability.GOOD;
+        } else {
+            return Reliability.HIGH;
+        }
     }
 
     private void updateInstrumentData() {
@@ -171,7 +177,7 @@ public class NmeaGpsReceiver extends Instrument implements GpsReceiver {
         try {
             device = new NmeaDevice(uri);
             listener = new Listener();
-            new Thread(listener,"listener").start();
+            new Thread(listener,"NMEA-GPS-listener").start();
             logger.info("listener started");
             setStatus(Status.OPERATIONAL);
         } catch(Exception e) {
@@ -257,6 +263,5 @@ public class NmeaGpsReceiver extends Instrument implements GpsReceiver {
     public long getFixTime() {
         return fixTime;
     }
-
 
 }

@@ -1,7 +1,8 @@
 package org.marssa.web.obp;
 
 import org.marssa.gps.GpsReceiver;
-import org.marssa.obp.Realm;
+import org.marssa.obp.LocalObpInstance;
+import org.marssa.obp.ObpInstance;
 import org.marssa.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,14 +19,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class ObpController {
 
     @Autowired
-    private Realm realm;
+    private LocalObpInstance obpInstance;
 
     @Autowired
     private GpsReceiver gpsReceiver;
 
     @RequestMapping("/realm/details")
     public String realmDetails(ModelMap model) {
-        model.addAttribute("realm", realm);
+        model.addAttribute("realm", obpInstance);
         return "realmDetails";
     }
 

@@ -1,4 +1,7 @@
-package org.marssa.obp;
+package org.marssa.obp.dummy;
+
+import org.marssa.obp.BasicInstrument;
+import org.marssa.obp.ObpInstance;
 
 import java.util.*;
 
@@ -6,13 +9,13 @@ import java.util.*;
  * Created by Robert Jaremczak
  * Date: 2013-10-27
  */
-public class RandomDummyInstrument extends Instrument {
+public class RandomDummyInstrument extends BasicInstrument {
 
     public static class DoubleRange {
         private double min;
         private double max;
 
-        static final DoubleRange create(double min, double max) {
+        public static final DoubleRange create(double min, double max) {
             DoubleRange attr = new DoubleRange();
             attr.min = min;
             attr.max = max;
@@ -26,14 +29,14 @@ public class RandomDummyInstrument extends Instrument {
 
     private Map<String, DoubleRange> attributes;
 
-    public RandomDummyInstrument(String name, String description, Map<String, DoubleRange> attributes) {
-        super(UUID.randomUUID(), name, description, attributes.keySet());
+    public RandomDummyInstrument(UUID parentUuid, String name, String description, Map<String, DoubleRange> attributes) {
+        super(parentUuid, UUID.randomUUID(), name, description, attributes.keySet());
         this.attributes = attributes;
         setStatus(Status.OPERATIONAL);
     }
 
     private void update() {
-        updateStandardInstrumentData(100);
+        updateStandardInstrumentData(Reliability.HIGH);
         for(Map.Entry<String, DoubleRange> entry : attributes.entrySet()) {
             setAttribute(entry.getKey(), entry.getValue().getRandomValue());
         }
