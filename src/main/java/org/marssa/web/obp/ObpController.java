@@ -2,7 +2,6 @@ package org.marssa.web.obp;
 
 import org.marssa.gps.GpsReceiver;
 import org.marssa.obp.LocalObpInstance;
-import org.marssa.obp.ObpInstance;
 import org.marssa.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,32 +23,32 @@ public class ObpController {
     @Autowired
     private GpsReceiver gpsReceiver;
 
-    @RequestMapping("/realm/details")
+    @RequestMapping("/simple/manifest")
     public String realmDetails(ModelMap model) {
         model.addAttribute("realm", obpInstance);
-        return "realmDetails";
+        return "simple/manifest";
     }
 
     @RequestMapping("/simple/start")
     public String simpleStart() {
-        return "simpleStart";
+        return "simple/start";
     }
 
     @RequestMapping("/simple/view")
     public String simpleSelection() {
-        return "simpleView";
+        return "simple/main";
     }
 
     @RequestMapping("/simple/positionDetails")
     public String simplePositionDetails() {
-        return "simplePositionDetails";
+        return "simple/positionDetails";
     }
 
     @RequestMapping("/simple/map")
     public String simpleMap(ModelMap model) {
         model.addAttribute("latitude", gpsReceiver.getLatitude());
         model.addAttribute("longitude", gpsReceiver.getLongitude());
-        return "simpleMap";
+        return "simple/map";
     }
 
     private String currentGpsPosition() {

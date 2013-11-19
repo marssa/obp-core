@@ -85,8 +85,8 @@
                 <span class="propValue">...</span>
             </div>
             <br>
-            <div class="obpButton" onclick="location.href='<c:url value="/"/>'">
-                <span class="propButton">LogIn</span></br>
+            <div class="obpButton" onclick="location.href='<c:url value="/simple/manifest"/>'">
+                <span class="propButton">Manifest</span></br>
             </div>
         </td>
     </tr>

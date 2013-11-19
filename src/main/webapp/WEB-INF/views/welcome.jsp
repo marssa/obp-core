@@ -13,8 +13,8 @@
 <obp:header headline="Open Bridge Platform"/>
 <div style="display: table; width: 20em">
     <div class="button" onclick="location.href='<c:url value="/simple/view"/>'">simple view</div>
-    <div class="button" onclick="location.href='<c:url value="/realm/details"/>'">local realm info</div>
-    <div class="button" onclick="location.href='<c:url value="/simpleMapView"/>'">local position on map</div>
+    <div class="button" onclick="location.href='<c:url value="/simple/manifest"/>'">local manifest</div>
+    <div class="button" onclick="location.href='<c:url value="/simple/map"/>'">local position on map</div>
     <div class="button" onclick="location.href='<c:url value="/liveGpsData"/>'">local GPS receiver</div>
     <div class="button" onclick="location.href='<c:url value="/todaySystemLog"/>'">today's system log</div>
     <div class="button" onclick="location.href='<c:url value="/logoff"/>'">logout</div>
