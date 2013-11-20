@@ -14,7 +14,7 @@
     <meta http-equiv="refresh" content="3"/>
 </head>
 <body>
-<obp:header headline="Manifest" btnHome="true"/>
+<obp:header headline="Manifest" btnHome="false"/>
 <h3>&nbsp;&nbsp;&nbsp;${realm.name}</h3>
 <table class='tabularData'>
     <c:forEach items="${realm.allAttributeValues}" var="entry">

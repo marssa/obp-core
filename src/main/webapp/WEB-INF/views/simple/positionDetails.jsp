@@ -30,10 +30,10 @@
     <script src="<c:url value="/scripts/jquery-2.0.3.min.js"/>"></script>
 </head>
 <body style="text-align: left">
-<div style="display: inline-block; width: 100%; text-align: center; font-size: 1em">
+<div id="backButton" style="display: inline-block; width: 300px; text-align: center; font-size: 1em">
     <div class="shortButton" onclick="location.href='<c:url value="/simple/map"/>'">back</div>
 </div>
-<table class="dataList" style="font-size: small">
+<table id="dataList" class="dataList" style="font-size: small">
     <tr>
         <td>Fix time:</td>
         <td><span id="fixTime">n/a</span> UTC</td>
@@ -99,7 +99,6 @@
     });
 
     function doLayout() {
-
     }
 
     function ajaxd() {

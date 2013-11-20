@@ -55,12 +55,12 @@
                 <span id="position" class="propValue">13E 23N</span>
             </div>
             <br>
-            <div class="obpButton" onclick="location.href='<c:url value="/simple/view"/>'">
+            <div class="obpButton">
                 <span class="propLabel">Depth</span></br>
                 <span class="propValue">n/a</span>
             </div>
             <br>
-            <div class="obpButton" onclick="location.href='<c:url value="/simple/view"/>'">
+            <div class="obpButton">
                 <span class="propLabel">Heading</span></br>
                 <span id="heading" class="propValue">13E 23N</span>
             </div>
@@ -70,17 +70,17 @@
             </div>
         </td>
         <td>
-            <div class="obpButton" onclick="location.href='<c:url value="/simple/view"/>'">
+            <div class="obpButton">
                 <span class="propLabel">Wind</span></br>
                 <span class="propValue">n/a</span>
             </div>
             <br>
-            <div class="obpButton" onclick="location.href='<c:url value="/simple/view"/>'">
+            <div class="obpButton">
                 <span class="propLabel">Speed</span></br>
                 <span  id="speed" class="propValue">13E 23N</span>
             </div>
             <br>
-            <div class="obpButton" onclick="location.href='<c:url value="/simple/view"/>'">
+            <div class="obpButton">
                 <span class="propLabel">Aux</span></br>
                 <span class="propValue">...</span>
             </div>

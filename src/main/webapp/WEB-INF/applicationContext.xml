@@ -11,7 +11,7 @@
     <context:property-placeholder location="classpath:local.properties, classpath:obp.properties"/>
     <import resource="obp-security.xml"/>
 
-    <context:component-scan base-package="org.marssa">
+    <context:component-scan base-package="org.obp">
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
 
@@ -28,7 +28,7 @@
 
     <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean" depends-on="flyway">
         <property name="dataSource" ref="dataSource"/>
-        <property name="packagesToScan" value="org.marssa"/>
+        <property name="packagesToScan" value="org.obp"/>
         <property name="hibernateProperties">
             <props>
                 <prop key="hibernate.dialect">org.hibernate.dialect.H2Dialect</prop>
