@@ -29,14 +29,15 @@ For seamless serial communication set of wrapper classes has been implemented.
 This gives the consumer code consistent API for retrieving NMEA lines with checksum control.
 
 Units used across the project are unified and base on primitive types whenever possible.
-If not stated otherwise all respective values are expressed in following units:
+If not stated otherwise all respective values are expressed in following units [symbol]:
 - latitude : angle in degrees with fraction (S is negative angle)
 - longitude : angle in degrees with fraction (W is negative angle)
-- azimuth : angle in degrees with fraction
-- velocity : meters per second
-- altitude : meters
-- air pressure : pascals
-- relative humidity : percents
+- azimuth : angle in degrees with fraction [°]
+- velocity : meters per second [m/s]
+- altitude : meters [m]
+- air pressure : pascals [Pa]
+- relative humidity : percents [%]
+- temperature : celsius [°C]
 
 Set of web-services available according to OBP specification (under construction) can be selectively
 protected by authentication mechanisms configured flexibly (through Spring Security)

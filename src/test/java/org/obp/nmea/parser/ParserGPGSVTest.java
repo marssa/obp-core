@@ -1,7 +1,10 @@
-package org.obp.nmea;
+package org.obp.nmea.parser;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.obp.nmea.NmeaBufferedReader;
+import org.obp.nmea.NmeaLine;
+import org.obp.nmea.message.GPGSV;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -20,8 +23,8 @@ public class ParserGPGSVTest {
         NmeaBufferedReader reader = new NmeaBufferedReader(is);
         NmeaLine line = reader.fetchLine();
         Assert.assertNotNull(line);
-        Assert.assertTrue(parser.matchesLine(line));
-        GPGSV msg = parser.parseLine(line.scanner());
+        Assert.assertTrue(parser.recognizes(line));
+        GPGSV msg = parser.parse(line.scanner());
         Assert.assertEquals(1, msg.getSentenceNumber());
         Assert.assertEquals(3, msg.getTotalSentences());
         Assert.assertEquals(12, msg.getTotalSatellitesInView());

@@ -102,6 +102,12 @@ public abstract class BasicInstrument extends BasicIdentified implements Instrum
         attributesMap.replace(key, value);
     }
 
+    protected void setAttributes(Map<String, Object> attributes) {
+        for(Map.Entry<String, Object> entry : attributes.entrySet()) {
+            attributesMap.replace(entry.getKey(), entry.getValue());
+        }
+    }
+
     @Override
     public Reliability getReliability() {
         return reliability;

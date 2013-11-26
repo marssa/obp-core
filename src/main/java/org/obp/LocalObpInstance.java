@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 import org.obp.dummy.DummyRandomInstrument;
 import org.obp.gps.NmeaGpsReceiver;
 import org.obp.dummy.DummyRadar;
+import org.obp.weather.LcjCv3f;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,9 @@ public class LocalObpInstance extends BasicIdentified implements ObpInstance {
     private NmeaGpsReceiver nmeaGpsReceiver;
 
     @Autowired
+    private LcjCv3f nmeaWindVane;
+
+    @Autowired
     private DummyRadar dummyRadar;
 
     @Autowired
@@ -42,6 +46,7 @@ public class LocalObpInstance extends BasicIdentified implements ObpInstance {
     @PostConstruct
     public void init() {
         attachInstrument(nmeaGpsReceiver);
+        attachInstrument(nmeaWindVane);
         attachInstrument(dummyOutdoorWeatherStation());
         attachInstrument(dummyIndoorWeatherStation());
 
@@ -50,15 +55,15 @@ public class LocalObpInstance extends BasicIdentified implements ObpInstance {
 
     private Instrument dummyOutdoorWeatherStation() {
         Map<String, DummyRandomInstrument.DoubleRange> attributes = new HashMap<>();
-        attributes.put(AttributeNames.TEMPERATURE, DummyRandomInstrument.DoubleRange.create(-10.0, 30.4));
-        attributes.put(AttributeNames.ATMOSPHERIC_PRESSURE, DummyRandomInstrument.DoubleRange.create(99800.0, 10200.0));
+        attributes.put(AttributeNames.AIR_TEMPERATURE, DummyRandomInstrument.DoubleRange.create(-10.0, 30.4));
+        attributes.put(AttributeNames.AIR_PRESSURE, DummyRandomInstrument.DoubleRange.create(99800.0, 10200.0));
         attributes.put(AttributeNames.WIND_SPEED, DummyRandomInstrument.DoubleRange.create(0.0, 30.0));
         return new DummyRandomInstrument(getUuid(), "Hurricane H102","dummy outdoor weather station",attributes);
     }
 
     private Instrument dummyIndoorWeatherStation() {
         Map<String, DummyRandomInstrument.DoubleRange> attributes = new HashMap<>();
-        attributes.put(AttributeNames.TEMPERATURE, DummyRandomInstrument.DoubleRange.create(18.0, 25.0));
+        attributes.put(AttributeNames.AIR_TEMPERATURE, DummyRandomInstrument.DoubleRange.create(18.0, 25.0));
         attributes.put(AttributeNames.RELATIVE_HUMIDITY, DummyRandomInstrument.DoubleRange.create(50.0, 100.0));
         return new DummyRandomInstrument(getUuid(), "Typhoon T1000","dummy indoor weather station",attributes);
     }

@@ -1,9 +1,12 @@
-package org.obp.nmea;
+package org.obp.nmea.parser;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.Assert;
 import org.junit.Test;
+import org.obp.nmea.NmeaBufferedReader;
+import org.obp.nmea.NmeaLine;
+import org.obp.nmea.message.GPGGA;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -22,8 +25,8 @@ public class ParserGPGGATest {
         NmeaBufferedReader reader = new NmeaBufferedReader(is);
         NmeaLine line = reader.fetchLine();
         Assert.assertNotNull(line);
-        Assert.assertTrue(parser.matchesLine(line));
-        GPGGA gpgga = parser.parseLine(line.scanner());
+        Assert.assertTrue(parser.recognizes(line));
+        GPGGA gpgga = parser.parse(line.scanner());
         Assert.assertEquals(new DateTime(DateTimeZone.UTC).withTime(8, 44, 21, 963).getMillis(), gpgga.getFixTime());
         Assert.assertEquals(GPGGA.FixQuality.INVALID, gpgga.getFixQuality());
         Assert.assertEquals(3, gpgga.getNumberOfSatellitesInView());

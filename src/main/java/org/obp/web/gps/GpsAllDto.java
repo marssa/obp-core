@@ -1,8 +1,8 @@
 package org.obp.web.gps;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import org.obp.nmea.GPGGA;
-import org.obp.nmea.GPGSA;
+import org.obp.nmea.message.GPGGA;
+import org.obp.nmea.message.GPGSA;
 
 import java.util.ArrayList;
 import java.util.List;

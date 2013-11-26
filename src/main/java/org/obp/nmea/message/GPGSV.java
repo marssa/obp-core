@@ -1,4 +1,6 @@
-package org.obp.nmea;
+package org.obp.nmea.message;
+
+import org.obp.nmea.NmeaMessage;
 
 /**
  * Created by Robert Jaremczak

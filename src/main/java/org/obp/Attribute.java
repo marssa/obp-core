@@ -8,20 +8,6 @@ import java.util.UUID;
  */
 public class Attribute {
 
-    public static final String
-            LATITUDE = "latitude",
-            LONGITUDE = "longitude",
-            TRUE_NORTH_COURSE = "trueNorthCourse",
-            VELOCITY_OVER_GROUND = "velocityOverGround",
-            ALTITUDE = "altitude",
-            TEMPERATURE = "temperature",
-            WIND_SPEED = "windSpeed",
-            RELATIVE_HUMIDITY = "relativeHumidity",
-            ATMOSPHERIC_PRESSURE = "atmosphericPressure",
-            RELIABILITY = "reliability",
-            UPDATE_TIME = "lastUpdate",
-            DATA_STALE = "dataStale";
-
     private UUID instrument;
     private Instrument.Reliability reliability;
     private String name;

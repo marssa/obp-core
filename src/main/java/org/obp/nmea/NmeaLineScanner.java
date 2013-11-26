@@ -18,6 +18,11 @@ public class NmeaLineScanner implements Iterator<String> {
         pointer = 0;
     }
 
+    public NmeaLineScanner skip() {
+        this.pointer++;
+        return this;
+    }
+
     public NmeaLineScanner skip(int tokens) {
         this.pointer += tokens;
         return this;

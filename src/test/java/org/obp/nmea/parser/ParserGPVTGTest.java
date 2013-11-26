@@ -1,7 +1,10 @@
-package org.obp.nmea;
+package org.obp.nmea.parser;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.obp.nmea.NmeaBufferedReader;
+import org.obp.nmea.NmeaLine;
+import org.obp.nmea.message.GPVTG;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -20,8 +23,8 @@ public class ParserGPVTGTest {
         NmeaBufferedReader reader = new NmeaBufferedReader(is);
         NmeaLine line = reader.fetchLine();
         Assert.assertNotNull(line);
-        Assert.assertTrue(parser.matchesLine(line));
-        GPVTG msg = parser.parseLine(line.scanner());
+        Assert.assertTrue(parser.recognizes(line));
+        GPVTG msg = parser.parse(line.scanner());
         Assert.assertEquals(336.45, msg.getTrueNorthCourse(), 0.00001);
         Assert.assertEquals(1.0, msg.getVelocityOverGround(), 0.00001);
     }

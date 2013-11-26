@@ -1,7 +1,7 @@
 package org.obp.gps;
 
-import org.obp.nmea.GPGGA;
-import org.obp.nmea.GPGSA;
+import org.obp.nmea.message.GPGGA;
+import org.obp.nmea.message.GPGSA;
 
 import java.util.List;
 

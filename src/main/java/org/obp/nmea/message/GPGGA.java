@@ -1,6 +1,7 @@
-package org.obp.nmea;
+package org.obp.nmea.message;
 
 import org.apache.log4j.Logger;
+import org.obp.nmea.NmeaMessage;
 
 /**
  * Created by Robert Jaremczak

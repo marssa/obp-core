@@ -1,6 +1,6 @@
 package org.obp.gps;
 
-import org.obp.nmea.GPGSV;
+import org.obp.nmea.message.GPGSV;
 
 import java.util.ArrayList;
 import java.util.HashMap;

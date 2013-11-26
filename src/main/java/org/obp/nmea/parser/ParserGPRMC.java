@@ -1,5 +1,9 @@
-package org.obp.nmea;
+package org.obp.nmea.parser;
 
+import org.obp.nmea.NmeaLine;
+import org.obp.nmea.NmeaLineParser;
+import org.obp.nmea.NmeaLineScanner;
+import org.obp.nmea.message.GPRMC;
 import org.springframework.stereotype.Service;
 
 /**
@@ -10,7 +14,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class ParserGPRMC implements NmeaLineParser {
     @Override
-    public boolean matchesLine(NmeaLine line) {
+    public boolean recognizes(NmeaLine line) {
         return line.getName().equals(GPRMC.SIGNATURE) && line.getDataSize() >= 9;
     }
 
@@ -19,7 +23,7 @@ public class ParserGPRMC implements NmeaLineParser {
     }
 
     @Override
-    public GPRMC parseLine(NmeaLineScanner scanner) {
+    public GPRMC parse(NmeaLineScanner scanner) {
         return new GPRMC(
                 scanner.next(),
                 detectWarningFlag(scanner.next()),

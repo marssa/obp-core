@@ -1,5 +1,9 @@
-package org.obp.nmea;
+package org.obp.nmea.parser;
 
+import org.obp.nmea.NmeaLine;
+import org.obp.nmea.NmeaLineParser;
+import org.obp.nmea.NmeaLineScanner;
+import org.obp.nmea.message.GPGSV;
 import org.springframework.stereotype.Service;
 
 /**
@@ -10,7 +14,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class ParserGPGSV implements NmeaLineParser<GPGSV> {
     @Override
-    public boolean matchesLine(NmeaLine line) {
+    public boolean recognizes(NmeaLine line) {
         return line.getName().equals(GPGSV.SIGNATURE) && line.getDataSize() >= 7;
     }
 
@@ -28,7 +32,7 @@ public class ParserGPGSV implements NmeaLineParser<GPGSV> {
     }
 
     @Override
-    public GPGSV parseLine(NmeaLineScanner scanner) {
+    public GPGSV parse(NmeaLineScanner scanner) {
         return new GPGSV(
                 scanner.nextByte(),
                 scanner.nextByte(),

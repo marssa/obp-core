@@ -1,5 +1,9 @@
-package org.obp.nmea;
+package org.obp.nmea.parser;
 
+import org.obp.nmea.NmeaLine;
+import org.obp.nmea.NmeaLineParser;
+import org.obp.nmea.NmeaLineScanner;
+import org.obp.nmea.message.GPGSA;
 import org.springframework.stereotype.Service;
 
 /**
@@ -11,7 +15,7 @@ import org.springframework.stereotype.Service;
 public class ParserGPGSA implements NmeaLineParser<GPGSA> {
 
     @Override
-    public boolean matchesLine(NmeaLine line) {
+    public boolean recognizes(NmeaLine line) {
         return line.getName().equals(GPGSA.SIGNATURE) && line.getDataSize() >= 17;
     }
 
@@ -24,7 +28,7 @@ public class ParserGPGSA implements NmeaLineParser<GPGSA> {
     }
 
     @Override
-    public GPGSA parseLine(NmeaLineScanner scanner) {
+    public GPGSA parse(NmeaLineScanner scanner) {
         return new GPGSA(
                 GPGSA.FixMode.fromString(scanner.next()),
                 GPGSA.FixType.fromString(scanner.next()),

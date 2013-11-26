@@ -1,7 +1,8 @@
-package org.obp.nmea;
+package org.obp.nmea.message;
 
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.obp.nmea.NmeaMessage;
 
 /**
  * Created by Robert Jaremczak

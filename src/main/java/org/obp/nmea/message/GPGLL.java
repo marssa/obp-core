@@ -1,4 +1,6 @@
-package org.obp.nmea;
+package org.obp.nmea.message;
+
+import org.obp.nmea.NmeaMessage;
 
 /**
  * Created by Robert Jaremczak
@@ -12,7 +14,7 @@ public class GPGLL extends NmeaMessage {
     private double latitude;
     private double longitude;
 
-    protected GPGLL(double latitude, double longitude, long fixTime) {
+    public GPGLL(double latitude, double longitude, long fixTime) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.fixTime = fixTime;

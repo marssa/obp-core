@@ -6,6 +6,7 @@ package org.obp.utils;
  */
 public final class AngleUtils {
 
+    public static final String UNIT = "°";
     public static final String SHORT_ANGLE_FORMAT = "0.00";
 
     private AngleUtils() {

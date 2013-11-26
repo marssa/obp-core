@@ -15,10 +15,11 @@ public final class AttributeNames {
     TRUE_NORTH_COURSE = "trueNorthCourse",
     VELOCITY_OVER_GROUND = "velocityOverGround",
     ALTITUDE = "altitude",
-    TEMPERATURE = "temperature",
+    AIR_TEMPERATURE = "airTemperature",
+    AIR_PRESSURE = "airPressure",
     WIND_SPEED = "windSpeed",
+    WIND_TEMPERATURE = "windTemperature",
     RELATIVE_HUMIDITY = "relativeHumidity",
-    ATMOSPHERIC_PRESSURE = "atmosphericPressure",
     RELIABILITY = "reliability",
     UPDATE_TIME = "lastUpdate",
     DATA_STALE = "dataStale";

@@ -1,7 +1,10 @@
-package org.obp.nmea;
+package org.obp.nmea.parser;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.obp.nmea.NmeaBufferedReader;
+import org.obp.nmea.NmeaLine;
+import org.obp.nmea.message.GPGSA;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -20,8 +23,8 @@ public class ParserGPGSATest {
         NmeaBufferedReader reader = new NmeaBufferedReader(is);
         NmeaLine line = reader.fetchLine();
         Assert.assertNotNull(line);
-        Assert.assertTrue(parser.matchesLine(line));
-        GPGSA gpgsa = parser.parseLine(line.scanner());
+        Assert.assertTrue(parser.recognizes(line));
+        GPGSA gpgsa = parser.parse(line.scanner());
         Assert.assertEquals(GPGSA.FixMode.AUTO, gpgsa.getFixMode());
         Assert.assertEquals(GPGSA.FixType.FIX3D, gpgsa.getFixType());
 
