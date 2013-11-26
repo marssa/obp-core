@@ -1,10 +1,12 @@
 package org.obp.nmea.parser;
 
+import org.obp.AttributeMap;
+import org.obp.nmea.NmeaAttributeParser;
 import org.obp.nmea.NmeaLine;
-import org.obp.nmea.NmeaLineParser;
 import org.obp.nmea.NmeaLineScanner;
-import org.obp.nmea.message.GPGSA;
 import org.springframework.stereotype.Service;
+
+import static org.obp.AttributeNames.*;
 
 /**
  * Created by Robert Jaremczak
@@ -12,29 +14,32 @@ import org.springframework.stereotype.Service;
  */
 
 @Service
-public class ParserGPGSA implements NmeaLineParser<GPGSA> {
+public class ParserGPGSA implements NmeaAttributeParser {
 
     @Override
     public boolean recognizes(NmeaLine line) {
-        return line.getName().equals(GPGSA.SIGNATURE) && line.getDataSize() >= 17;
+        return line.getName().equals("GPGSA") && line.getDataSize() >= 17;
     }
 
-    private byte[] parseSatelliteChannels(NmeaLineScanner sc) {
-        byte[] channels = new byte[12];
-        for(int i=0; i<channels.length; i++) {
-            channels[i] = sc.nextByte();
+    private byte parseSatellitesUsed(NmeaLineScanner sc) {
+        byte num = 0;
+        for(int i=0; i<12; i++) {
+            if(sc.nextByte()>0) {
+                num++;
+            }
         }
-        return channels;
+        return num;
     }
 
     @Override
-    public GPGSA parse(NmeaLineScanner scanner) {
-        return new GPGSA(
-                GPGSA.FixMode.fromString(scanner.next()),
-                GPGSA.FixType.fromString(scanner.next()),
-                parseSatelliteChannels(scanner),
-                scanner.nextDouble(),
-                scanner.nextDouble(),
-                scanner.nextDouble());
+    public AttributeMap parse(NmeaLineScanner scanner) {
+        AttributeMap am = new AttributeMap();
+        am.put(GPS_FIX_MODE, GpsFixMode.fromString(scanner.next()));
+        am.put(GPS_FIX_TYPE, GpsFixType.fromString(scanner.next()));
+        am.put(GPS_EFFECTIVE_SATELLITES, parseSatellitesUsed(scanner));
+        am.put(PDOP, scanner.nextDouble());
+        am.put(HDOP, scanner.nextDouble());
+        am.put(VDOP, scanner.nextDouble());
+        return am;
     }
 }

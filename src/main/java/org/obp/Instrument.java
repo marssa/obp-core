@@ -11,10 +11,6 @@ import java.util.UUID;
 public interface Instrument extends Identified {
     public static final String NO_VALUE = "0";
 
-    public static enum Reliability {
-        NONE, POOR, MEDIUM, GOOD, HIGH;
-    }
-
     public static enum Status {
         OFF, MALFUNCTION, OPERATIONAL;
     }

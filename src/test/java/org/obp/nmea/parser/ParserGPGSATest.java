@@ -2,13 +2,15 @@ package org.obp.nmea.parser;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.obp.AttributeMap;
 import org.obp.nmea.NmeaBufferedReader;
 import org.obp.nmea.NmeaLine;
-import org.obp.nmea.message.GPGSA;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+
+import static org.obp.AttributeNames.*;
 
 /**
  * Created by Robert Jaremczak
@@ -24,15 +26,12 @@ public class ParserGPGSATest {
         NmeaLine line = reader.fetchLine();
         Assert.assertNotNull(line);
         Assert.assertTrue(parser.recognizes(line));
-        GPGSA gpgsa = parser.parse(line.scanner());
-        Assert.assertEquals(GPGSA.FixMode.AUTO, gpgsa.getFixMode());
-        Assert.assertEquals(GPGSA.FixType.FIX3D, gpgsa.getFixType());
-
-        byte[] channels = {11,20,1,17,14,32,19,31,0,0,0,0};
-        Assert.assertArrayEquals(channels,gpgsa.getSatellitesUsed());
-
-        Assert.assertEquals(1.7, gpgsa.getPdop(),0.0001);
-        Assert.assertEquals(1.0, gpgsa.getHdop(),0.0001);
-        Assert.assertEquals(1.3, gpgsa.getVdop(),0.0001);
+        AttributeMap am = parser.parse(line.scanner());
+        Assert.assertEquals(GpsFixMode.AUTO, am.get(GPS_FIX_MODE));
+        Assert.assertEquals(GpsFixType.FIX3D, am.get(GPS_FIX_TYPE));
+        Assert.assertEquals(8, am.getByte(GPS_EFFECTIVE_SATELLITES));
+        Assert.assertEquals(1.7, am.getDouble(PDOP),0.0001);
+        Assert.assertEquals(1.0, am.getDouble(HDOP),0.0001);
+        Assert.assertEquals(1.3, am.getDouble(VDOP),0.0001);
     }
 }

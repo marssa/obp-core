@@ -1,13 +1,16 @@
 package org.obp.web;
 
-import org.obp.gps.GpsReceiver;
 import org.obp.LocalObpInstance;
-import org.obp.utils.*;
+import org.obp.gps.NmeaGpsReceiver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.Map;
+
+import static org.obp.AttributeNames.*;
 
 /**
  * Created by Robert Jaremczak
@@ -21,7 +24,7 @@ public class ObpController {
     private LocalObpInstance obpInstance;
 
     @Autowired
-    private GpsReceiver gpsReceiver;
+    private NmeaGpsReceiver gpsReceiver;
 
     @RequestMapping("/simple/manifest")
     public String realmDetails(ModelMap model) {
@@ -46,25 +49,13 @@ public class ObpController {
 
     @RequestMapping("/simple/map")
     public String simpleMap(ModelMap model) {
-        model.addAttribute("latitude", gpsReceiver.getLatitude());
-        model.addAttribute("longitude", gpsReceiver.getLongitude());
+        model.addAllAttributes(gpsReceiver.getAttributes(LATITUDE, LONGITUDE));
         return "simple/map";
-    }
-
-    private String currentGpsPosition() {
-        return LatitudeUtils.toStringShort(gpsReceiver.getLatitude())+" "+
-                LongitudeUtil.toStringShort(gpsReceiver.getLongitude());
     }
 
     @ResponseBody
     @RequestMapping("/simple/viewDataFeed")
-    public ViewDataFeed all() {
-        ViewDataFeed dto = new ViewDataFeed();
-        dto.latitude = gpsReceiver.getLatitude();
-        dto.longitude = gpsReceiver.getLongitude();
-        dto.position = currentGpsPosition();
-        dto.speed = VelocityUtils.toStringKnots(gpsReceiver.getVelocityOverGround());
-        dto.heading = Integer.toString((int)gpsReceiver.getTrueNorthCourse());
-        return dto;
+    public Map<String, Object> all() {
+        return gpsReceiver.getAttributes(LATITUDE,LONGITUDE,VELOCITY_OVER_GROUND,TRUE_NORTH_COURSE);
     }
 }

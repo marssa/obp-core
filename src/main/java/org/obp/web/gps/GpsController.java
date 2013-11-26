@@ -1,7 +1,7 @@
 package org.obp.web.gps;
 
-import org.obp.gps.GpsReceiver;
 import org.obp.gps.GpsSatellite;
+import org.obp.gps.NmeaGpsReceiver;
 import org.obp.utils.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import static org.obp.AttributeNames.*;
 
 /**
  * Created by Robert Jaremczak
@@ -19,49 +22,18 @@ import java.util.List;
 public class GpsController {
 
     @Autowired
-    private GpsReceiver gpsReceiver;
+    private NmeaGpsReceiver gpsReceiver;
 
     @ResponseBody
     @RequestMapping("/api/gps/position")
-    public GpsCoordinatesDto position() {
-        GpsCoordinatesDto dto = new GpsCoordinatesDto();
-        dto.latitude = gpsReceiver.getLatitude();
-        dto.longitude = gpsReceiver.getLongitude();
-        return dto;
+    public Map<String,Object> position() {
+        return gpsReceiver.getAttributes(LATITUDE, LONGITUDE);
     }
 
     @ResponseBody
     @RequestMapping(value = {"/api/gps/all","/simple/gps/all"})
-    public GpsAllDto all() {
-        GpsAllDto dto = new GpsAllDto();
-        dto.fixTime = TimeUtils.toUtcString(gpsReceiver.getFixTime());
-        dto.latitude = gpsReceiver.getLatitude();
-        dto.longitude = gpsReceiver.getLongitude();
-        dto.trueNorthCourse = gpsReceiver.getTrueNorthCourse();
-        dto.velocityOverGround = gpsReceiver.getVelocityOverGround();
-        dto.satellitesInView = repack(gpsReceiver.getSatellitesInView());
-        dto.numSatellitesInView = gpsReceiver.getNumberOfSatellitesInView();
-        dto.fixQuality = gpsReceiver.getFixQuality();
-        dto.fixMode = gpsReceiver.getFixMode();
-        dto.fixType = gpsReceiver.getFixType();
-        dto.altitude = gpsReceiver.getAltitude();
-        dto.pdop = gpsReceiver.getPDop();
-        dto.hdop = gpsReceiver.getHDop();
-        dto.vdop = gpsReceiver.getVDop();
-        return dto;
-    }
-
-    private List<GpsSatelliteDto> repack(List<GpsSatellite> satellitesInView) {
-        List<GpsSatelliteDto> list = new ArrayList<>();
-        for(GpsSatellite sat : satellitesInView) {
-            GpsSatelliteDto dto = new GpsSatelliteDto();
-            dto.id = sat.getId();
-            dto.elevation = sat.getElevation();
-            dto.azimuth = sat.getAzimuth();
-            dto.snr = sat.getSnr();
-            list.add(dto);
-        }
-        return list;
+    public Map<String,Object> all() {
+        return gpsReceiver.getAllAttributes();
     }
 
     @RequestMapping("/liveGpsData")

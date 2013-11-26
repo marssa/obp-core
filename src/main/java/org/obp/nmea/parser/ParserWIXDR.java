@@ -1,10 +1,13 @@
 package org.obp.nmea.parser;
 
+import org.obp.AttributeMap;
+import org.obp.nmea.NmeaAttributeParser;
 import org.obp.nmea.NmeaLine;
-import org.obp.nmea.NmeaLineParser;
 import org.obp.nmea.NmeaLineScanner;
 import org.obp.nmea.message.WIXDR;
 import org.springframework.stereotype.Service;
+
+import static org.obp.AttributeNames.WIND_TEMPERATURE;
 
 /**
  * Created by Robert Jaremczak
@@ -12,7 +15,7 @@ import org.springframework.stereotype.Service;
  */
 
 @Service
-public class ParserWIXDR implements NmeaLineParser<WIXDR> {
+public class ParserWIXDR implements NmeaAttributeParser {
 
     @Override
     public boolean recognizes(NmeaLine line) {
@@ -22,7 +25,9 @@ public class ParserWIXDR implements NmeaLineParser<WIXDR> {
     }
 
     @Override
-    public WIXDR parse(NmeaLineScanner scanner) {
-        return new WIXDR(scanner.skip().nextDouble());
+    public AttributeMap parse(NmeaLineScanner scanner) {
+        AttributeMap am = new AttributeMap();
+        am.put(WIND_TEMPERATURE, scanner.skip().nextDouble());
+        return am;
     }
 }

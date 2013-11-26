@@ -1,10 +1,13 @@
 package org.obp;
 
+import org.obp.utils.GpsUtils;
 import org.obp.utils.TimeUtils;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+
+import static org.obp.AttributeNames.*;
 
 /**
  * Created by Robert Jaremczak
@@ -31,9 +34,8 @@ public abstract class BasicInstrument extends BasicIdentified implements Instrum
 
     private List<String> buildAllAttributeNames(Collection<String> attributeNames) {
         List<String> allAttributeNames = new ArrayList<>();
-        allAttributeNames.add(AttributeNames.UPDATE_TIME);
-        allAttributeNames.add(AttributeNames.DATA_STALE);
-        allAttributeNames.add(AttributeNames.RELIABILITY);
+        allAttributeNames.add(UPDATE_TIME);
+        allAttributeNames.add(DATA_STALE);
         allAttributeNames.addAll(attributeNames);
         return allAttributeNames;
     }
@@ -102,10 +104,8 @@ public abstract class BasicInstrument extends BasicIdentified implements Instrum
         attributesMap.replace(key, value);
     }
 
-    protected void setAttributes(Map<String, Object> attributes) {
-        for(Map.Entry<String, Object> entry : attributes.entrySet()) {
-            attributesMap.replace(entry.getKey(), entry.getValue());
-        }
+    protected void setAttributes(AttributeMap attributeMap) {
+        attributeMap.putAll(attributeMap);
     }
 
     @Override
@@ -113,12 +113,32 @@ public abstract class BasicInstrument extends BasicIdentified implements Instrum
         return reliability;
     }
 
-    protected void updateStandardInstrumentData(Reliability reliability) {
+    protected void updateStandardInstrumentData() {
+        updateStandardInstrumentData(null);
+    }
+
+    protected void updateStandardInstrumentData(AttributeMap am) {
         this.updateTime = TimeUtils.currentUtc();
-        this.reliability = reliability;
-        setAttribute(AttributeNames.UPDATE_TIME, updateTime);
-        setAttribute(AttributeNames.RELIABILITY, reliability);
-        setAttribute(AttributeNames.DATA_STALE, Boolean.FALSE.toString());
+        this.reliability = GpsUtils.estimateReliability(am);
+        setAttribute(UPDATE_TIME, updateTime);
+        setAttribute(DATA_STALE, Boolean.FALSE.toString());
+        setAttribute(RELIABLILITY, this.reliability);
+        if(am!=null) setAttributes(am);
+    }
+
+    public Map<String, Object> getAttributes(String... keys) {
+        Map<String, Object> map = new HashMap<>();
+        for(String key : keys) {
+            Object value = attributesMap.get(key);
+            if(value!=null) {
+                map.put(key,value);
+            }
+        }
+        return map;
+    }
+
+    public Map<String, Object> getAllAttributes() {
+        return new HashMap<>(attributesMap);
     }
 
     @Override

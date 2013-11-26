@@ -2,6 +2,8 @@ package org.obp.nmea.parser;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.obp.AttributeMap;
+import org.obp.AttributeNames;
 import org.obp.nmea.NmeaLine;
 import org.obp.nmea.message.WIXDR;
 
@@ -28,9 +30,8 @@ public class ParserWIXDRTest extends ParserTest {
         NmeaLine line = lineFrom("$WIXDR,C,024.0,C,,");
         Assert.assertNotNull(line);
         Assert.assertTrue(parser.recognizes(line));
-        WIXDR msg = parser.parse(line.scanner());
-        Assert.assertNotNull(msg);
-        Assert.assertEquals(24.0, msg.getWindTemperature(),0.01);
+        AttributeMap am = parser.parse(line.scanner());
+        Assert.assertEquals(24.0, am.getDouble(AttributeNames.WIND_TEMPERATURE),0.01);
     }
 
 }

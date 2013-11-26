@@ -4,13 +4,17 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.Assert;
 import org.junit.Test;
+import org.obp.AttributeMap;
+import org.obp.Instrument;
+import org.obp.Reliability;
 import org.obp.nmea.NmeaBufferedReader;
 import org.obp.nmea.NmeaLine;
-import org.obp.nmea.message.GPGGA;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+
+import static org.obp.AttributeNames.*;
 
 /**
  * Created by Robert Jaremczak
@@ -26,10 +30,10 @@ public class ParserGPGGATest {
         NmeaLine line = reader.fetchLine();
         Assert.assertNotNull(line);
         Assert.assertTrue(parser.recognizes(line));
-        GPGGA gpgga = parser.parse(line.scanner());
-        Assert.assertEquals(new DateTime(DateTimeZone.UTC).withTime(8, 44, 21, 963).getMillis(), gpgga.getFixTime());
-        Assert.assertEquals(GPGGA.FixQuality.INVALID, gpgga.getFixQuality());
-        Assert.assertEquals(3, gpgga.getNumberOfSatellitesInView());
+        AttributeMap am = parser.parse(line.scanner());
+        Assert.assertEquals(new DateTime(DateTimeZone.UTC).withTime(8, 44, 21, 963).getMillis(), am.getLong(TIME));
+        Assert.assertEquals(Reliability.MEDIUM, (Reliability)am.get(RELIABLILITY));
+        Assert.assertEquals(3, am.getByte(GPS_EFFECTIVE_SATELLITES));
     }
 
 }

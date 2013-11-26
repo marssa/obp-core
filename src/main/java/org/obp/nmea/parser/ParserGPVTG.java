@@ -1,10 +1,14 @@
 package org.obp.nmea.parser;
 
+import org.obp.AttributeMap;
+import org.obp.AttributeNames;
+import org.obp.nmea.NmeaAttributeParser;
 import org.obp.nmea.NmeaLine;
-import org.obp.nmea.NmeaLineParser;
 import org.obp.nmea.NmeaLineScanner;
 import org.obp.nmea.message.GPVTG;
 import org.springframework.stereotype.Service;
+
+import static org.obp.AttributeNames.*;
 
 /**
  * Created by Robert Jaremczak
@@ -12,7 +16,7 @@ import org.springframework.stereotype.Service;
  */
 
 @Service
-public class ParserGPVTG implements NmeaLineParser<GPVTG> {
+public class ParserGPVTG implements NmeaAttributeParser {
     @Override
     public boolean recognizes(NmeaLine line) {
         return line.getName().equals(GPVTG.SIGNATURE) &&
@@ -22,9 +26,10 @@ public class ParserGPVTG implements NmeaLineParser<GPVTG> {
     }
 
     @Override
-    public GPVTG parse(NmeaLineScanner scanner) {
-        return new GPVTG(
-                scanner.nextDoubleOrNaN(),
-                scanner.skip(5).nextDouble());
+    public AttributeMap parse(NmeaLineScanner scanner) {
+        AttributeMap am = new AttributeMap();
+        am.put(TRUE_NORTH_COURSE, scanner.nextDoubleOrNaN());
+        am.put(VELOCITY_OVER_GROUND, scanner.skip(5).nextDouble());
+        return am;
     }
 }

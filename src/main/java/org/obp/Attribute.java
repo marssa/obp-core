@@ -9,11 +9,11 @@ import java.util.UUID;
 public class Attribute {
 
     private UUID instrument;
-    private Instrument.Reliability reliability;
+    private Reliability reliability;
     private String name;
     private Object value;
 
-    public Attribute(UUID instrument, Instrument.Reliability reliability, String name, Object value) {
+    public Attribute(UUID instrument, Reliability reliability, String name, Object value) {
         this.instrument = instrument;
         this.reliability = reliability;
         this.name = name;
@@ -24,7 +24,7 @@ public class Attribute {
         return instrument;
     }
 
-    public Instrument.Reliability getReliability() {
+    public Reliability getReliability() {
         return reliability;
     }
 

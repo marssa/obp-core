@@ -1,14 +1,14 @@
 package org.obp.weather;
 
 import org.apache.log4j.Logger;
+import org.obp.AttributeMap;
 import org.obp.AttributeNames;
 import org.obp.BasicInstrument;
 import org.obp.nmea.NmeaBufferedReader;
 import org.obp.nmea.NmeaDevice;
 import org.obp.nmea.NmeaLine;
-import org.obp.nmea.NmeaLineScanner;
-import org.obp.nmea.message.*;
 import org.obp.nmea.parser.ParserWIXDR;
+import org.obp.utils.GpsUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -18,6 +18,8 @@ import javax.annotation.PreDestroy;
 import java.util.Arrays;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
+
+import static org.obp.AttributeNames.*;
 
 /**
  * Created by Robert Jaremczak
@@ -46,7 +48,7 @@ public class LcjCv3f extends BasicInstrument {
             @Value("${obp.local.nmea.lcj_cv3fm6.name}") String name,
             @Value("${obp.local.nmea.lcj_cv3fm6.description}") String description) {
 
-        super(parentUuid, uuid, name, description, Arrays.asList(AttributeNames.WIND_TEMPERATURE));
+        super(parentUuid, uuid, name, description, Arrays.asList(WIND_TEMPERATURE));
     }
 
     @PostConstruct
@@ -84,9 +86,7 @@ public class LcjCv3f extends BasicInstrument {
                     while(!stop && reader.lineReady()) {
                         NmeaLine line = reader.getLine();
                         if(parserWIXDR.recognizes(line)) {
-                            WIXDR wixdr = parserWIXDR.parse(line.scanner());
-                            setAttribute(AttributeNames.WIND_TEMPERATURE, wixdr.getWindTemperature());
-                            updateStandardInstrumentData(Reliability.GOOD);
+                            updateStandardInstrumentData(parserWIXDR.parse(line.scanner()));
                         }
                     }
                 } catch (Exception e) {

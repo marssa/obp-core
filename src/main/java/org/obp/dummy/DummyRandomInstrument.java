@@ -1,5 +1,6 @@
 package org.obp.dummy;
 
+import org.obp.AttributeMap;
 import org.obp.BasicInstrument;
 
 import java.util.*;
@@ -35,10 +36,10 @@ public class DummyRandomInstrument extends BasicInstrument {
     }
 
     private void update() {
-        updateStandardInstrumentData(Reliability.HIGH);
         for(Map.Entry<String, DoubleRange> entry : attributes.entrySet()) {
             setAttribute(entry.getKey(), entry.getValue().getRandomValue());
         }
+        updateStandardInstrumentData();
     }
 
     @Override

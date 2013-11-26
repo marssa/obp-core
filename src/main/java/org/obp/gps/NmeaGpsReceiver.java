@@ -1,7 +1,9 @@
 package org.obp.gps;
 
 import org.apache.log4j.Logger;
+import org.obp.AttributeMap;
 import org.obp.BasicInstrument;
+import org.obp.Reliability;
 import org.obp.nmea.NmeaBufferedReader;
 import org.obp.nmea.NmeaDevice;
 import org.obp.nmea.NmeaLine;
@@ -26,26 +28,12 @@ import static org.obp.AttributeNames.*;
  * Date: 2013-10-5
  */
 @Component
-public class NmeaGpsReceiver extends BasicInstrument implements GpsReceiver {
+public class NmeaGpsReceiver extends BasicInstrument {
     private static Logger logger = Logger.getLogger(NmeaGpsReceiver.class);
 
     private NmeaDevice device;
     private Listener listener;
-
     private AggregateGPGSV aggregateGPGSV = new AggregateGPGSV();
-    private volatile long fixTime;
-    private volatile double latitude;
-    private volatile double longitude;
-    private volatile double trueNorthCourse;
-    private volatile double velocityOverGround;
-    private GPGGA.FixQuality fixQuality;
-    private GPGSA.FixMode fixMode;
-    private GPGSA.FixType fixType;
-    private byte numberOfSatellitesInView;
-    private double pdop;
-    private double hdop;
-    private double vdop;
-    private double altitude;
 
     @Value("${obp.local.nmea.gpsReceiver.uri}")
     private String uri;
@@ -99,46 +87,18 @@ public class NmeaGpsReceiver extends BasicInstrument implements GpsReceiver {
                         NmeaLineScanner scanner = line.scanner();
                         logger.debug(line);
                         if(parserGPGLL.recognizes(line)) {
-                            GPGLL gpgll = parserGPGLL.parse(scanner);
-                            fixTime = gpgll.getFixTime();
-                            latitude = gpgll.getLatitude();
-                            longitude = gpgll.getLongitude();
-                            updateInstrumentData();
+                            updateStandardInstrumentData(parserGPGLL.parse(scanner));
                         } else if(parserGPVTG.recognizes(line)) {
-                            GPVTG gpvtg = parserGPVTG.parse(scanner);
-                            trueNorthCourse = gpvtg.getTrueNorthCourse();
-                            velocityOverGround = gpvtg.getVelocityOverGround();
-                            updateInstrumentData();
+                            updateStandardInstrumentData(parserGPVTG.parse(scanner));
                         } else if(parserGPGGA.recognizes(line)) {
-                            GPGGA gpgga = parserGPGGA.parse(scanner);
-                            fixTime = gpgga.getFixTime();
-                            latitude = gpgga.getLatitude();
-                            longitude = gpgga.getLongitude();
-                            numberOfSatellitesInView = gpgga.getNumberOfSatellitesInView();
-                            hdop = gpgga.getHdop();
-                            altitude = gpgga.getAltitude();
-                            fixQuality = gpgga.getFixQuality();
-                            updateInstrumentData();
+                            updateStandardInstrumentData(parserGPGGA.parse(scanner));
                         } else if(parserGPRMC.recognizes(line)) {
-                            GPRMC gprmc = parserGPRMC.parse(scanner);
-                            fixTime = gprmc.getFixTime();
-                            latitude = gprmc.getLatitude();
-                            longitude = gprmc.getLongitude();
-                            trueNorthCourse = gprmc.getTrueNorthCourse();
-                            velocityOverGround = gprmc.getVelocityOverGround();
-                            updateInstrumentData();
+                            updateStandardInstrumentData(parserGPRMC.parse(scanner));
                         } else if(parserGPGSA.recognizes(line)) {
-                            GPGSA gpgsa = parserGPGSA.parse(scanner);
-                            fixMode = gpgsa.getFixMode();
-                            fixType = gpgsa.getFixType();
-                            pdop = gpgsa.getPdop();
-                            hdop = gpgsa.getHdop();
-                            vdop = gpgsa.getVdop();
-                            numberOfSatellitesInView = gpgsa.getNumberOfSatellitesInView();
-                            updateInstrumentData();
+                            updateStandardInstrumentData(parserGPGSA.parse(scanner));
                         } else if(parserGPGSV.recognizes(line)) {
                             aggregateGPGSV.update(parserGPGSV.parse(scanner));
-                            updateInstrumentData();
+                            updateStandardInstrumentData(aggregateGPGSV.toAttributeMap());
                         }
                     }
                 } catch (Exception e) {
@@ -151,28 +111,6 @@ public class NmeaGpsReceiver extends BasicInstrument implements GpsReceiver {
             }
             logger.info("stopped.");
         }
-    }
-
-    private Reliability calculateReliability() {
-        if(numberOfSatellitesInView<3) {
-            return Reliability.NONE;
-        } else if(numberOfSatellitesInView<4) {
-            return Reliability.MEDIUM;
-        } else if(numberOfSatellitesInView<5) {
-            return Reliability.GOOD;
-        } else {
-            return Reliability.HIGH;
-        }
-    }
-
-    private void updateInstrumentData() {
-        updateStandardInstrumentData(calculateReliability());
-
-        setAttribute(LATITUDE, latitude);
-        setAttribute(LONGITUDE, longitude);
-        setAttribute(ALTITUDE, altitude);
-        setAttribute(TRUE_NORTH_COURSE, trueNorthCourse);
-        setAttribute(VELOCITY_OVER_GROUND, velocityOverGround);
     }
 
     @PostConstruct
@@ -197,75 +135,4 @@ public class NmeaGpsReceiver extends BasicInstrument implements GpsReceiver {
         }
         setStatus(Status.OFF);
     }
-
-    @Override
-    public double getLatitude() {
-        return latitude;
-    }
-
-    @Override
-    public double getLongitude() {
-        return longitude;
-    }
-
-    @Override
-    public double getTrueNorthCourse() {
-        return trueNorthCourse;
-    }
-
-    @Override
-    public double getVelocityOverGround() {
-        return velocityOverGround;
-    }
-
-    @Override
-    public List<GpsSatellite> getSatellitesInView() {
-        return aggregateGPGSV.getSatellitesInView();
-    }
-
-    @Override
-    public GPGGA.FixQuality getFixQuality() {
-        return fixQuality;
-    }
-
-    @Override
-    public GPGSA.FixMode getFixMode() {
-        return fixMode;
-    }
-
-    @Override
-    public GPGSA.FixType getFixType() {
-        return fixType;
-    }
-
-    @Override
-    public byte getNumberOfSatellitesInView() {
-        return numberOfSatellitesInView;
-    }
-
-    @Override
-    public double getPDop() {
-        return pdop;
-    }
-
-    @Override
-    public double getVDop() {
-        return vdop;
-    }
-
-    @Override
-    public double getHDop() {
-        return hdop;
-    }
-
-    @Override
-    public double getAltitude() {
-        return altitude;
-    }
-
-    @Override
-    public long getFixTime() {
-        return fixTime;
-    }
-
 }

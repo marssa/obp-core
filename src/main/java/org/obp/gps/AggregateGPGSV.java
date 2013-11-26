@@ -1,5 +1,6 @@
 package org.obp.gps;
 
+import org.obp.AttributeMap;
 import org.obp.nmea.message.GPGSV;
 
 import java.util.ArrayList;
@@ -7,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
+
+import static org.obp.AttributeNames.*;
 
 /**
  * Created by Robert Jaremczak
@@ -34,5 +37,16 @@ public class AggregateGPGSV {
             list.add(new GpsSatellite(sv.getId(),sv.getElevation(),sv.getAzimuth(),sv.getSnr()));
         }
         return list;
+    }
+
+    public AttributeMap toAttributeMap() {
+        AttributeMap am = new AttributeMap();
+        am.put(GPS_EFFECTIVE_SATELLITES, satellitesInView.get().size());
+        for(GPGSV.SV sv : satellitesInView.get()) {
+            am.put(GPS_SATELLITE_ELEVATION + sv.getId(), sv.getElevation());
+            am.put(GPS_SATELLITE_AZIMUTH + sv.getId(), sv.getAzimuth());
+            am.put(GPS_SATELLITE_SNR + sv.getId(), sv.getSnr());
+        }
+        return am;
     }
 }
