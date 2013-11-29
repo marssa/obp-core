@@ -6,21 +6,21 @@ import java.util.UUID;
  * Created by Robert Jaremczak
  * Date: 2013-11-18
  */
-public class Attribute {
+public class AttributeInfo {
 
-    private UUID instrument;
+    private Identified instrument;
     private Reliability reliability;
     private String name;
     private Object value;
 
-    public Attribute(UUID instrument, Reliability reliability, String name, Object value) {
+    public AttributeInfo(Identified instrument, Reliability reliability, String name, Object value) {
         this.instrument = instrument;
         this.reliability = reliability;
         this.name = name;
         this.value = value;
     }
 
-    public UUID getInstrument() {
+    public Identified getInstrument() {
         return instrument;
     }
 

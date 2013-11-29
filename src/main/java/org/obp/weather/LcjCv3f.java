@@ -1,14 +1,14 @@
 package org.obp.weather;
 
 import org.apache.log4j.Logger;
-import org.obp.AttributeMap;
-import org.obp.AttributeNames;
-import org.obp.BasicInstrument;
+import org.obp.BaseInstrument;
+import org.obp.LocalObpInstance;
+import org.obp.Reliability;
 import org.obp.nmea.NmeaBufferedReader;
 import org.obp.nmea.NmeaDevice;
 import org.obp.nmea.NmeaLine;
+import org.obp.nmea.parser.ParserIIMWV;
 import org.obp.nmea.parser.ParserWIXDR;
-import org.obp.utils.GpsUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -29,7 +29,7 @@ import static org.obp.AttributeNames.*;
  */
 
 @Component
-public class LcjCv3f extends BasicInstrument {
+public class LcjCv3f extends BaseInstrument {
 
     private static Logger logger = Logger.getLogger(LcjCv3f.class);
 
@@ -43,12 +43,15 @@ public class LcjCv3f extends BasicInstrument {
     private ParserWIXDR parserWIXDR;
 
     @Autowired
-    public LcjCv3f(@Value("${obp.local.uuid}") UUID parentUuid,
+    private ParserIIMWV parserIIMWV;
+
+    @Autowired
+    public LcjCv3f(
             @Value("${obp.local.nmea.lcj_cv3fm6.uuid}") UUID uuid,
             @Value("${obp.local.nmea.lcj_cv3fm6.name}") String name,
             @Value("${obp.local.nmea.lcj_cv3fm6.description}") String description) {
 
-        super(parentUuid, uuid, name, description, Arrays.asList(WIND_TEMPERATURE));
+        super(uuid, name, description, Arrays.asList(WIND_TEMPERATURE));
     }
 
     @PostConstruct
@@ -87,7 +90,10 @@ public class LcjCv3f extends BasicInstrument {
                         NmeaLine line = reader.getLine();
                         if(parserWIXDR.recognizes(line)) {
                             updateStandardInstrumentData(parserWIXDR.parse(line.scanner()));
+                        } else if(parserIIMWV.recognizes(line)) {
+                            updateStandardInstrumentData(parserIIMWV.parse(line.scanner()));
                         }
+                        reliability = Reliability.HIGH;
                     }
                 } catch (Exception e) {
                     logger.fatal("listener error in line "+reader.getLine(),e);

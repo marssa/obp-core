@@ -15,7 +15,7 @@ import java.util.UUID;
  */
 
 @Component
-public class Introspector extends BasicExplorer {
+public class Introspector extends BaseExplorer {
     private static Logger logger = Logger.getLogger(Introspector.class);
 
     private List<Body> bodies;

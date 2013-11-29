@@ -67,8 +67,8 @@
         <td><span id="altitude">n/a</span> m</td>
     </tr>
     <tr>
-        <td>Velocity over ground:</td>
-        <td><span id="velocityOverGround">n/a</span> m/s</td>
+        <td>Speed over ground:</td>
+        <td><span id="speedOverGround">n/a</span> m/s</td>
     </tr>
     <tr>
         <td>Magnetic variation:</td>
@@ -87,7 +87,7 @@
         <td><span id="vdop">n/a</span></td>
     </tr>
 </table>
-<br>Satellites in view (effective <span id="numSatellitesInView"></span>):<br>
+<br>Satellites in view (effective <span id="effectiveSatellites"></span>):<br>
 
 <div id="satellitesInView"></div>
 <script type="text/javascript">
@@ -108,17 +108,18 @@
             data: "user=success",
             success: function (data) {
                 $("#fixTime").fadeOut();
-                $("#fixTime").text(data.fixTime);
+                $("#fixTime").text(data.dateTime);
                 $("#fixTime").fadeIn();
                 $("#latitude").text(data.latitude);
                 $("#longitude").text(data.longitude);
                 $("#trueNorthCourse").text(data.trueNorthCourse);
-                $("#velocityOverGround").text(data.velocityOverGround);
-                $("#numSatellitesInView").text(data.numSatellitesInView);
+                $("#magneticVariation").text(data.gpsMagneticVariation);
+                $("#speedOverGround").text(data.speedOverGround);
+                $("#effectiveSatellites").text(data.gpsEffectiveSatellites);
                 $("#altitude").text(data.altitude);
-                $("#fixQuality").text(data.fixQuality);
-                $("#fixMode").text(data.fixMode);
-                $("#fixType").text(data.fixType);
+                $("#fixQuality").text(data.gpsFixQuality);
+                $("#fixMode").text(data.gpsFixMode);
+                $("#fixType").text(data.gpsFixType);
                 $("#pdop").text(data.pdop);
                 $("#hdop").text(data.hdop);
                 $("#vdop").text(data.vdop);
@@ -131,8 +132,8 @@
                         "<th>azimuth<br>[&deg;]</th>" +
                         "<th>s/n<br>[dbm]</th>" +
                         "</tr>";
-                for (var i in data.satellitesInView) {
-                    var sat = data.satellitesInView[i];
+                for (var i in data.gpsSatellites) {
+                    var sat = data.gpsSatellites[i];
                     html += "<tr>";
                     html += "<td>" + (Number(i) + 1) + "</td>";
                     html += "<td>" + sat.id + "</td>";

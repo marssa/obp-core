@@ -4,11 +4,9 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.Assert;
 import org.junit.Test;
-import org.obp.AttributeMap;
-import org.obp.AttributeNames;
+import org.obp.Attributes;
 import org.obp.nmea.NmeaBufferedReader;
 import org.obp.nmea.NmeaLine;
-import org.obp.nmea.message.GPRMC;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -29,7 +27,7 @@ public class ParserGPRMCTest {
         NmeaLine line = reader.fetchLine();
         Assert.assertNotNull(line);
         Assert.assertTrue(parser.recognizes(line));
-        AttributeMap am = parser.parse(line.scanner());
+        Attributes am = parser.parse(line.scanner());
         Assert.assertEquals(new DateTime(2013, 10, 16, 8, 44, 26, 963, DateTimeZone.UTC).getMillis(), am.getLong(TIME));
     }
 }

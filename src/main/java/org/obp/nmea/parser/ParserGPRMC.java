@@ -2,12 +2,10 @@ package org.obp.nmea.parser;
 
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.obp.AttributeMap;
-import org.obp.AttributeNames;
+import org.obp.Attributes;
 import org.obp.nmea.NmeaAttributeParser;
 import org.obp.nmea.NmeaLine;
 import org.obp.nmea.NmeaLineScanner;
-import org.obp.nmea.message.GPRMC;
 import org.springframework.stereotype.Service;
 
 import static org.obp.AttributeNames.*;
@@ -24,18 +22,17 @@ public class ParserGPRMC implements NmeaAttributeParser {
 
     @Override
     public boolean recognizes(NmeaLine line) {
-        return line.getName().equals(GPRMC.SIGNATURE) && line.getDataSize() >= 9;
+        return line.getName().equals("GPRMC") && line.getDataSize() >= 9;
     }
 
     @Override
-    public AttributeMap parse(NmeaLineScanner scanner) {
-        AttributeMap am = new AttributeMap();
+    public Attributes parse(NmeaLineScanner scanner) {
+        Attributes am = new Attributes();
         String fixTime = scanner.next();
 
-        am.put(TIME, fixTime);
         am.put(LATITUDE, scanner.skip().nextLatitudeDDMM());
         am.put(LONGITUDE, scanner.nextLongitudeDDMM());
-        am.put(VELOCITY_OVER_GROUND, scanner.nextVelocityKnots());
+        am.put(SPEED_OVER_GROUND, scanner.nextVelocityKnots());
         am.put(TRUE_NORTH_COURSE, scanner.nextDouble());
 
         String fixDate = scanner.next();

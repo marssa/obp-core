@@ -6,12 +6,12 @@ import java.util.UUID;
  * Created by Robert Jaremczak
  * Date: 2013-10-24
  */
-public class BasicIdentified implements Identified {
+public class BaseIdentified implements Identified {
     private UUID uuid;
     private String name;
     private String description;
 
-    public BasicIdentified(UUID uuid, String name, String description) {
+    public BaseIdentified(UUID uuid, String name, String description) {
         this.uuid = uuid;
         this.name = name;
         this.description = description;

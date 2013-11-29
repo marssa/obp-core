@@ -28,7 +28,7 @@ public final class AzimuthUtil {
     }
 
     public static final String toStringShort(double azimuth) {
-        return new DecimalFormat(AngleUtils.SHORT_ANGLE_FORMAT).format(azimuth)+" "+direction(azimuth);
+        return new DecimalFormat(AngleUtil.SHORT_ANGLE_FORMAT).format(azimuth)+" "+direction(azimuth);
     }
 
     private static String direction(double azimuth) {

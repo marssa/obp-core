@@ -48,7 +48,7 @@ public class NmeaLineScanner implements Iterator<String> {
     }
 
     public double nextLatitudeDDMM() {
-        return LatitudeUtils.fromDDMM(NumberUtils.toDouble(next()), next());
+        return LatitudeUtil.fromDDMM(NumberUtils.toDouble(next()), next());
     }
 
     public double nextLongitudeDDMM() {
@@ -61,11 +61,11 @@ public class NmeaLineScanner implements Iterator<String> {
 
     public long nextUtcHHMMSS() {
         double d = NumberUtils.toDouble(next());
-        return TimeUtils.fromUtcHHMMSS((int)d) + (int)((d - (int)d) * 1000);
+        return TimeUtil.fromUtcHHMMSS((int) d) + (int)((d - (int)d) * 1000);
     }
 
     public double nextVelocityKnots() {
-        return VelocityUtils.fromKnots(NumberUtils.toDouble(next()));
+        return SpeedUtil.fromKnots(NumberUtils.toDouble(next()));
     }
 
     public double nextDouble() {

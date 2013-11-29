@@ -1,4 +1,4 @@
-package org.obp.nmea.message;
+package org.obp.nmea.parser;
 
 import org.obp.nmea.NmeaMessage;
 

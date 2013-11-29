@@ -1,7 +1,6 @@
 package org.obp;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Robert Jaremczak
@@ -9,9 +8,10 @@ import java.util.Map;
  */
 public interface ObpInstance extends Identified {
     List<Body> getBodies();
-    Map<String,Object> getAttributeValues(String... names);
-    Map<String,Object> getAllAttributeValues();
-    Attribute getAttribute(String name);
+    Attributes getAttributes(String... keys);
+    Attributes getAttributes();
+    AttributeInfo getAttributeInfo(String key);
+    List<AttributeInfo> getAttributeInfos();
     void attachInstrument(Instrument instrument);
     void detachInstrument(Instrument instrument);
     void attachExplorer(Explorer explorer);

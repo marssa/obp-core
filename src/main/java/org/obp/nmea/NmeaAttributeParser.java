@@ -1,6 +1,6 @@
 package org.obp.nmea;
 
-import org.obp.AttributeMap;
+import org.obp.Attributes;
 
 /**
  * Created by Robert Jaremczak
@@ -8,5 +8,5 @@ import org.obp.AttributeMap;
  */
 public interface NmeaAttributeParser {
     public boolean recognizes(NmeaLine line);
-    public AttributeMap parse(NmeaLineScanner scanner);
+    public Attributes parse(NmeaLineScanner scanner);
 }

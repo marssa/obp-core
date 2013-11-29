@@ -21,7 +21,7 @@
             border-radius: 10px;
         }
 
-        .obpButton:hover {
+        .clickable:hover {
             background-color: #c9e8f5;
             cursor: pointer;
         }
@@ -50,43 +50,45 @@
 <table id="mainTable" align="center" style="height: 100%; width: 100%; text-align: center">
     <tr>
         <td>
-            <div class="obpButton" onclick="location.href='<c:url value="/simple/map"/>'">
+            <div class="obpButton clickable" onclick="location.href='<c:url value="/simple/navigation"/>'">
+                <span class="propLabel">SOG</span></br>
+                <span id="sog" class="propValue">n/a</span>
+            </div>
+            <br>
+            <div class="obpButton clickable" style="" onclick="location.href='<c:url value="/simple/map"/>'" >
                 <span class="propLabel">Position</span></br>
-                <span id="position" class="propValue">13E 23N</span>
+                <span id="position" class="propValue">n/a</span>
             </div>
             <br>
             <div class="obpButton">
                 <span class="propLabel">Depth</span></br>
-                <span class="propValue">n/a</span>
+                <span id="depth" class="propValue">n/a</span>
             </div>
             <br>
             <div class="obpButton">
-                <span class="propLabel">Heading</span></br>
-                <span id="heading" class="propValue">13E 23N</span>
-            </div>
-            <br>
-            <div class="obpButton" onclick="location.href='<c:url value="/simple/start"/>'">
-                <span class="propButton">OBP</span></br>
+                <span class="propLabel">Date / Time</span></br>
+                <span id="dateTime" class="propValue">n/a</span>
             </div>
         </td>
         <td>
-            <div class="obpButton">
+            <div class="obpButton clickable" onclick="location.href='<c:url value="/simple/navigation"/>'">
+                <span class="propLabel">COG</span></br>
+                <span id="cog" class="propValue">n/a</span>
+            </div>
+            <br>
+            <div class="obpButton clickable" onclick="location.href='<c:url value="/simple/wind"/>'">
                 <span class="propLabel">Wind</span></br>
-                <span class="propValue">n/a</span>
+                <span id="wind" class="propValue">n/a</span>
             </div>
             <br>
             <div class="obpButton">
-                <span class="propLabel">Speed</span></br>
-                <span  id="speed" class="propValue">13E 23N</span>
+                <span class="propLabel">Water</span></br>
+                <span id="waterTemp" class="propValue">n/a</span>
             </div>
             <br>
-            <div class="obpButton">
-                <span class="propLabel">Aux</span></br>
-                <span class="propValue">...</span>
-            </div>
-            <br>
-            <div class="obpButton" onclick="location.href='<c:url value="/simple/manifest"/>'">
-                <span class="propButton">Manifest</span></br>
+            <div class="obpButton clickable" onclick="location.href='<c:url value="/simple/manifest"/>'">
+                <span class="propLabel">Infotainment</span></br>
+                <span class="propValue">login & details</span>
             </div>
         </td>
     </tr>
@@ -100,8 +102,12 @@
             data: "user=success",
             success: function(data){
                 $("#position").text(data.position);
-                $("#heading").text(data.heading+" °");
-                $("#speed").text(data.speed+" kts");
+                $("#cog").text(data.cog);
+                $("#sog").text(data.sog);
+                $("#water").text(data.water);
+                $("#wind").text(data.wind);
+                $("#depth").text(data.depth);
+                $("#dateTime").text(data.dateTime);
             }
         });
     }

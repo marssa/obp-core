@@ -80,7 +80,7 @@
     <div class="shortButton" onclick="location.href='<c:url value="/simple/view"/>'">back</div>
 </div>
 <div style="display: inline-block; width: 150px">
-    <div class="shortButton" onclick="location.href='<c:url value="/simple/positionDetails"/>'">details</div>
+    <div class="shortButton" onclick="location.href='<c:url value="/simple/position"/>'">details</div>
 </div>
 <div style="height: 87%" id="map-canvas"/>
 </body>

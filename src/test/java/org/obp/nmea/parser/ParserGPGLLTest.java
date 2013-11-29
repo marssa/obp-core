@@ -2,9 +2,8 @@ package org.obp.nmea.parser;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.obp.AttributeMap;
+import org.obp.Attributes;
 import org.obp.nmea.NmeaBufferedReader;
-import org.obp.nmea.message.GPGLL;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,7 +23,7 @@ public class ParserGPGLLTest {
         while(reader.lineReady()) {
             if(parser.recognizes(reader.getLine())) {
                 count++;
-                AttributeMap am = parser.parse(reader.getLine().scanner());
+                Attributes am = parser.parse(reader.getLine().scanner());
             } else {
                 Assert.assertFalse(reader.getLine().equals("GPGLL"));
             }

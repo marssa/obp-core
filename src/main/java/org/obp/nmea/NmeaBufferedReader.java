@@ -71,7 +71,7 @@ public class NmeaBufferedReader implements AutoCloseable {
                     logger.warn("checksum error in line: "+line);
                 }
             } else {
-                logger.warn("malformed line: "+line);
+                //logger.debug("malformed line: "+line);
             }
         }
         return false;

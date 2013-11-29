@@ -1,12 +1,7 @@
 package org.obp.utils;
 
-import org.obp.AttributeMap;
-import org.obp.AttributeNames;
-import org.obp.Instrument;
+import org.obp.Attributes;
 import org.obp.Reliability;
-import org.obp.nmea.parser.GpsFixQuality;
-
-import java.util.Map;
 
 import static org.obp.AttributeNames.*;
 
@@ -18,19 +13,24 @@ public final class GpsUtils {
     private GpsUtils() {
     }
 
-    public static Reliability estimateReliability(AttributeMap am) {
+    public static Reliability estimateReliability(Attributes am) {
         // TODO: make this one of quality factors
-        GpsFixQuality fixQuality = GpsFixQuality.fromString(am.getString(GPS_FIX_QUALITY));
-        byte effectiveSatellites = am.getByte(GPS_EFFECTIVE_SATELLITES);
+        //GpsFixQuality fixQuality = GpsFixQuality.fromString(am.getString(GPS_FIX_QUALITY));
 
-        if(effectiveSatellites <3) {
-            return Reliability.NONE;
-        } else if(effectiveSatellites <4) {
-            return Reliability.MEDIUM;
-        } else if(effectiveSatellites <5) {
-            return Reliability.GOOD;
+        if(am.containsKey(GPS_EFFECTIVE_SATELLITES)) {
+            byte effectiveSatellites = am.getByte(GPS_EFFECTIVE_SATELLITES);
+
+            if(effectiveSatellites <3) {
+                return Reliability.UNDEFINED;
+            } else if(effectiveSatellites <4) {
+                return Reliability.AVERAGE;
+            } else if(effectiveSatellites <5) {
+                return Reliability.GOOD;
+            } else {
+                return Reliability.HIGH;
+            }
         } else {
-            return Reliability.HIGH;
+            return Reliability.UNDEFINED;
         }
     }
 }

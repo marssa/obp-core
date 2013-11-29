@@ -14,10 +14,11 @@ import org.joda.time.format.DateTimeFormatter;
  *
  */
 
-public final class TimeUtils {
+public final class TimeUtil {
     public static final DateTimeFormatter UTC_TIME_FORMATTER = DateTimeFormat.forPattern("HH:mm:ss").withZoneUTC();
+    public static final DateTimeFormatter UTC_DATETIME_FORMATTER = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss").withZoneUTC();
 
-    private TimeUtils() {
+    private TimeUtil() {
     }
 
     public static final long fromUtcHHMMSS(double time) {
@@ -30,11 +31,15 @@ public final class TimeUtils {
         return mdt.toDateTime().getMillis();
     }
 
-    public static final String toUtcString(long time) {
+    public static final long currentUtc() {
+        return DateTime.now(DateTimeZone.UTC).getMillis();
+    }
+
+    public static final String formatTime(long time) {
         return UTC_TIME_FORMATTER.print(time);
     }
 
-    public static final long currentUtc() {
-        return DateTime.now(DateTimeZone.UTC).getMillis();
+    public static final String formatDateTime(long time) {
+        return UTC_DATETIME_FORMATTER.print(time);
     }
 }

@@ -1,6 +1,6 @@
 package org.obp.nmea.parser;
 
-import org.obp.AttributeMap;
+import org.obp.Attributes;
 import org.obp.nmea.NmeaAttributeParser;
 import org.obp.nmea.NmeaLine;
 import org.obp.nmea.NmeaLineScanner;
@@ -32,8 +32,8 @@ public class ParserGPGSA implements NmeaAttributeParser {
     }
 
     @Override
-    public AttributeMap parse(NmeaLineScanner scanner) {
-        AttributeMap am = new AttributeMap();
+    public Attributes parse(NmeaLineScanner scanner) {
+        Attributes am = new Attributes();
         am.put(GPS_FIX_MODE, GpsFixMode.fromString(scanner.next()));
         am.put(GPS_FIX_TYPE, GpsFixType.fromString(scanner.next()));
         am.put(GPS_EFFECTIVE_SATELLITES, parseSatellitesUsed(scanner));

@@ -47,7 +47,7 @@ table.tabularData th {
 
 table.tabularData td {
     color: #b1e2ff;
-    text-align: right;
+    text-align: left;
     padding: 2px 10px;
     background-color: #5f859f;
 }

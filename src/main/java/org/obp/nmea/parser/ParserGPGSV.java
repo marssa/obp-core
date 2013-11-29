@@ -3,7 +3,6 @@ package org.obp.nmea.parser;
 import org.obp.nmea.NmeaLine;
 import org.obp.nmea.NmeaLineParser;
 import org.obp.nmea.NmeaLineScanner;
-import org.obp.nmea.message.GPGSV;
 import org.springframework.stereotype.Service;
 
 /**

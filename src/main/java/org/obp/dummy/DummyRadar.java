@@ -1,7 +1,7 @@
 package org.obp.dummy;
 
 import org.apache.log4j.Logger;
-import org.obp.BasicExplorer;
+import org.obp.BaseExplorer;
 import org.obp.Body;
 import org.springframework.stereotype.Component;
 
@@ -16,14 +16,13 @@ import java.util.UUID;
  * Date: 2013-10-27
  */
 
-@Component
-public class DummyRadar extends BasicExplorer {
+public class DummyRadar extends BaseExplorer {
     private static Logger logger = Logger.getLogger(DummyRadar.class);
 
     private List<Body> bodies;
 
     public DummyRadar() {
-        super(UUID.randomUUID(), "Brave Radar", "dummy radar as external bodies explorer");
+        super(UUID.randomUUID(), "dummyRadar", "dummy radar as external bodies explorer");
     }
 
     @PostConstruct

@@ -1,15 +1,17 @@
 package org.obp.dummy;
 
-import org.obp.AttributeMap;
-import org.obp.BasicInstrument;
+import org.obp.Attributes;
+import org.obp.BaseInstrument;
+import org.obp.Reliability;
 
-import java.util.*;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * Created by Robert Jaremczak
  * Date: 2013-10-27
  */
-public class DummyRandomInstrument extends BasicInstrument {
+public class DummyRandomInstrument extends BaseInstrument {
 
     public static class DoubleRange {
         private double min;
@@ -27,25 +29,26 @@ public class DummyRandomInstrument extends BasicInstrument {
         }
     }
 
-    private Map<String, DoubleRange> attributes;
+    private Map<String, DoubleRange> attributeRanges;
 
-    public DummyRandomInstrument(UUID parentUuid, String name, String description, Map<String, DoubleRange> attributes) {
-        super(parentUuid, UUID.randomUUID(), name, description, attributes.keySet());
-        this.attributes = attributes;
+    public DummyRandomInstrument(String name, String description, Map<String, DoubleRange> attributeRanges) {
+        super(UUID.randomUUID(), name, description, attributeRanges.keySet());
+        this.attributeRanges = attributeRanges;
+        this.reliability = Reliability.DUMMY;
         setStatus(Status.OPERATIONAL);
     }
 
     private void update() {
-        for(Map.Entry<String, DoubleRange> entry : attributes.entrySet()) {
-            setAttribute(entry.getKey(), entry.getValue().getRandomValue());
+        for(Map.Entry<String, DoubleRange> entry : attributeRanges.entrySet()) {
+            attributes.put(entry.getKey(), entry.getValue().getRandomValue());
         }
         updateStandardInstrumentData();
     }
 
     @Override
-    public List<Map.Entry<String, Object>> getAttributeEntries() {
+    public Attributes getAttributes() {
         // TODO: instead updating here add a timer-task simulating periodical readouts
         update();
-        return super.getAttributeEntries();
+        return super.getAttributes();
     }
 }

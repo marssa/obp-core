@@ -4,7 +4,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.obp.nmea.NmeaBufferedReader;
 import org.obp.nmea.NmeaLine;
-import org.obp.nmea.message.GPGSV;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

@@ -17,14 +17,14 @@ public final class LongitudeUtil {
 
     public static final double fromDDMM(double ddmm, String direction) {
         switch(direction) {
-            case AzimuthUtil.WEST_DIRECTION: return AngleUtils.fromDDMM(-ddmm);
-            case AzimuthUtil.EAST_DIRECTION: return AngleUtils.fromDDMM(ddmm);
+            case AzimuthUtil.WEST_DIRECTION: return AngleUtil.fromDDMM(-ddmm);
+            case AzimuthUtil.EAST_DIRECTION: return AngleUtil.fromDDMM(ddmm);
             default: throw new IllegalArgumentException("invalid direction code " + direction);
         }
     }
 
     public static final String toStringShort(double longitude) {
-        return new DecimalFormat(AngleUtils.SHORT_ANGLE_FORMAT).format(longitude)+" "+direction(longitude);
+        return new DecimalFormat(AngleUtil.SHORT_ANGLE_FORMAT).format(longitude)+" "+direction(longitude);
     }
 
     private static String direction(double longitude) {

@@ -2,35 +2,36 @@ package org.obp.nmea.parser;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.obp.Attributes;
 import org.obp.AttributeNames;
+import org.obp.Attributes;
 import org.obp.nmea.NmeaLine;
 
 import java.io.IOException;
 
+import static org.obp.AttributeNames.*;
+
 /**
  * Created by Robert Jaremczak
- * Date: 2013-11-26
+ * Date: 2013-11-28
  */
+public class ParserIIMWVTest extends ParserTest {
 
-public class ParserWIXDRTest extends ParserTest {
-
-    private ParserWIXDR parser = new ParserWIXDR();
+    private ParserIIMWV parser = new ParserIIMWV();
 
     @Test
     public void shouldRejectInvalidLine() throws IOException {
-        NmeaLine line = lineFrom("$WIXDR,F,024.0,C,,");
+        NmeaLine line = lineFrom("$IIMWV,B4D3,8D5D,4200,2EFF,F7,");
         Assert.assertNotNull(line);
         Assert.assertFalse(parser.recognizes(line));
     }
 
     @Test
     public void shouldParseValidLine() throws IOException {
-        NmeaLine line = lineFrom("$WIXDR,C,024.0,C,,");
+        NmeaLine line = lineFrom("$IIMWV,270.0,R,1.12,N,A");
         Assert.assertNotNull(line);
         Assert.assertTrue(parser.recognizes(line));
         Attributes am = parser.parse(line.scanner());
-        Assert.assertEquals(24.0, am.getDouble(AttributeNames.WIND_TEMPERATURE),0.01);
+        Assert.assertEquals(270.0, am.getDouble(WIND_ANGLE),0.001);
+        Assert.assertEquals(0.576, am.getDouble(WIND_SPEED),0.001);
     }
-
 }

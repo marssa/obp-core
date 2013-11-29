@@ -2,7 +2,7 @@ package org.obp.nmea.parser;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.obp.AttributeMap;
+import org.obp.Attributes;
 import org.obp.nmea.NmeaBufferedReader;
 import org.obp.nmea.NmeaLine;
 
@@ -26,7 +26,7 @@ public class ParserGPGSATest {
         NmeaLine line = reader.fetchLine();
         Assert.assertNotNull(line);
         Assert.assertTrue(parser.recognizes(line));
-        AttributeMap am = parser.parse(line.scanner());
+        Attributes am = parser.parse(line.scanner());
         Assert.assertEquals(GpsFixMode.AUTO, am.get(GPS_FIX_MODE));
         Assert.assertEquals(GpsFixType.FIX3D, am.get(GPS_FIX_TYPE));
         Assert.assertEquals(8, am.getByte(GPS_EFFECTIVE_SATELLITES));

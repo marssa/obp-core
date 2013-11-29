@@ -2,11 +2,9 @@ package org.obp.nmea.parser;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.obp.AttributeMap;
-import org.obp.AttributeNames;
+import org.obp.Attributes;
 import org.obp.nmea.NmeaBufferedReader;
 import org.obp.nmea.NmeaLine;
-import org.obp.nmea.message.GPVTG;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -28,8 +26,8 @@ public class ParserGPVTGTest {
         NmeaLine line = reader.fetchLine();
         Assert.assertNotNull(line);
         Assert.assertTrue(parser.recognizes(line));
-        AttributeMap am = parser.parse(line.scanner());
+        Attributes am = parser.parse(line.scanner());
         Assert.assertEquals(336.45, am.getDouble(TRUE_NORTH_COURSE), 0.00001);
-        Assert.assertEquals(1.0, am.getDouble(VELOCITY_OVER_GROUND), 0.00001);
+        Assert.assertEquals(1.0, am.getDouble(SPEED_OVER_GROUND), 0.00001);
     }
 }

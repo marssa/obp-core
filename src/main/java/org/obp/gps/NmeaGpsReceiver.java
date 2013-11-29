@@ -1,15 +1,14 @@
 package org.obp.gps;
 
 import org.apache.log4j.Logger;
-import org.obp.AttributeMap;
-import org.obp.BasicInstrument;
-import org.obp.Reliability;
+import org.obp.BaseInstrument;
+import org.obp.LocalObpInstance;
 import org.obp.nmea.NmeaBufferedReader;
 import org.obp.nmea.NmeaDevice;
 import org.obp.nmea.NmeaLine;
 import org.obp.nmea.NmeaLineScanner;
-import org.obp.nmea.message.*;
 import org.obp.nmea.parser.*;
+import org.obp.utils.GpsUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.util.Arrays;
-import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 
@@ -28,7 +26,7 @@ import static org.obp.AttributeNames.*;
  * Date: 2013-10-5
  */
 @Component
-public class NmeaGpsReceiver extends BasicInstrument {
+public class NmeaGpsReceiver extends BaseInstrument {
     private static Logger logger = Logger.getLogger(NmeaGpsReceiver.class);
 
     private NmeaDevice device;
@@ -58,11 +56,10 @@ public class NmeaGpsReceiver extends BasicInstrument {
 
     @Autowired
     public NmeaGpsReceiver(
-            @Value("${obp.local.uuid}") UUID parentUuid,
             @Value("${obp.local.nmea.gpsReceiver.uuid}") UUID uuid,
             @Value("${obp.local.nmea.gpsReceiver.name}") String name,
             @Value("${obp.local.nmea.gpsReceiver.description}") String description) {
-        super(parentUuid, uuid, name, description, Arrays.asList(LATITUDE,LONGITUDE,ALTITUDE, VELOCITY_OVER_GROUND,TRUE_NORTH_COURSE));
+        super(uuid, name, description, Arrays.asList(LATITUDE,LONGITUDE,ALTITUDE, SPEED_OVER_GROUND,TRUE_NORTH_COURSE));
     }
 
     class Listener implements Runnable {
@@ -97,9 +94,13 @@ public class NmeaGpsReceiver extends BasicInstrument {
                         } else if(parserGPGSA.recognizes(line)) {
                             updateStandardInstrumentData(parserGPGSA.parse(scanner));
                         } else if(parserGPGSV.recognizes(line)) {
-                            aggregateGPGSV.update(parserGPGSV.parse(scanner));
-                            updateStandardInstrumentData(aggregateGPGSV.toAttributeMap());
+                            if(aggregateGPGSV.update(parserGPGSV.parse(scanner))) {
+                                updateStandardInstrumentData(aggregateGPGSV.toAttributes());
+                            }
                         }
+
+                        reliability = GpsUtils.estimateReliability(attributes);
+
                     }
                 } catch (Exception e) {
                     logger.fatal("listener error in line "+reader.getLine(),e);

@@ -1,7 +1,6 @@
 package org.obp.nmea.parser;
 
-import org.obp.AttributeMap;
-import org.obp.Instrument;
+import org.obp.Attributes;
 import org.obp.nmea.NmeaAttributeParser;
 import org.obp.nmea.NmeaLine;
 import org.obp.nmea.NmeaLineScanner;
@@ -26,8 +25,8 @@ public class ParserGPGGA implements NmeaAttributeParser {
     }
 
     @Override
-    public AttributeMap parse(NmeaLineScanner scanner) {
-        AttributeMap am = new AttributeMap();
+    public Attributes parse(NmeaLineScanner scanner) {
+        Attributes am = new Attributes();
         am.put(TIME, scanner.nextUtcHHMMSS());
         am.put(LATITUDE, scanner.nextLatitudeDDMM());
         am.put(LONGITUDE, scanner.nextLongitudeDDMM());
@@ -35,7 +34,7 @@ public class ParserGPGGA implements NmeaAttributeParser {
         am.put(GPS_EFFECTIVE_SATELLITES, scanner.nextByte());
         am.put(HDOP, scanner.nextDouble());
         am.put(ALTITUDE, scanner.nextAltitude());
-        am.put(RELIABLILITY, GpsUtils.estimateReliability(am));
+        am.setReliability(GpsUtils.estimateReliability(am));
         return am;
     }
 }
