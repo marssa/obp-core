@@ -41,7 +41,7 @@
         }
 
         .propValue {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: normal;
         }
     </style>
@@ -66,7 +66,7 @@
             </div>
             <br>
             <div class="obpButton">
-                <span class="propLabel">Date / Time</span></br>
+                <span class="propLabel">Date</span></br>
                 <span id="dateTime" class="propValue">n/a</span>
             </div>
         </td>
@@ -87,7 +87,7 @@
             </div>
             <br>
             <div class="obpButton clickable" onclick="location.href='<c:url value="/simple/manifest"/>'">
-                <span class="propLabel">Infotainment</span></br>
+                <span class="propLabel">Info</span></br>
                 <span class="propValue">login & details</span>
             </div>
         </td>
