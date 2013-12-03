@@ -2,7 +2,6 @@ Pre-release version of Open Bridge Platform (OBP).
 This is a complete, self contained web-application artifact.
 
 NOTE: put RXTX native lib and RXTXcomm.jar somewhere on the path
-NOTE: for embedded systems use OS and JDK with hardware floating point support whenever possible
 
 current set-up:
 
@@ -20,9 +19,10 @@ GlobalSat BU-353 compatible GPS receiver
 - supported NMEA messages: GPGGA, GPGLL, GPGSA, GPGSV, GPRMC, GPVTG
 - default connection parameters as for NMEA 0183 (4800 8n1)
 
-LCJ Capteurs CV3Fm6 40 ultrasonic wind-vane - (planned, work in progress...)
+LCJ Capteurs CV3Fm6 40 ultrasonic wind-vane
 - accessible via serial port device, physical serial port (Rx,Tx only) required
-- supported NMEA messages: ...
+- supported NMEA messages: IIMWV, WIXDR
+- LCJ specific messages ignored as they don't have a valid NMEA format
 - default connection parameters as for NMEA 0183 (4800 8n1)
 
 For seamless serial communication set of wrapper classes has been implemented.

@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.obp.AttributeNames;
 import org.obp.Attributes;
 import org.obp.nmea.NmeaLine;
+import org.obp.utils.SpeedUtil;
 
 import java.io.IOException;
 
@@ -32,6 +33,6 @@ public class ParserIIMWVTest extends ParserTest {
         Assert.assertTrue(parser.recognizes(line));
         Attributes am = parser.parse(line.scanner());
         Assert.assertEquals(270.0, am.getDouble(WIND_ANGLE),0.001);
-        Assert.assertEquals(0.576, am.getDouble(WIND_SPEED),0.001);
+        Assert.assertEquals(1.12, SpeedUtil.toKnots(am.getDouble(WIND_SPEED)),0.001);
     }
 }
