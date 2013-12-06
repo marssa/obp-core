@@ -1,7 +1,11 @@
-package org.obp;
+package org.obp.web.config;
 
+import org.obp.utils.MapUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Robert Jaremczak
@@ -22,5 +26,18 @@ public class ObpConfig {
 
     public String getGoogleApiKey() {
         return googleApiKey;
+    }
+
+    public Object getJavaInfo() {
+        return MapUtil.filterByKeyPrefix(System.getProperties(),"java.");
+    }
+
+    public Object getOsInfo() {
+        return MapUtil.filterByKeyPrefix(System.getProperties(),"os.");
+    }
+
+    public Map<String,Object> getComponents() {
+        Map<String,Object> map = new HashMap<>();
+        return map;
     }
 }

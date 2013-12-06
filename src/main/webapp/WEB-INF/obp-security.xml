@@ -7,12 +7,24 @@
            http://www.springframework.org/schema/security
            http://www.springframework.org/schema/security/spring-security-3.1.xsd">
 
+    <global-method-security secured-annotations="enabled" />
+
     <http pattern="/styles/**" security="none"/>
     <http pattern="/images/**" security="none"/>
     <http pattern="/scripts/**" security="none"/>
     <http pattern="/simple/**" security="none"/>
     <http pattern="/login" security="none"/>
     <http pattern="/loginFailed" security="none"/>
+
+    <http pattern="/api/**">
+        <intercept-url pattern="/api/**" access="ROLE_API_USER" />
+        <form-login login-page="/login"
+                    default-target-url="/loginSucceeded"
+                    authentication-failure-url="/loginFailed"
+                    authentication-failure-handler-ref="authenticationFailed"
+                    authentication-success-handler-ref="authenticationSuccessful"/>
+        <logout logout-url="/logout" />
+    </http>
 
     <http>
         <intercept-url pattern="/**" access="ROLE_USER" />

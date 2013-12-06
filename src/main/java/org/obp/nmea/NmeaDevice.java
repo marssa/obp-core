@@ -19,7 +19,7 @@ public class NmeaDevice {
     public static final int PARITY = SerialPort.PARITY_NONE;
     public static final int TIMEOUT_MS = 5000;
 
-    SerialPort port;
+    private SerialPort port;
 
     public NmeaDevice(String portName) throws Exception {
         logger.info("open NMEA device on port "+portName);
@@ -39,5 +39,9 @@ public class NmeaDevice {
 
     public NmeaBufferedReader getReader() throws IOException {
         return new NmeaBufferedReader(port.getInputStream());
+    }
+
+    public void close() {
+        // TODO: implement actual closing
     }
 }

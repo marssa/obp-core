@@ -4,7 +4,7 @@ import org.obp.Attributes;
 import org.obp.nmea.NmeaAttributeParser;
 import org.obp.nmea.NmeaLine;
 import org.obp.nmea.NmeaLineScanner;
-import org.obp.utils.GpsUtils;
+import org.obp.utils.GpsUtil;
 import org.springframework.stereotype.Service;
 
 import static org.obp.AttributeNames.*;
@@ -34,7 +34,7 @@ public class ParserGPGGA implements NmeaAttributeParser {
         am.put(GPS_EFFECTIVE_SATELLITES, scanner.nextByte());
         am.put(HDOP, scanner.nextDouble());
         am.put(ALTITUDE, scanner.nextAltitude());
-        am.setReliability(GpsUtils.estimateReliability(am));
+        am.setReliability(GpsUtil.estimateReliability(am));
         return am;
     }
 }

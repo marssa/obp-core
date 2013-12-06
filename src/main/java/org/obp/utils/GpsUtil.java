@@ -9,8 +9,8 @@ import static org.obp.AttributeNames.*;
  * Created by Robert Jaremczak
  * Date: 2013-11-26
  */
-public final class GpsUtils {
-    private GpsUtils() {
+public final class GpsUtil {
+    private GpsUtil() {
     }
 
     public static Reliability estimateReliability(Attributes am) {

@@ -1,6 +1,5 @@
 package org.obp;
 
-import org.obp.utils.GpsUtils;
 import org.obp.utils.TimeUtil;
 
 import java.util.*;

@@ -1,8 +1,12 @@
 package org.obp.services.serial;
 
-import gnu.io.CommPortIdentifier;
+import gnu.io.*;
 import junit.framework.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
+
+import java.io.IOException;
+import java.util.TooManyListenersException;
 
 /**
  * Created by Robert Jaremczak
@@ -41,4 +45,29 @@ public class RxTxTest {
             System.out.println(portIdentifier.getName()  +  " - " +  getPortTypeName(portIdentifier.getPortType()) );
         }
     }
+
+    @Test
+    @Ignore
+    public void shouldOpenAndClosePort() throws NoSuchPortException, PortInUseException, IOException, TooManyListenersException {
+        CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier("/dev/tty.usbserial");
+        Assert.assertNotNull(portIdentifier);
+        Assert.assertFalse(portIdentifier.isCurrentlyOwned());
+
+        SerialPort serialPort = (SerialPort) portIdentifier.open(portIdentifier.getName(),2000);
+        Assert.assertNotNull(serialPort);
+        Assert.assertTrue(portIdentifier.isCurrentlyOwned());
+        serialPort.addEventListener(new SerialPortEventListener() {
+            @Override
+            public void serialEvent(SerialPortEvent serialPortEvent) {
+                System.out.println(serialPortEvent);
+            }
+        });
+
+        serialPort.getInputStream().close();
+        serialPort.getOutputStream().close();
+        serialPort.removeEventListener();
+        serialPort.close();
+        Assert.assertFalse(portIdentifier.isCurrentlyOwned());
+    }
+
 }
