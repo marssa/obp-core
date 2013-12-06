@@ -30,7 +30,7 @@ public class JsscTest {
             serialPort.openPort();
             serialPort.setParams(BAUDRATE_4800, DATABITS_8, STOPBITS_1, PARITY_NONE);
 
-            System.out.println(new String(serialPort.readBytes(1000), StandardCharsets.US_ASCII));
+            System.out.println(new String(serialPort.readBytes(2000), StandardCharsets.US_ASCII));
         } finally {
             serialPort.closePort();
         }
