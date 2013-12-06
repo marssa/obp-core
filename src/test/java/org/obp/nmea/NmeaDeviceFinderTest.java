@@ -1,8 +1,6 @@
 package org.obp.nmea;
 
-import gnu.io.RXTXVersion;
 import junit.framework.Assert;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -17,11 +15,6 @@ import java.util.Set;
 public class NmeaDeviceFinderTest {
 
     private NmeaDeviceFinder finder = new NmeaDeviceFinder();
-
-    @Before
-    public void setUp() {
-        System.out.println("RXTX: "+ RXTXVersion.getVersion());
-    }
 
     @Test
     @Ignore

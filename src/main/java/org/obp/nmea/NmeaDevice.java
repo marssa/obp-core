@@ -1,8 +1,7 @@
 package org.obp.nmea;
 
-import gnu.io.*;
+import jssc.SerialPort;
 import org.apache.log4j.Logger;
-import org.obp.utils.RxTxUtils;
 
 import java.io.IOException;
 
@@ -23,6 +22,7 @@ public class NmeaDevice {
 
     public NmeaDevice(String portName) throws Exception {
         logger.info("open NMEA device on port "+portName);
+        /*
         try {
             CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
             if (portIdentifier.isCurrentlyOwned()) {
@@ -35,10 +35,11 @@ public class NmeaDevice {
             RxTxUtils.dumpAvailablePorts();
             throw e;
         }
+        */
     }
 
     public NmeaBufferedReader getReader() throws IOException {
-        return new NmeaBufferedReader(port.getInputStream());
+        return null;//new NmeaBufferedReader(port.getInputStream());
     }
 
     public void close() {

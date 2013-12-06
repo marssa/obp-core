@@ -1,6 +1,5 @@
 package org.obp.nmea;
 
-import gnu.io.CommPortIdentifier;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
@@ -16,18 +15,6 @@ public class NmeaDeviceFinder {
     public static final int MESSAGES_TO_READ = 10;
 
     private static Logger logger = Logger.getLogger(NmeaDeviceFinder.class);
-
-    private List<CommPortIdentifier> findMatchingIdentifiers(String devicePrefix) {
-        List<CommPortIdentifier> matches = new ArrayList<>();
-        Enumeration<CommPortIdentifier> portEnum = CommPortIdentifier.getPortIdentifiers();
-        while(portEnum.hasMoreElements()) {
-            CommPortIdentifier portIdentifier = portEnum.nextElement();
-            if(portIdentifier.getName().startsWith(devicePrefix) && !portIdentifier.isCurrentlyOwned()) {
-                matches.add(portIdentifier);
-            }
-        }
-        return matches;
-    }
 
     private boolean listenAndValidate(String portName, Set<String> requiredMessages) throws Exception {
         try {
@@ -62,6 +49,8 @@ public class NmeaDeviceFinder {
      */
     public synchronized NmeaDevice find(String devicePrefix, Set<String> requiredMessages) throws Exception {
         logger.info("finding NMEA device on port "+devicePrefix+"* supporting "+requiredMessages+" ...");
+
+        /*
         List<CommPortIdentifier> matches = findMatchingIdentifiers(devicePrefix);
         if(!matches.isEmpty()) {
             for(CommPortIdentifier commPortIdentifier : matches) {
@@ -72,6 +61,7 @@ public class NmeaDeviceFinder {
                 }
             }
         }
+        */
 
         logger.error("matching device not found");
         return null;
