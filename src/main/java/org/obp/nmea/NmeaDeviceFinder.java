@@ -1,5 +1,6 @@
 package org.obp.nmea;
 
+import jssc.SerialPortList;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
@@ -18,21 +19,19 @@ public class NmeaDeviceFinder {
 
     private boolean listenAndValidate(String portName, Set<String> requiredMessages) throws Exception {
         try {
-            NmeaDevice device = new NmeaDevice(portName);
-            if(device==null) return false;
-
             Set<String> remaining = new HashSet<>(requiredMessages);
-            try(NmeaBufferedReader reader = device.getReader()) {
-                for(int i=0; i<MESSAGES_TO_READ; i++) {
-                    NmeaLine line = reader.fetchLine();
-                    remaining.remove(line.getName());
-                    if(remaining.isEmpty()) {
-                        logger.debug("all required messages found");
-                        return true;
+            try(NmeaDevice device = NmeaDevice.createAndOpen(portName)) {
+                if(device.isOpened()) {
+                    NmeaBufferedReader reader = device.getReader();
+                    for(int i=0; i<MESSAGES_TO_READ; i++) {
+                        NmeaLine line = reader.fetchLine();
+                        remaining.remove(line.getName());
+                        if(remaining.isEmpty()) {
+                            logger.debug("all required messages found");
+                            return true;
+                        }
                     }
                 }
-            } finally {
-                device.close();
             }
 
             logger.debug("following messages not found: "+remaining);
@@ -47,24 +46,32 @@ public class NmeaDeviceFinder {
     /**
      * synchronized on purpose, to avoid possible race conditions
      */
-    public synchronized NmeaDevice find(String devicePrefix, Set<String> requiredMessages) throws Exception {
+    public synchronized String find(String devicePrefix, Set<String> requiredMessages) throws Exception {
         logger.info("finding NMEA device on port "+devicePrefix+"* supporting "+requiredMessages+" ...");
 
-        /*
-        List<CommPortIdentifier> matches = findMatchingIdentifiers(devicePrefix);
-        if(!matches.isEmpty()) {
-            for(CommPortIdentifier commPortIdentifier : matches) {
-                logger.debug("checking device "+commPortIdentifier.getName());
-                if(listenAndValidate(commPortIdentifier.getName(), requiredMessages)) {
-                    logger.info("found "+commPortIdentifier.getName());
-                    return new NmeaDevice(commPortIdentifier.getName());
+        List<String> portNames = findMatchingIdentifiers(devicePrefix);
+        if(!portNames.isEmpty()) {
+            for(String portName : portNames) {
+                logger.debug("checking device "+portName);
+                if(listenAndValidate(portName, requiredMessages)) {
+                    logger.info("found "+portName);
+                    return portName;
                 }
             }
         }
-        */
 
         logger.error("matching device not found");
         return null;
+    }
+
+    private List<String> findMatchingIdentifiers(String namePrefix) {
+        List<String> matches = new ArrayList<>();
+        for(String portName : SerialPortList.getPortNames()) {
+            if(portName.startsWith(namePrefix)) {
+                matches.add(portName);
+            }
+        }
+        return matches;
     }
 
 }

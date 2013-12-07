@@ -28,7 +28,6 @@ import static org.obp.AttributeNames.*;
 public class NmeaGpsReceiver extends BaseInstrument {
     private static Logger logger = Logger.getLogger(NmeaGpsReceiver.class);
 
-    private NmeaDevice device;
     private Listener listener;
     private AggregateGPGSV aggregateGPGSV = new AggregateGPGSV();
 
@@ -65,6 +64,11 @@ public class NmeaGpsReceiver extends BaseInstrument {
 
         private volatile boolean stop;
         private CountDownLatch done;
+        private String portName;
+
+        Listener(String portName) {
+            this.portName = portName;
+        }
 
         public void stop() throws InterruptedException {
             stop = true;
@@ -74,37 +78,40 @@ public class NmeaGpsReceiver extends BaseInstrument {
         @Override
         public void run() {
             logger.info("starting "+getName()+" listener ...");
-            try(NmeaBufferedReader reader = device.getReader()) {
-                done = new CountDownLatch(1);
-                stop = false;
-                try {
-                    while(!stop && reader.lineReady()) {
-                        NmeaLine line = reader.getLine();
-                        NmeaLineScanner scanner = line.scanner();
-                        logger.debug(line);
-                        if(parserGPGLL.recognizes(line)) {
-                            updateStandardInstrumentData(parserGPGLL.parse(scanner));
-                        } else if(parserGPVTG.recognizes(line)) {
-                            updateStandardInstrumentData(parserGPVTG.parse(scanner));
-                        } else if(parserGPGGA.recognizes(line)) {
-                            updateStandardInstrumentData(parserGPGGA.parse(scanner));
-                        } else if(parserGPRMC.recognizes(line)) {
-                            updateStandardInstrumentData(parserGPRMC.parse(scanner));
-                        } else if(parserGPGSA.recognizes(line)) {
-                            updateStandardInstrumentData(parserGPGSA.parse(scanner));
-                        } else if(parserGPGSV.recognizes(line)) {
-                            if(aggregateGPGSV.update(parserGPGSV.parse(scanner))) {
-                                updateStandardInstrumentData(aggregateGPGSV.toAttributes());
+            try(NmeaDevice device = NmeaDevice.createAndOpen(portName)) {
+                if(device.isOpened()) {
+                    NmeaBufferedReader reader = device.getReader();
+                    done = new CountDownLatch(1);
+                    stop = false;
+                    try {
+                        while(!stop && reader.lineReady()) {
+                            NmeaLine line = reader.getLine();
+                            NmeaLineScanner scanner = line.scanner();
+                            logger.debug(line);
+                            if(parserGPGLL.recognizes(line)) {
+                                updateStandardInstrumentData(parserGPGLL.parse(scanner));
+                            } else if(parserGPVTG.recognizes(line)) {
+                                updateStandardInstrumentData(parserGPVTG.parse(scanner));
+                            } else if(parserGPGGA.recognizes(line)) {
+                                updateStandardInstrumentData(parserGPGGA.parse(scanner));
+                            } else if(parserGPRMC.recognizes(line)) {
+                                updateStandardInstrumentData(parserGPRMC.parse(scanner));
+                            } else if(parserGPGSA.recognizes(line)) {
+                                updateStandardInstrumentData(parserGPGSA.parse(scanner));
+                            } else if(parserGPGSV.recognizes(line)) {
+                                if(aggregateGPGSV.update(parserGPGSV.parse(scanner))) {
+                                    updateStandardInstrumentData(aggregateGPGSV.toAttributes());
+                                }
                             }
+
+                            reliability = GpsUtil.estimateReliability(attributes);
+
                         }
-
-                        reliability = GpsUtil.estimateReliability(attributes);
-
+                    } catch (Exception e) {
+                        logger.fatal("listener error in line "+reader.getLine(),e);
+                    } finally {
+                        done.countDown();
                     }
-                } catch (Exception e) {
-                    logger.fatal("listener error in line "+reader.getLine(),e);
-                } finally {
-                    done.countDown();
                 }
             } catch (Exception e) {
                 logger.fatal("listener error",e);
@@ -117,8 +124,7 @@ public class NmeaGpsReceiver extends BaseInstrument {
     public void init() throws Exception {
         logger.info("init NMEA GPS receiver at port "+ uri);
         try {
-            device = new NmeaDevice(uri);
-            listener = new Listener();
+            listener = new Listener(uri);
             new Thread(listener,"NMEA-GPS-listener").start();
             logger.info("listener started");
             setStatus(Status.OPERATIONAL);

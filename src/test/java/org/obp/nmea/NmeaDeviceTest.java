@@ -12,11 +12,11 @@ public class NmeaDeviceTest {
     @Test
     @Ignore
     public void testReadFromBU353() throws Exception {
-        NmeaDevice device = new NmeaDevice("/dev/cu.usbserial");
-        try(NmeaBufferedReader reader = device.getReader()) {
+        try(NmeaDevice device = NmeaDevice.createAndOpen("/dev/tty.usbserial")) {
+            NmeaBufferedReader reader = device.getReader();
             NmeaLine line;
             int counter = 20;
-            while((line = reader.fetchLine()) != null && counter > 0) {
+            while(counter > 0) {
                 System.out.println(reader.fetchLine());
                 counter--;
             }

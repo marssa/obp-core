@@ -33,7 +33,6 @@ public class LcjCv3f extends BaseInstrument {
 
     private static Logger logger = Logger.getLogger(LcjCv3f.class);
 
-    private NmeaDevice device;
     private Listener listener;
 
     @Value("${obp.local.nmea.lcj_cv3fm6.uri}")
@@ -58,8 +57,7 @@ public class LcjCv3f extends BaseInstrument {
     public void init() throws Exception {
         logger.info("init "+getName()+" at port "+ uri);
         try {
-            device = new NmeaDevice(uri);
-            listener = new Listener();
+            listener = new Listener(uri);
             new Thread(listener,getName()+"-listener").start();
             logger.info("started");
             setStatus(Status.OPERATIONAL);
@@ -73,6 +71,11 @@ public class LcjCv3f extends BaseInstrument {
 
         private volatile boolean stop;
         private CountDownLatch done;
+        private String portName;
+
+        Listener(String portName) {
+            this.portName = portName;
+        }
 
         public void stop() throws InterruptedException {
             stop = true;
@@ -82,23 +85,26 @@ public class LcjCv3f extends BaseInstrument {
         @Override
         public void run() {
             logger.info("starting "+getName()+" listener ...");
-            try(NmeaBufferedReader reader = device.getReader()) {
-                done = new CountDownLatch(1);
-                stop = false;
-                try {
-                    while(!stop && reader.lineReady()) {
-                        NmeaLine line = reader.getLine();
-                        if(parserWIXDR.recognizes(line)) {
-                            updateStandardInstrumentData(parserWIXDR.parse(line.scanner()));
-                        } else if(parserIIMWV.recognizes(line)) {
-                            updateStandardInstrumentData(parserIIMWV.parse(line.scanner()));
+            try(NmeaDevice device = NmeaDevice.createAndOpen(portName)) {
+                if(device.isOpened()) {
+                    NmeaBufferedReader reader = device.getReader();
+                    done = new CountDownLatch(1);
+                    stop = false;
+                    try {
+                        while(!stop && reader.lineReady()) {
+                            NmeaLine line = reader.getLine();
+                            if(parserWIXDR.recognizes(line)) {
+                                updateStandardInstrumentData(parserWIXDR.parse(line.scanner()));
+                            } else if(parserIIMWV.recognizes(line)) {
+                                updateStandardInstrumentData(parserIIMWV.parse(line.scanner()));
+                            }
+                            reliability = Reliability.HIGH;
                         }
-                        reliability = Reliability.HIGH;
+                    } catch (Exception e) {
+                        logger.fatal("listener error in line "+reader.getLine(),e);
+                    } finally {
+                        done.countDown();
                     }
-                } catch (Exception e) {
-                    logger.fatal("listener error in line "+reader.getLine(),e);
-                } finally {
-                    done.countDown();
                 }
             } catch (Exception e) {
                 logger.fatal("listener error",e);

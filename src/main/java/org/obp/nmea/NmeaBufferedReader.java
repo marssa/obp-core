@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
  * Created by Robert Jaremczak
  * Date: 2013-10-4
  */
-public class NmeaBufferedReader implements AutoCloseable {
+public class NmeaBufferedReader {
 
     public static final Pattern LINE_PATTERN = Pattern.compile("^[$|!](\\w{5})[,]([\\w|,|.|-]{0,72})(?:[*]([A-F0-9]{2})){0,1}$");
     public static final int LINE_NAME_GROUP = 1;
@@ -86,12 +86,5 @@ public class NmeaBufferedReader implements AutoCloseable {
             return getLine();
         }
         return null;
-    }
-
-    @Override
-    public void close() throws Exception {
-        if(reader!=null) {
-            reader.close();
-        }
     }
 }

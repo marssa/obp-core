@@ -20,7 +20,7 @@ public class NmeaDeviceFinderTest {
     @Ignore
     public void shouldFindSomething() throws Exception {
         Set<String> requiredMessages = new HashSet<>(Arrays.asList("GPGLL"));
-        NmeaDevice device = finder.find("/dev/cu.usbserial", requiredMessages);
-        Assert.assertNotNull(device);
+        String portName = finder.find("/dev/tty.usbserial", requiredMessages);
+        Assert.assertNotNull(portName);
     }
 }
