@@ -3,6 +3,7 @@ package org.obp.services.serial;
 import jssc.SerialPort;
 import jssc.SerialPortException;
 import jssc.SerialPortList;
+import junit.framework.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -36,5 +37,27 @@ public class JsscTest {
         }
 
 
+    }
+
+    @Ignore
+    @Test
+    public void shouldOpenAndClose() throws SerialPortException {
+        SerialPort serialPort = new SerialPort("/dev/tty.usbserial");
+        Assert.assertNotNull(serialPort);
+        Assert.assertFalse(serialPort.isOpened());
+
+        serialPort.openPort();
+        serialPort.setParams(BAUDRATE_4800, DATABITS_8, STOPBITS_1, PARITY_NONE);
+        Assert.assertTrue(serialPort.isOpened());
+
+        serialPort.closePort();
+        Assert.assertFalse(serialPort.isOpened());
+
+        serialPort.openPort();
+        serialPort.setParams(BAUDRATE_4800, DATABITS_8, STOPBITS_1, PARITY_NONE);
+        Assert.assertTrue(serialPort.isOpened());
+
+        serialPort.closePort();
+        Assert.assertFalse(serialPort.isOpened());
     }
 }
