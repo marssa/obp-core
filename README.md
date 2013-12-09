@@ -3,12 +3,12 @@ This is a complete, self contained web-application artifact.
 
 current set-up:
 
-- embedded ARM7 compatible platform with <= 1GB RAM
-- Ubuntu Precise Linux 12.x LTS with soft or hard floating point support ABI
+- hardware: embedded ARM7 compatible platform with <= 1GB RAM
+- OS: Ubuntu Precise Linux 12.x LTS with soft or hard floating point support ABI
 - Oracle JDK 7 with hard-fp or OpenJDK 7 with soft-fp
 - USB/serial converters based on Prolific PL2303 chipset, supported natively by the kernel
 - servlet container: Apache Tomcat 7.x
-- database support: file based H2 embedded engine
+- database: file based H2 embedded engine
 
 supported hardware:
 

@@ -1,4 +1,4 @@
-package org.obp.nmea;
+package org.obp.serial;
 
 import jssc.SerialPort;
 import jssc.SerialPortException;

@@ -2,10 +2,10 @@ package org.obp.weather;
 
 import org.apache.log4j.Logger;
 import org.obp.BaseInstrument;
-import org.obp.LocalObpInstance;
 import org.obp.Reliability;
 import org.obp.nmea.NmeaBufferedReader;
 import org.obp.nmea.NmeaDevice;
+import org.obp.nmea.NmeaDeviceFinder;
 import org.obp.nmea.NmeaLine;
 import org.obp.nmea.parser.ParserIIMWV;
 import org.obp.nmea.parser.ParserWIXDR;
@@ -35,8 +35,11 @@ public class LcjCv3f extends BaseInstrument {
 
     private Listener listener;
 
-    @Value("${obp.local.nmea.lcj_cv3fm6.uri}")
+    @Value("${obp.local.nmea.lcjCv3fm6.device}")
     private String uri;
+
+    @Autowired
+    private NmeaDeviceFinder deviceFinder;
 
     @Autowired
     private ParserWIXDR parserWIXDR;
@@ -46,21 +49,24 @@ public class LcjCv3f extends BaseInstrument {
 
     @Autowired
     public LcjCv3f(
-            @Value("${obp.local.nmea.lcj_cv3fm6.uuid}") UUID uuid,
-            @Value("${obp.local.nmea.lcj_cv3fm6.name}") String name,
-            @Value("${obp.local.nmea.lcj_cv3fm6.description}") String description) {
+            @Value("${obp.local.nmea.lcjCv3fm6.uuid}") UUID uuid,
+            @Value("${obp.local.nmea.lcjCv3fm6.name}") String name,
+            @Value("${obp.local.nmea.lcjCv3fm6.description}") String description) {
 
         super(uuid, name, description, Arrays.asList(WIND_TEMPERATURE));
     }
 
     @PostConstruct
     public void init() throws Exception {
-        logger.info("init "+getName()+" at port "+ uri);
+        logger.info("init "+getName());
         try {
             listener = new Listener(uri);
-            new Thread(listener,getName()+"-listener").start();
-            logger.info("started");
-            setStatus(Status.OPERATIONAL);
+            if(listener.isPortFound()) {
+                new Thread(listener,getName()+"-listener").start();
+                setStatus(Status.OPERATIONAL);
+            } else {
+                setStatus(Status.OFF);
+            }
         } catch(Exception e) {
             logger.error("port binding error "+e.getMessage());
             setStatus(Status.MALFUNCTION);
@@ -73,8 +79,12 @@ public class LcjCv3f extends BaseInstrument {
         private CountDownLatch done;
         private String portName;
 
-        Listener(String portName) {
-            this.portName = portName;
+        Listener(String deviceDescription) throws Exception {
+            this.portName = deviceFinder.find(deviceDescription);
+        }
+
+        public boolean isPortFound() {
+            return portName != null;
         }
 
         public void stop() throws InterruptedException {
@@ -84,7 +94,7 @@ public class LcjCv3f extends BaseInstrument {
 
         @Override
         public void run() {
-            logger.info("starting "+getName()+" listener ...");
+            logger.info("starting "+getName()+" ...");
             try(NmeaDevice device = NmeaDevice.createAndOpen(portName)) {
                 if(device.isOpened()) {
                     NmeaBufferedReader reader = device.getReader();

@@ -17,10 +17,16 @@ public class NmeaDeviceFinderTest {
     private NmeaDeviceFinder finder = new NmeaDeviceFinder();
 
     @Test
+    public void shouldPassExactDeviceName() throws Exception {
+        final String portName = "/dev/tty.usbserial";
+        String port = finder.find(portName);
+        Assert.assertEquals(portName, port);
+    }
+
+    @Test
     @Ignore
-    public void shouldFindSomething() throws Exception {
-        Set<String> requiredMessages = new HashSet<>(Arrays.asList("GPGLL"));
-        String portName = finder.find("/dev/tty.usbserial", requiredMessages);
-        Assert.assertNotNull(portName);
+    public void shouldFindExpectedMatch() throws Exception {
+        String port = finder.find("/dev/tty.usbser GPGLL");
+        Assert.assertEquals("/dev/tty.usbserial",port);
     }
 }

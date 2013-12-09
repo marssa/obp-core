@@ -1,4 +1,4 @@
-package org.obp.services.serial;
+package org.obp.serial;
 
 import jssc.SerialPort;
 import jssc.SerialPortException;

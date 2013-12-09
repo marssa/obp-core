@@ -2,10 +2,7 @@ package org.obp.gps;
 
 import org.apache.log4j.Logger;
 import org.obp.BaseInstrument;
-import org.obp.nmea.NmeaBufferedReader;
-import org.obp.nmea.NmeaDevice;
-import org.obp.nmea.NmeaLine;
-import org.obp.nmea.NmeaLineScanner;
+import org.obp.nmea.*;
 import org.obp.nmea.parser.*;
 import org.obp.utils.GpsUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +28,11 @@ public class NmeaGpsReceiver extends BaseInstrument {
     private Listener listener;
     private AggregateGPGSV aggregateGPGSV = new AggregateGPGSV();
 
-    @Value("${obp.local.nmea.gpsReceiver.uri}")
+    @Value("${obp.local.nmea.gpsReceiver.device}")
     private String uri;
+
+    @Autowired
+    private NmeaDeviceFinder deviceFinder;
 
     @Autowired
     private ParserGPGLL parserGPGLL;
@@ -66,8 +66,8 @@ public class NmeaGpsReceiver extends BaseInstrument {
         private CountDownLatch done;
         private String portName;
 
-        Listener(String portName) {
-            this.portName = portName;
+        Listener(String deviceDescription) throws Exception {
+            this.portName = deviceFinder.find(deviceDescription);
         }
 
         public void stop() throws InterruptedException {
@@ -75,9 +75,13 @@ public class NmeaGpsReceiver extends BaseInstrument {
             done.await();
         }
 
+        public boolean isPortFound() {
+            return portName != null;
+        }
+
         @Override
         public void run() {
-            logger.info("starting "+getName()+" listener ...");
+            logger.info("starting "+getName()+" ...");
             try(NmeaDevice device = NmeaDevice.createAndOpen(portName)) {
                 if(device.isOpened()) {
                     NmeaBufferedReader reader = device.getReader();
@@ -122,12 +126,15 @@ public class NmeaGpsReceiver extends BaseInstrument {
 
     @PostConstruct
     public void init() throws Exception {
-        logger.info("init NMEA GPS receiver at port "+ uri);
+        logger.info("init NMEA GPS receiver");
         try {
             listener = new Listener(uri);
-            new Thread(listener,"NMEA-GPS-listener").start();
-            logger.info("listener started");
-            setStatus(Status.OPERATIONAL);
+            if(listener.isPortFound()) {
+                new Thread(listener,getName()+"-listener").start();
+                setStatus(Status.OPERATIONAL);
+            } else {
+                setStatus(Status.OFF);
+            }
         } catch(Exception e) {
             logger.error("error binding to NMEA device: "+e.getMessage());
             setStatus(Status.MALFUNCTION);

@@ -46,8 +46,15 @@ public class NmeaDeviceFinder {
     /**
      * synchronized on purpose, to avoid possible race conditions
      */
-    public synchronized String find(String devicePrefix, Set<String> requiredMessages) throws Exception {
-        logger.info("finding NMEA device on port "+devicePrefix+"* supporting "+requiredMessages+" ...");
+    public synchronized String find(String deviceDescription) throws Exception {
+        String[] tokens = deviceDescription.split(" ");
+        if(tokens.length==1) {
+            return tokens[0];
+        }
+
+        String devicePrefix = tokens[0];
+        Set<String> requiredMessages = new HashSet<>(Arrays.asList(tokens).subList(1,tokens.length));
+        logger.info("finding NMEA device starting with "+ devicePrefix +" supporting "+requiredMessages+" ...");
 
         List<String> portNames = findMatchingIdentifiers(devicePrefix);
         if(!portNames.isEmpty()) {
