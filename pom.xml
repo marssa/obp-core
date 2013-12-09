@@ -117,6 +117,16 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- filesystem scope -->
+
+        <dependency>
+            <groupId>jssc</groupId>
+            <artifactId>jssc</artifactId>
+            <version>2.6.0-release</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/src/main/webapp/WEB-INF/lib/jssc.jar</systemPath>
+        </dependency>
+
         <!-- test -->
 
         <dependency>
