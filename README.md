@@ -1,12 +1,15 @@
 Pre-release version of Open Bridge Platform (OBP).
 This is a complete, self contained web-application artifact.
 
+Refer to release-notes.txt for more detailed information about version changes.
+
 current set-up:
 
 - hardware: embedded ARM7 compatible platform with <= 1GB RAM
 - OS: Ubuntu Precise Linux 12.x LTS with soft or hard floating point support ABI
 - Oracle JDK 7 with hard-fp or OpenJDK 7 with soft-fp
 - USB/serial converters based on Prolific PL2303 chipset, supported natively by the kernel
+- serial communication provided with jSSC library (proven its supremacy over RXTX :-))
 - servlet container: Apache Tomcat 7.x
 - database: file based H2 embedded engine
 
