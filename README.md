@@ -1,8 +1,6 @@
 Pre-release version of Open Bridge Platform (OBP).
 This is a complete, self contained web-application artifact.
 
-NOTE: put RXTX native lib and RXTXcomm.jar somewhere on the path
-
 current set-up:
 
 - embedded ARM7 compatible platform with <= 1GB RAM
@@ -29,15 +27,16 @@ For seamless serial communication set of wrapper classes has been implemented.
 This gives the consumer code consistent API for retrieving NMEA lines with checksum control.
 
 Units used across the project are unified and base on primitive types whenever possible.
-If not stated otherwise all respective values are expressed in following units [symbol]:
-- latitude : angle in degrees with fraction [°] (S is negative angle)
-- longitude : angle in degrees with fraction [°] (W is negative angle)
-- azimuth : angle in degrees with fraction [°] (from N clockwise)
-- velocity : meters per second [m/s]
-- altitude : meters [m]
-- air pressure : pascals [Pa]
-- relative humidity : percents [%]
-- temperature : celsius [°C]
+If not stated otherwise all respective values are expressed in following units:
+
+- latitude : angle in degrees with fraction, S is negative angle, unit: °
+- longitude : angle in degrees with fraction, W is negative angle, unit: °
+- azimuth : angle in degrees with fraction, measured from N clockwise, unit: °
+- velocity : meters per second, unit: m/s
+- altitude : meters, unit: m
+- air pressure : pascals, unit: Pa
+- relative humidity : percents, unit: %
+- temperature : degrees centigrade (celsius), symbol: °C
 
 Set of web-services available according to OBP specification (under construction) can be selectively
 protected by authentication mechanisms configured flexibly (through Spring Security)

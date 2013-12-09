@@ -30,7 +30,7 @@ public class NmeaDevice implements AutoCloseable {
     }
 
     public NmeaBufferedReader getReader() throws IOException {
-        return new NmeaBufferedReader(new JsscInputStream(serialPort));
+        return new NmeaBufferedReader(new JsscReader(serialPort));
     }
 
     public void open() {
