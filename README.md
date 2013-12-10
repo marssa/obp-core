@@ -20,7 +20,7 @@ GlobalSat BU-353 compatible GPS receiver
 - supported NMEA messages: GPGGA, GPGLL, GPGSA, GPGSV, GPRMC, GPVTG
 - default connection parameters as for NMEA 0183 (4800 8n1)
 
-LCJ Capteurs CV3Fm6 40 ultrasonic wind-vane
+LCJ Capteurs CV3Fm6 40 ultrasound wind-vane
 - accessible via serial port device, physical serial port (Rx,Tx only) required
 - supported NMEA messages: IIMWV, WIXDR
 - LCJ specific messages ignored as they don't have a valid NMEA format
