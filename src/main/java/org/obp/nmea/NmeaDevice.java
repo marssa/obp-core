@@ -50,8 +50,6 @@ public class NmeaDevice implements AutoCloseable {
             if(serialPort!=null && serialPort.isOpened()) {
                 logger.debug("close port "+serialPort.getPortName());
                 serialPort.closePort();
-            } else {
-                logger.warn("port "+serialPort.getPortName()+" not opened, can't close");
             }
         } catch (SerialPortException e) {
             logger.error("error closing serial port "+serialPort.getPortName()+":"+e.getMessage());
