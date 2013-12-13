@@ -32,7 +32,7 @@ public class MaritimeCloudService {
     private LocalObpInstance localObpInstance;
 
     @Value("${maritimecloud.server.uri}")
-    private URI serverUri;
+    private String serverUri;
 
     @Value("${obp.maritimecloud.broadcast.weather.enabled}")
     private boolean broadcastWeatherEnabled;

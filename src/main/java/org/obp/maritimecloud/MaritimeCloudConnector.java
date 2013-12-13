@@ -28,10 +28,10 @@ public class MaritimeCloudConnector {
     private MaritimeCloudClientConfiguration clientConfiguration;
     private MaritimeCloudClient client;
 
-    public MaritimeCloudConnector(URI serverUri, String clientId, Supplier<PositionTime> positionSupplier) {
+    public MaritimeCloudConnector(String serverUri, String clientId, Supplier<PositionTime> positionSupplier) {
         clientConfiguration = MaritimeCloudClientConfiguration.create(clientId);
         clientConfiguration.setPositionSupplier(positionSupplier);
-        clientConfiguration.setHost(serverUri.getHost() + ":" + serverUri.getPort());
+        clientConfiguration.setHost(serverUri);
     }
 
     public void init() {

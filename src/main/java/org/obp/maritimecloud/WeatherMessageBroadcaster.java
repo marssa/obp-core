@@ -18,6 +18,7 @@ class WeatherMessageBroadcaster implements Runnable {
 
     private ObpInstance obpInstance;
     private MaritimeCloudConnector connector;
+    private BroadcastOptions options = new BroadcastOptions();
 
     WeatherMessageBroadcaster(ObpInstance obpInstance, MaritimeCloudConnector connector) {
         this.obpInstance = obpInstance;
@@ -30,18 +31,15 @@ class WeatherMessageBroadcaster implements Runnable {
 
         MaritimeCloudClient client = connector.getClient();
         if (client != null) {
-            BroadcastOptions options = new BroadcastOptions();
-            options.setBroadcastRadius(5);
-
+            options.setBroadcastRadius(5000);
+            options.setReceiverAckEnabled(true);
             WeatherMessage wm = new WeatherMessage(obpInstance);
             BroadcastFuture f = client.broadcast(wm, options);
-            /*
             f.onAck(new Consumer<BroadcastMessage.Ack>() {
                 public void accept(BroadcastMessage.Ack t) {
                     logger.debug("received by " + t.getId());
                 }
             });
-            */
         }
 
         //connector.broadcast(new WeatherMessage(obpInstance));
