@@ -18,6 +18,7 @@ public class Attributes implements Map<String, Object> {
     private Map<String, Object> map;
     private UUID intrumentUuid;
     private Reliability reliability;
+    private boolean allRequested = false;
 
     public Attributes() {
         this.map = new HashMap<String, Object>();
@@ -93,15 +94,18 @@ public class Attributes implements Map<String, Object> {
     }
 
     public double getDouble(String key) {
-        return (double)map.get(key);
+        Object o = map.get(key);
+        return o!=null ? (double)o : 0;
     }
 
     public long getLong(String key) {
-        return (long)map.get(key);
+        Object o = map.get(key);
+        return o!=null ? (long)o : 0;
     }
 
     public byte getByte(String key) {
-        return (byte)map.get(key);
+        Object o = map.get(key);
+        return o!=null ? (byte)o : 0;
     }
 
     public String getString(String key) {

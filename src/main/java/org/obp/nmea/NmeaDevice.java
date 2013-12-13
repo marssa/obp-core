@@ -18,7 +18,6 @@ public class NmeaDevice implements AutoCloseable {
     public static final int DATA_BITS = SerialPort.DATABITS_8;
     public static final int STOP_BITS = SerialPort.STOPBITS_1;
     public static final int PARITY = SerialPort.PARITY_NONE;
-    public static final int TIMEOUT_MS = 5000;
 
     private SerialPort serialPort;
 

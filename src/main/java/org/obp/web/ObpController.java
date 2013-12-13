@@ -82,8 +82,8 @@ public class ObpController {
     @ResponseBody
     @RequestMapping("/simple/viewDataFeed")
     public Map<String,Object> all() {
-        Attributes attributes = obp.getAttributes(
-                LATITUDE,LONGITUDE, SPEED_OVER_GROUND,TRUE_NORTH_COURSE,WIND_SPEED,WIND_TEMPERATURE,TIME);
+        Attributes attributes = obp.resolveAttributes(
+                LATITUDE, LONGITUDE, SPEED_OVER_GROUND, TRUE_NORTH_COURSE, WIND_SPEED, WIND_TEMPERATURE, TIME);
         Map<String,Object> map = new HashMap<>();
         map.put("sog", attributes.formatKnots(SPEED_OVER_GROUND));
         map.put("cog", attributes.formatAngle(TRUE_NORTH_COURSE));

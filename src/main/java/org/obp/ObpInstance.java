@@ -8,7 +8,7 @@ import java.util.List;
  */
 public interface ObpInstance extends Identified {
     List<Body> getBodies();
-    Attributes getAttributes(String... keys);
+    Attributes resolveAttributes(String... keys);
     Attributes getAttributes();
     AttributeInfo getAttributeInfo(String key);
     List<AttributeInfo> getAttributeInfos();

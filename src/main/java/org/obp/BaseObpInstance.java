@@ -41,7 +41,7 @@ public abstract class BaseObpInstance extends BaseIdentified implements ObpInsta
     }
 
     @Override
-    public Attributes getAttributes(String... keys) {
+    public Attributes resolveAttributes(String... keys) {
         Attributes attributes = new Attributes();
         for(String key : keys) {
             for(Instrument instrument : instruments.values()) {
