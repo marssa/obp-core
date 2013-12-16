@@ -19,14 +19,18 @@ public class NmeaDeviceFinderTest {
     @Test
     public void shouldPassExactDeviceName() throws Exception {
         final String portName = "/dev/tty.usbserial";
-        String port = finder.find(portName);
-        Assert.assertEquals(portName, port);
+        NmeaDevice device = finder.findAndOpen(portName);
+        Assert.assertNotNull(device);
+        Assert.assertTrue(device.isOpened());
+        device.close();
     }
 
     @Test
     @Ignore
     public void shouldFindExpectedMatch() throws Exception {
-        String port = finder.find("/dev/tty.usbser GPGLL");
-        Assert.assertEquals("/dev/tty.usbserial",port);
+        NmeaDevice device = finder.findAndOpen("/dev/tty.usbser WIXDR");
+        Assert.assertNotNull(device);
+        Assert.assertTrue(device.isOpened());
+        device.close();
     }
 }

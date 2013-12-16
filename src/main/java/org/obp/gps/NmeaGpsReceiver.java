@@ -1,7 +1,6 @@
 package org.obp.gps;
 
 import org.apache.log4j.Logger;
-import org.obp.BaseInstrument;
 import org.obp.nmea.*;
 import org.obp.nmea.parser.*;
 import org.obp.utils.GpsUtil;
@@ -13,7 +12,6 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.util.Arrays;
 import java.util.UUID;
-import java.util.concurrent.CountDownLatch;
 
 import static org.obp.AttributeNames.*;
 
@@ -22,14 +20,13 @@ import static org.obp.AttributeNames.*;
  * Date: 2013-10-5
  */
 @Component
-public class NmeaGpsReceiver extends BaseInstrument {
+public class NmeaGpsReceiver extends NmeaBaseInstrument {
     private static Logger logger = Logger.getLogger(NmeaGpsReceiver.class);
 
-    private Listener listener;
     private AggregateGPGSV aggregateGPGSV = new AggregateGPGSV();
 
     @Value("${obp.local.nmea.gpsReceiver.device}")
-    private String uri;
+    private String deviceUri;
 
     @Autowired
     private NmeaDeviceFinder deviceFinder;
@@ -56,96 +53,42 @@ public class NmeaGpsReceiver extends BaseInstrument {
     public NmeaGpsReceiver(
             @Value("${obp.local.nmea.gpsReceiver.uuid}") UUID uuid,
             @Value("${obp.local.nmea.gpsReceiver.name}") String name,
-            @Value("${obp.local.nmea.gpsReceiver.description}") String description) {
-        super(uuid, name, description, Arrays.asList(LATITUDE,LONGITUDE,ALTITUDE, SPEED_OVER_GROUND,TRUE_NORTH_COURSE));
+            @Value("${obp.local.nmea.gpsReceiver.description}") String description,
+            @Value("${obp.local.nmea.gpsReceiver.device}}") String deviceUri) {
+        super(uuid, name, description, deviceUri,
+                Arrays.asList(LATITUDE,LONGITUDE,ALTITUDE, SPEED_OVER_GROUND,TRUE_NORTH_COURSE));
     }
 
-    class Listener implements Runnable {
+    @Override
+    protected void parseLine(NmeaLine line) {
+        NmeaLineScanner scanner = line.scanner();
 
-        private volatile boolean stop;
-        private CountDownLatch done;
-        private String portName;
-
-        Listener(String deviceDescription) throws Exception {
-            this.portName = deviceFinder.find(deviceDescription);
-        }
-
-        public void stop() throws InterruptedException {
-            stop = true;
-            done.await();
-        }
-
-        public boolean isPortFound() {
-            return portName != null;
-        }
-
-        @Override
-        public void run() {
-            logger.info("starting "+getName()+" ...");
-            try(NmeaDevice device = NmeaDevice.createAndOpen(portName)) {
-                if(device.isOpened()) {
-                    NmeaBufferedReader reader = device.getReader();
-                    done = new CountDownLatch(1);
-                    stop = false;
-                    try {
-                        while(!stop && reader.lineReady()) {
-                            NmeaLine line = reader.getLine();
-                            NmeaLineScanner scanner = line.scanner();
-                            logger.debug(line);
-                            if(parserGPGLL.recognizes(line)) {
-                                updateStandardInstrumentData(parserGPGLL.parse(scanner));
-                            } else if(parserGPVTG.recognizes(line)) {
-                                updateStandardInstrumentData(parserGPVTG.parse(scanner));
-                            } else if(parserGPGGA.recognizes(line)) {
-                                updateStandardInstrumentData(parserGPGGA.parse(scanner));
-                            } else if(parserGPRMC.recognizes(line)) {
-                                updateStandardInstrumentData(parserGPRMC.parse(scanner));
-                            } else if(parserGPGSA.recognizes(line)) {
-                                updateStandardInstrumentData(parserGPGSA.parse(scanner));
-                            } else if(parserGPGSV.recognizes(line)) {
-                                if(aggregateGPGSV.update(parserGPGSV.parse(scanner))) {
-                                    updateStandardInstrumentData(aggregateGPGSV.toAttributes());
-                                }
-                            }
-
-                            reliability = GpsUtil.estimateReliability(attributes);
-
-                        }
-                    } catch (Exception e) {
-                        logger.fatal("listener error in line "+reader.getLine(),e);
-                    } finally {
-                        done.countDown();
-                    }
-                }
-            } catch (Exception e) {
-                logger.fatal("listener error",e);
+        if(parserGPGLL.recognizes(line)) {
+            updateStandardInstrumentData(parserGPGLL.parse(scanner));
+        } else if(parserGPVTG.recognizes(line)) {
+            updateStandardInstrumentData(parserGPVTG.parse(scanner));
+        } else if(parserGPGGA.recognizes(line)) {
+            updateStandardInstrumentData(parserGPGGA.parse(scanner));
+        } else if(parserGPRMC.recognizes(line)) {
+            updateStandardInstrumentData(parserGPRMC.parse(scanner));
+        } else if(parserGPGSA.recognizes(line)) {
+            updateStandardInstrumentData(parserGPGSA.parse(scanner));
+        } else if(parserGPGSV.recognizes(line)) {
+            if(aggregateGPGSV.update(parserGPGSV.parse(scanner))) {
+                updateStandardInstrumentData(aggregateGPGSV.toAttributes());
             }
-            logger.info("stopped.");
         }
+
+        reliability = GpsUtil.estimateReliability(attributes);
     }
 
     @PostConstruct
-    public void init() throws Exception {
-        logger.info("init NMEA GPS receiver");
-        try {
-            listener = new Listener(uri);
-            if(listener.isPortFound()) {
-                new Thread(listener,getName()+"-listener").start();
-                setStatus(Status.OPERATIONAL);
-            } else {
-                setStatus(Status.OFF);
-            }
-        } catch(Exception e) {
-            logger.error("error binding to NMEA device: "+e.getMessage());
-            setStatus(Status.MALFUNCTION);
-        }
+    public void init() {
+        initLineListener(deviceFinder, deviceUri);
     }
 
     @PreDestroy
-    public void destroy() throws InterruptedException {
-        if(listener!=null) {
-            listener.stop();
-        }
-        setStatus(Status.OFF);
+    public void destroy() {
+        destroyLineListener();
     }
 }

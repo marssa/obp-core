@@ -1,12 +1,8 @@
 package org.obp.weather;
 
 import org.apache.log4j.Logger;
-import org.obp.BaseInstrument;
 import org.obp.Reliability;
-import org.obp.nmea.NmeaBufferedReader;
-import org.obp.nmea.NmeaDevice;
-import org.obp.nmea.NmeaDeviceFinder;
-import org.obp.nmea.NmeaLine;
+import org.obp.nmea.*;
 import org.obp.nmea.parser.ParserIIMWV;
 import org.obp.nmea.parser.ParserWIXDR;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +13,6 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.util.Arrays;
 import java.util.UUID;
-import java.util.concurrent.CountDownLatch;
 
 import static org.obp.AttributeNames.*;
 
@@ -29,14 +24,12 @@ import static org.obp.AttributeNames.*;
  */
 
 @Component
-public class LcjCv3f extends BaseInstrument {
+public class LcjCv3f extends NmeaBaseInstrument {
 
     private static Logger logger = Logger.getLogger(LcjCv3f.class);
 
-    private Listener listener;
-
     @Value("${obp.local.nmea.lcjCv3fm6.device}")
-    private String uri;
+    private String deviceUri;
 
     @Autowired
     private NmeaDeviceFinder deviceFinder;
@@ -51,84 +44,30 @@ public class LcjCv3f extends BaseInstrument {
     public LcjCv3f(
             @Value("${obp.local.nmea.lcjCv3fm6.uuid}") UUID uuid,
             @Value("${obp.local.nmea.lcjCv3fm6.name}") String name,
-            @Value("${obp.local.nmea.lcjCv3fm6.description}") String description) {
+            @Value("${obp.local.nmea.lcjCv3fm6.description}") String description,
+            @Value("${obp.local.nmea.lcjCv3fm6.device}") String deviceUri) {
 
-        super(uuid, name, description, Arrays.asList(WIND_TEMPERATURE));
+        super(uuid, name, description, deviceUri, Arrays.asList(WIND_TEMPERATURE, WIND_ANGLE, WIND_SPEED));
     }
 
     @PostConstruct
-    public void init() throws Exception {
-        logger.info("init "+getName());
-        try {
-            listener = new Listener(uri);
-            if(listener.isPortFound()) {
-                new Thread(listener,getName()+"-listener").start();
-                setStatus(Status.OPERATIONAL);
-            } else {
-                setStatus(Status.OFF);
-            }
-        } catch(Exception e) {
-            logger.error("port binding error "+e.getMessage());
-            setStatus(Status.MALFUNCTION);
-        }
+    public void init() {
+        initLineListener(deviceFinder, deviceUri);
     }
 
-    class Listener implements Runnable {
-
-        private volatile boolean stop;
-        private CountDownLatch done;
-        private String portName;
-
-        Listener(String deviceDescription) throws Exception {
-            this.portName = deviceFinder.find(deviceDescription);
+    @Override
+    protected void parseLine(NmeaLine line) {
+        if(parserWIXDR.recognizes(line)) {
+            updateStandardInstrumentData(parserWIXDR.parse(line.scanner()));
+        } else if(parserIIMWV.recognizes(line)) {
+            updateStandardInstrumentData(parserIIMWV.parse(line.scanner()));
         }
-
-        public boolean isPortFound() {
-            return portName != null;
-        }
-
-        public void stop() throws InterruptedException {
-            stop = true;
-            done.await();
-        }
-
-        @Override
-        public void run() {
-            logger.info("starting "+getName()+" ...");
-            try(NmeaDevice device = NmeaDevice.createAndOpen(portName)) {
-                if(device.isOpened()) {
-                    NmeaBufferedReader reader = device.getReader();
-                    done = new CountDownLatch(1);
-                    stop = false;
-                    try {
-                        while(!stop && reader.lineReady()) {
-                            NmeaLine line = reader.getLine();
-                            if(parserWIXDR.recognizes(line)) {
-                                updateStandardInstrumentData(parserWIXDR.parse(line.scanner()));
-                            } else if(parserIIMWV.recognizes(line)) {
-                                updateStandardInstrumentData(parserIIMWV.parse(line.scanner()));
-                            }
-                            reliability = Reliability.HIGH;
-                        }
-                    } catch (Exception e) {
-                        logger.fatal("listener error in line "+reader.getLine(),e);
-                    } finally {
-                        done.countDown();
-                    }
-                }
-            } catch (Exception e) {
-                logger.fatal("listener error",e);
-            }
-            logger.info("stopped.");
-        }
+        reliability = Reliability.HIGH;
     }
 
     @PreDestroy
-    public void destroy() throws InterruptedException {
-        if(listener!=null) {
-            listener.stop();
-        }
-        setStatus(Status.OFF);
+    public void destroy() {
+        destroyLineListener();
     }
 
 }
