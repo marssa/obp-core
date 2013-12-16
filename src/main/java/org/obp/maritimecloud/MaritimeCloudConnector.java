@@ -38,9 +38,13 @@ public class MaritimeCloudConnector {
         client = clientConfiguration.build();
     }
 
-    public void shutdown() throws InterruptedException {
-        if(client != null) {
-            client.close();
+    public void shutdown() {
+        try {
+            if(client != null) {
+                client.close();
+            }
+        } catch (Exception e) {
+            logger.error("exception shutting down MaritimeCloud connector",e);
         }
     }
 

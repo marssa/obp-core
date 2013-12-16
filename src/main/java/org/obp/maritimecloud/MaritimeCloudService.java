@@ -65,7 +65,7 @@ public class MaritimeCloudService {
 
         cloudConnector.init();
         if(broadcastWeatherListenerEnabled) {
-            logger.debug("enable weather broadcast listener");
+            logger.debug("add weather broadcast listener");
             cloudConnector.addBroadcastListener(WeatherMessage.class, new WeatherMessageListener());
         }
 
@@ -76,6 +76,7 @@ public class MaritimeCloudService {
     public void shutdown() {
         logger.info("shutting down MaritimeCloud connector ...");
         broadcaster.shutdown();
+        cloudConnector.shutdown();
         logger.info("done.");
     }
 }
