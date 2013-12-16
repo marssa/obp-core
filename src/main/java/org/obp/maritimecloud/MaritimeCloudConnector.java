@@ -13,6 +13,7 @@ import org.apache.log4j.Logger;
 import org.obp.LocalObpInstance;
 
 import java.net.URI;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Robert Jaremczak
@@ -27,11 +28,16 @@ public class MaritimeCloudConnector {
 
     private MaritimeCloudClientConfiguration clientConfiguration;
     private MaritimeCloudClient client;
+    private BroadcastOptions broadcastOptions;
 
     public MaritimeCloudConnector(String serverUri, String clientId, Supplier<PositionTime> positionSupplier) {
         clientConfiguration = MaritimeCloudClientConfiguration.create(clientId);
         clientConfiguration.setPositionSupplier(positionSupplier);
         clientConfiguration.setHost(serverUri);
+
+        broadcastOptions = new BroadcastOptions();
+        broadcastOptions.setBroadcastRadius(BROADCAST_RADIUS_KM);
+        broadcastOptions.setReceiverAckEnabled(true);
     }
 
     public void init() {
@@ -42,6 +48,7 @@ public class MaritimeCloudConnector {
         try {
             if(client != null) {
                 client.close();
+                client.awaitTermination(10, TimeUnit.SECONDS);
             }
         } catch (Exception e) {
             logger.error("exception shutting down MaritimeCloud connector",e);
@@ -55,20 +62,18 @@ public class MaritimeCloudConnector {
     }
 
     public void broadcast(BroadcastMessage message) {
-        if (client != null) {
-            BroadcastOptions options = new BroadcastOptions();
-            options.setBroadcastRadius(BROADCAST_RADIUS_KM);
-
-            BroadcastFuture f = client.broadcast(message, options);
-            f.onAck(new Consumer<BroadcastMessage.Ack>() {
-                public void accept(BroadcastMessage.Ack t) {
-                    logger.debug("received by " + t.getId());
-                }
-            });
+        try {
+            if (client != null) {
+                BroadcastFuture f = client.broadcast(message, broadcastOptions);
+                f.onAck(new Consumer<BroadcastMessage.Ack>() {
+                    public void accept(BroadcastMessage.Ack t) {
+                        logger.debug("received by " + t.getId());
+                    }
+                });
+            }
+        } catch (Exception e) {
+            logger.warn("MaritimeCloud broadcasting error",e);
         }
-    }
 
-    public MaritimeCloudClient getClient() {
-        return client;
     }
 }

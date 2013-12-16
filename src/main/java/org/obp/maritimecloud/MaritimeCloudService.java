@@ -31,8 +31,14 @@ public class MaritimeCloudService {
     @Autowired
     private LocalObpInstance localObpInstance;
 
-    @Value("${maritimecloud.server.uri}")
+    @Value("${obp.maritimecloud.client.uri}")
+    private String clientUri;
+
+    @Value("${obp.maritimecloud.server.uri}")
     private String serverUri;
+
+    @Value("${obp.maritimecloud.service.enabled}")
+    private boolean serviceEnabled;
 
     @Value("${obp.maritimecloud.broadcast.weather.enabled}")
     private boolean broadcastWeatherEnabled;
@@ -44,15 +50,17 @@ public class MaritimeCloudService {
     private boolean broadcastWeatherListenerEnabled;
 
     private MaritimeCloudConnector createCloudConnector() throws URISyntaxException {
-        return new MaritimeCloudConnector(
-                serverUri,
-                "mmsi://123",
-                positionSupplier);
+        return new MaritimeCloudConnector(serverUri,clientUri,positionSupplier);
     }
 
     @PostConstruct
     public void init() throws URISyntaxException {
-        logger.info("init MaritimeCloud connector ("+serverUri+") ...");
+        if(!serviceEnabled) {
+            logger.info("service disabled");
+            return;
+        }
+
+        logger.info("init connector ("+serverUri+") ...");
 
         positionSupplier = new PositionSupplier(localObpInstance);
         cloudConnector = createCloudConnector();
@@ -74,7 +82,7 @@ public class MaritimeCloudService {
 
     @PreDestroy
     public void shutdown() {
-        logger.info("shutting down MaritimeCloud connector ...");
+        logger.info("shutting down connector ...");
         broadcaster.shutdown();
         cloudConnector.shutdown();
         logger.info("done.");

@@ -28,20 +28,6 @@ class WeatherMessageBroadcaster implements Runnable {
     @Override
     public void run() {
         logger.debug("broadcasting weather data ...");
-
-        MaritimeCloudClient client = connector.getClient();
-        if (client != null) {
-            options.setBroadcastRadius(5000);
-            options.setReceiverAckEnabled(true);
-            WeatherMessage wm = new WeatherMessage(obpInstance);
-            BroadcastFuture f = client.broadcast(wm, options);
-            f.onAck(new Consumer<BroadcastMessage.Ack>() {
-                public void accept(BroadcastMessage.Ack t) {
-                    logger.debug("received by " + t.getId());
-                }
-            });
-        }
-
-        //connector.broadcast(new WeatherMessage(obpInstance));
+        connector.broadcast(new WeatherMessage(obpInstance));
     }
 }
