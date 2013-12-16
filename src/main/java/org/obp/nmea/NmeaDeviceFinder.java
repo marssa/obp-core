@@ -46,10 +46,10 @@ public class NmeaDeviceFinder {
     /**
      * synchronized on purpose, to avoid possible race conditions
      */
-    public synchronized String find(String deviceDescription) throws Exception {
-        String[] tokens = deviceDescription.split(" ");
+    public synchronized NmeaDevice findAndOpen(String deviceUri) throws Exception {
+        String[] tokens = deviceUri.split(" ");
         if(tokens.length==1) {
-            return tokens[0];
+            return NmeaDevice.createAndOpen(tokens[0]);
         }
 
         String devicePrefix = tokens[0];
@@ -62,7 +62,7 @@ public class NmeaDeviceFinder {
                 logger.debug("checking device "+portName);
                 if(listenAndValidate(portName, requiredMessages)) {
                     logger.info("found "+portName);
-                    return portName;
+                    return NmeaDevice.createAndOpen(portName);
                 }
             }
         }

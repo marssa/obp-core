@@ -57,8 +57,11 @@ public class NmeaDevice implements AutoCloseable {
 
     public static final NmeaDevice createAndOpen(String portName) throws Exception {
         NmeaDevice device = new NmeaDevice(portName);
-        device.open();
-        return device;
+        if(!device.isOpened()) {
+            device.open();
+            return device;
+        }
+        return null;
     }
 
     public boolean isOpened() {
