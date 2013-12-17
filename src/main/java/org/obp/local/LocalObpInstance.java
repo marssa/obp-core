@@ -1,19 +1,23 @@
-package org.obp;
+package org.obp.local;
 
 import org.apache.log4j.Logger;
+import org.obp.AttributeNames;
+import org.obp.BaseObpInstance;
+import org.obp.Instrument;
 import org.obp.dummy.DummyRandomInstrument;
-import org.obp.dummy.DummyTimeServer;
 import org.obp.gps.NmeaGpsReceiver;
 import org.obp.dummy.DummyRadar;
+import org.obp.remote.RemoteObpInstance;
+import org.obp.remote.RemoteObpLocator;
 import org.obp.weather.LcjCv3f;
+import org.obp.web.config.ObpConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.net.URI;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 /**
  * Created by Robert Jaremczak
@@ -31,6 +35,12 @@ public class LocalObpInstance extends BaseObpInstance {
     private LcjCv3f nmeaWindVane;
 
     @Autowired
+    private ObpConfig config;
+
+    @Autowired
+    private RemoteObpLocator remoteObpLocator;
+
+    @Autowired
     public LocalObpInstance(
             @Value("${obp.local.uuid}") UUID uuid,
             @Value("${obp.local.name}") String name,
@@ -44,7 +54,6 @@ public class LocalObpInstance extends BaseObpInstance {
         attachInstrument(nmeaWindVane);
         attachInstrument(dummyOutdoorWeatherStation());
         attachInstrument(dummyIndoorWeatherStation());
-        //attachInstrument(new DummyTimeServer());
         attachExplorer(new DummyRadar());
     }
 
@@ -62,4 +71,13 @@ public class LocalObpInstance extends BaseObpInstance {
         return new DummyRandomInstrument("ty1000","dummy indoor weather station",attributes);
     }
 
+    @Override
+    public boolean isHub() {
+        return config.isHub();
+    }
+
+    @Override
+    public int knownRemotes() {
+        return remoteObpLocator.knownRemotes();
+    }
 }

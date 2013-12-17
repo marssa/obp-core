@@ -20,6 +20,12 @@ public class ObpConfig {
     @Value("${google.api.key}")
     private String googleApiKey;
 
+    private boolean hub;
+
+    public boolean isHub() {
+        return hub;
+    }
+
     public String getBuildId() {
         return buildId;
     }

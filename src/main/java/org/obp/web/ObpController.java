@@ -1,7 +1,7 @@
 package org.obp.web;
 
 import org.obp.Attributes;
-import org.obp.LocalObpInstance;
+import org.obp.local.LocalObpInstance;
 import org.obp.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -83,7 +83,7 @@ public class ObpController {
     @RequestMapping("/simple/viewDataFeed")
     public Map<String,Object> all() {
         Attributes attributes = obp.getAttributes(
-                LATITUDE,LONGITUDE, SPEED_OVER_GROUND,TRUE_NORTH_COURSE,WIND_SPEED,WIND_TEMPERATURE,TIME);
+                LATITUDE, LONGITUDE, SPEED_OVER_GROUND, TRUE_NORTH_COURSE, WIND_SPEED, WIND_TEMPERATURE, TIME);
         Map<String,Object> map = new HashMap<>();
         map.put("sog", attributes.formatKnots(SPEED_OVER_GROUND));
         map.put("cog", attributes.formatAngle(TRUE_NORTH_COURSE));
