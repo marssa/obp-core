@@ -1,6 +1,6 @@
 package org.obp.maritimecloud;
 
-import dk.dma.enav.maritimecloud.broadcast.BroadcastMessage;
+import net.maritimecloud.net.broadcast.BroadcastMessage;
 import org.obp.Attributes;
 import org.obp.ObpInstance;
 

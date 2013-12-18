@@ -48,7 +48,7 @@ public class ObpController {
 
     @RequestMapping("/simple/navigation")
     public String simpleNavigationDetails(ModelMap model) {
-        Attributes attributes = obp.getAttributes().filter(SPEED_OVER_GROUND,TRUE_NORTH_COURSE,LONGITUDE,LATITUDE);
+        Attributes attributes = obp.resolveAttributes(SPEED_OVER_GROUND,TRUE_NORTH_COURSE,LONGITUDE,LATITUDE);
         model.addAttribute("sog", attributes.formatKnots(SPEED_OVER_GROUND));
         model.addAttribute("cog", attributes.formatAngle(TRUE_NORTH_COURSE));
         model.addAttribute("position", formatPosition(attributes));
@@ -57,7 +57,7 @@ public class ObpController {
 
     @RequestMapping("/simple/wind")
     public String simpleWindDetails(ModelMap model) {
-        Attributes attributes = obp.getAttributes().filter(WIND_TEMPERATURE,WIND_SPEED,WIND_ANGLE);
+        Attributes attributes = obp.resolveAttributes(WIND_TEMPERATURE,WIND_SPEED,WIND_ANGLE);
         model.addAttribute("speed", attributes.formatKnots(WIND_SPEED));
         model.addAttribute("angle", attributes.formatAngle(WIND_ANGLE));
         model.addAttribute("temperature", attributes.formatTemperature(WIND_TEMPERATURE));
@@ -66,7 +66,7 @@ public class ObpController {
 
     @RequestMapping("/simple/map")
     public String simpleMap(ModelMap model) {
-        model.addAllAttributes(obp.getAttributes().filter(LATITUDE, LONGITUDE));
+        model.addAllAttributes(obp.resolveAttributes(LATITUDE, LONGITUDE));
         return "simple/map";
     }
 
@@ -82,7 +82,7 @@ public class ObpController {
     @ResponseBody
     @RequestMapping("/simple/viewDataFeed")
     public Map<String,Object> all() {
-        Attributes attributes = obp.getAttributes(
+        Attributes attributes = obp.resolveAttributes(
                 LATITUDE, LONGITUDE, SPEED_OVER_GROUND, TRUE_NORTH_COURSE, WIND_SPEED, WIND_TEMPERATURE, TIME);
         Map<String,Object> map = new HashMap<>();
         map.put("sog", attributes.formatKnots(SPEED_OVER_GROUND));

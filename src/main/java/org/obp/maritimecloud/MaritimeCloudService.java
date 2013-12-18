@@ -1,14 +1,13 @@
 package org.obp.maritimecloud;
 
 import org.apache.log4j.Logger;
-import org.obp.LocalObpInstance;
+import org.obp.local.LocalObpInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;

@@ -1,18 +1,16 @@
 package org.obp.maritimecloud;
 
-import dk.dma.enav.maritimecloud.MaritimeCloudClient;
-import dk.dma.enav.maritimecloud.MaritimeCloudClientConfiguration;
-import dk.dma.enav.maritimecloud.broadcast.BroadcastFuture;
-import dk.dma.enav.maritimecloud.broadcast.BroadcastListener;
-import dk.dma.enav.maritimecloud.broadcast.BroadcastMessage;
-import dk.dma.enav.maritimecloud.broadcast.BroadcastOptions;
-import dk.dma.enav.model.geometry.PositionTime;
-import dk.dma.enav.util.function.Consumer;
-import dk.dma.enav.util.function.Supplier;
+import net.maritimecloud.net.MaritimeCloudClient;
+import net.maritimecloud.net.MaritimeCloudClientConfiguration;
+import net.maritimecloud.net.broadcast.BroadcastFuture;
+import net.maritimecloud.net.broadcast.BroadcastListener;
+import net.maritimecloud.net.broadcast.BroadcastMessage;
+import net.maritimecloud.net.broadcast.BroadcastOptions;
+import net.maritimecloud.util.function.Consumer;
+import net.maritimecloud.util.function.Supplier;
+import net.maritimecloud.util.geometry.PositionTime;
 import org.apache.log4j.Logger;
-import org.obp.LocalObpInstance;
 
-import java.net.URI;
 import java.util.concurrent.TimeUnit;
 
 /**

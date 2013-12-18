@@ -117,6 +117,13 @@
             <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat7-websocket</artifactId>
+            <version>7.0.47</version>
+            <scope>provided</scope>
+        </dependency>
+
         <!-- filesystem scope -->
 
         <dependency>
@@ -138,37 +145,28 @@
 
         <!-- DMA dependencies -->
 
+        <!--
         <dependency>
-            <groupId>dk.dma.network</groupId>
-            <artifactId>dma-network-client</artifactId>
-            <version>0.2-SNAPSHOT</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.eclipse.jetty</groupId>
-                    <artifactId>jetty-servlet</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>net.maritimecloud</groupId>
+            <artifactId>maritimecloud-client-javaee</artifactId>
+            <version>0.1-SNAPSHOT</version>
+        </dependency>
+        -->
+        <dependency>
+            <groupId>net.maritimecloud</groupId>
+            <artifactId>mc-net-client-api</artifactId>
+            <version>0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>dk.dma.commons</groupId>
-            <artifactId>dma-commons-management</artifactId>
+            <groupId>net.maritimecloud</groupId>
+            <artifactId>mc-net-client-impl</artifactId>
             <version>0.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
-            <groupId>dk.dma.network</groupId>
-            <artifactId>dma-network-messages</artifactId>
-            <version>0.2-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>dk.dma.3rdparty</groupId>
-            <artifactId>jsr166e</artifactId>
-            <version>01.10.2013</version>
-        </dependency>
-        <dependency>
-            <groupId>dk.dma.commons</groupId>
-            <artifactId>dma-commons-app</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.7.5</version>
         </dependency>
 
     </dependencies>

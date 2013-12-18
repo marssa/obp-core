@@ -1,7 +1,7 @@
 package org.obp.maritimecloud;
 
-import dk.dma.enav.maritimecloud.broadcast.BroadcastListener;
-import dk.dma.enav.maritimecloud.broadcast.BroadcastMessageHeader;
+import net.maritimecloud.net.broadcast.BroadcastListener;
+import net.maritimecloud.net.broadcast.BroadcastMessageHeader;
 import org.apache.log4j.Logger;
 
 /**

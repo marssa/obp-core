@@ -17,7 +17,7 @@ public class RemoteObpInstance implements ObpInstance {
     }
 
     @Override
-    public Attributes getAttributes(String... keys) {
+    public Attributes resolveAttributes(String... keys) {
         return null;
     }
 

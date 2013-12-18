@@ -1,7 +1,7 @@
 package org.obp.maritimecloud;
 
-import dk.dma.enav.model.geometry.PositionTime;
-import dk.dma.enav.util.function.Supplier;
+import net.maritimecloud.util.function.Supplier;
+import net.maritimecloud.util.geometry.PositionTime;
 import org.obp.Attributes;
 import org.obp.ObpInstance;
 

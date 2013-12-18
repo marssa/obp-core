@@ -1,10 +1,6 @@
 package org.obp.maritimecloud;
 
-import dk.dma.enav.maritimecloud.MaritimeCloudClient;
-import dk.dma.enav.maritimecloud.broadcast.BroadcastFuture;
-import dk.dma.enav.maritimecloud.broadcast.BroadcastMessage;
-import dk.dma.enav.maritimecloud.broadcast.BroadcastOptions;
-import dk.dma.enav.util.function.Consumer;
+import net.maritimecloud.net.broadcast.BroadcastOptions;
 import org.apache.log4j.Logger;
 import org.obp.ObpInstance;
 
