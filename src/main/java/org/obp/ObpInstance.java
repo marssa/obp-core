@@ -16,4 +16,6 @@ public interface ObpInstance extends Identified {
     void detachInstrument(Instrument instrument);
     void attachExplorer(Explorer explorer);
     void detachExplorer(Explorer explorer);
+    boolean isHub();
+    int knownRemotes();
 }

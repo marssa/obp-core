@@ -1,7 +1,7 @@
 package org.obp.web.api;
 
 import org.apache.commons.lang3.Range;
-import org.obp.LocalObpInstance;
+import org.obp.local.LocalObpInstance;
 import org.obp.web.config.ObpConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 
 @Controller
-@RequestMapping(InfoApi.API_PREFIX)
-public class InfoApi {
+@RequestMapping(LocalObpInfo.API_PREFIX)
+public class LocalObpInfo {
 
     public static Range<Double> supportedApiLevels = Range.between(1.0, 1.0);
 
@@ -32,8 +32,8 @@ public class InfoApi {
 
     @ResponseBody
     @RequestMapping("/{apiLevel:\\d+\\.\\d+}/info")
-    public InfoDto info(@PathVariable("apiLevel") double apiLevel) {
-        InfoDto dto = new InfoDto();
+    public ObpInfoDto info(@PathVariable("apiLevel") double apiLevel) {
+        ObpInfoDto dto = new ObpInfoDto();
         dto.apiMinLevel = supportedApiLevels.getMinimum();
         dto.apiMaxLevel = supportedApiLevels.getMaximum();
         dto.apiRequestedLevel = apiLevel;
