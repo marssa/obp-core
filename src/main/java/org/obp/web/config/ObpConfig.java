@@ -1,9 +1,13 @@
 package org.obp.web.config;
 
 import org.obp.utils.MapUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.ServletContext;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,7 +24,11 @@ public class ObpConfig {
     @Value("${google.api.key}")
     private String googleApiKey;
 
+    @Value("${obp.local.hub}")
     private boolean hub;
+
+    @Value("${obp.local.uri}")
+    private URI uri;
 
     public boolean isHub() {
         return hub;
@@ -46,4 +54,9 @@ public class ObpConfig {
         Map<String,Object> map = new HashMap<>();
         return map;
     }
+
+    public URI getUri() {
+        return uri;
+    }
+
 }

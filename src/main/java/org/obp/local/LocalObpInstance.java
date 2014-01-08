@@ -55,6 +55,8 @@ public class LocalObpInstance extends BaseObpInstance {
         attachInstrument(dummyOutdoorWeatherStation());
         attachInstrument(dummyIndoorWeatherStation());
         attachExplorer(new DummyRadar());
+
+        logger.info("\n*** init local OBP instance ***\n"+toString());
     }
 
     private Instrument dummyOutdoorWeatherStation() {
@@ -72,6 +74,11 @@ public class LocalObpInstance extends BaseObpInstance {
     }
 
     @Override
+    public URI getUri() {
+        return config.getUri();
+    }
+
+    @Override
     public boolean isHub() {
         return config.isHub();
     }
@@ -79,5 +86,14 @@ public class LocalObpInstance extends BaseObpInstance {
     @Override
     public int knownRemotes() {
         return remoteObpLocator.knownRemotes();
+    }
+
+    @Override
+    public String toString() {
+        StringBuffer sb = new StringBuffer();
+        sb.append("name: ").append(getName()).append(" (").append(getUuid()).append(")\n");
+        sb.append("type: ").append(isHub() ? "hub" : "standard node").append("\n");
+        sb.append("external URI: ").append(getUri());
+        return sb.toString();
     }
 }

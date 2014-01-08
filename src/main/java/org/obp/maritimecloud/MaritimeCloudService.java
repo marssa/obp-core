@@ -2,6 +2,7 @@ package org.obp.maritimecloud;
 
 import org.apache.log4j.Logger;
 import org.obp.local.LocalObpInstance;
+import org.obp.web.config.ObpConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -39,14 +40,23 @@ public class MaritimeCloudService {
     @Value("${obp.maritimecloud.service.enabled}")
     private boolean serviceEnabled;
 
+    @Value("${obp.maritimecloud.broadcast.announcement.enabled}")
+    private boolean broadcastAnnouncementEnabled;
+
+    @Value("${obp.maritimecloud.broadcast.announcement.period}")
+    private int broadcastAnnouncementPeriod;
+
     @Value("${obp.maritimecloud.broadcast.weather.enabled}")
     private boolean broadcastWeatherEnabled;
 
     @Value("${obp.maritimecloud.broadcast.weather.period}")
-    private long broadcastWeatherPeriod;
+    private int broadcastWeatherPeriod;
 
     @Value("${obp.maritimecloud.broadcast.weather.listener.enabled}")
     private boolean broadcastWeatherListenerEnabled;
+
+    @Autowired
+    private ObpConfig config;
 
     private MaritimeCloudConnector createCloudConnector() throws URISyntaxException {
         return new MaritimeCloudConnector(serverUri,clientUri,positionSupplier);
@@ -64,10 +74,18 @@ public class MaritimeCloudService {
         positionSupplier = new PositionSupplier(localObpInstance);
         cloudConnector = createCloudConnector();
 
+        /*
         if(broadcastWeatherEnabled) {
             logger.debug("enable weather broadcaster");
             broadcaster.scheduleAtFixedRate(new WeatherMessageBroadcaster(localObpInstance, cloudConnector),
                     broadcastWeatherPeriod, broadcastWeatherPeriod, TimeUnit.SECONDS);
+        }
+        */
+
+        if(broadcastAnnouncementEnabled) {
+            logger.debug("enable OBP beacon");
+            broadcaster.scheduleAtFixedRate(
+                    new ObpBeacon(config.getUri(), cloudConnector), 20, broadcastAnnouncementPeriod, TimeUnit.SECONDS);
         }
 
         cloudConnector.init();

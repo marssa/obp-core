@@ -2,6 +2,7 @@ package org.obp.remote;
 
 import org.obp.*;
 
+import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
@@ -10,6 +11,11 @@ import java.util.UUID;
  * Date: 2013-12-17
  */
 public class RemoteObpInstance implements ObpInstance {
+
+    @Override
+    public URI getUri() {
+        return null;
+    }
 
     @Override
     public List<Body> getBodies() {

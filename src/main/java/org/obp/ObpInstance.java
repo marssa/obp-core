@@ -1,5 +1,6 @@
 package org.obp;
 
+import java.net.URI;
 import java.util.List;
 
 /**
@@ -7,6 +8,7 @@ import java.util.List;
  * Date: 2013-11-18
  */
 public interface ObpInstance extends Identified {
+    URI getUri();
     List<Body> getBodies();
     Attributes resolveAttributes(String... keys);
     Attributes getAttributes();
