@@ -1,8 +1,7 @@
 package org.obp.maritimecloud;
 
 import org.apache.log4j.Logger;
-
-import java.net.URI;
+import org.obp.ObpInstance;
 
 /**
  * Created by Robert Jaremczak
@@ -14,10 +13,10 @@ public class ObpBeacon implements Runnable {
     private static final Logger logger = Logger.getLogger(ObpBeacon.class);
 
     private final MaritimeCloudConnector connector;
-    private final ObpAnnouncement announcement;
+    private final ObpBeaconMessage announcement;
 
-    ObpBeacon(URI uri, MaritimeCloudConnector connector) {
-        this.announcement = new ObpAnnouncement(uri);
+    ObpBeacon(ObpInstance obpInstance, MaritimeCloudConnector connector) {
+        this.announcement = new ObpBeaconMessage(obpInstance.getName(), obpInstance.getUri(), obpInstance.getUuid());
         this.connector = connector;
     }
 

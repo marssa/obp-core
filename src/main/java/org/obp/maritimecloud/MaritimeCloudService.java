@@ -1,7 +1,10 @@
 package org.obp.maritimecloud;
 
+import net.maritimecloud.net.broadcast.BroadcastListener;
+import net.maritimecloud.net.broadcast.BroadcastMessageHeader;
 import org.apache.log4j.Logger;
 import org.obp.local.LocalObpInstance;
+import org.obp.remote.RemoteObpLocator;
 import org.obp.web.config.ObpConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,20 +43,17 @@ public class MaritimeCloudService {
     @Value("${obp.maritimecloud.service.enabled}")
     private boolean serviceEnabled;
 
-    @Value("${obp.maritimecloud.broadcast.announcement.enabled}")
-    private boolean broadcastAnnouncementEnabled;
+    @Value("${obp.maritimecloud.broadcast.beacon.enabled}")
+    private boolean broadcastBeaconEnabled;
 
-    @Value("${obp.maritimecloud.broadcast.announcement.period}")
-    private int broadcastAnnouncementPeriod;
+    @Value("${obp.maritimecloud.broadcast.beacon.period}")
+    private int broadcastBeaconPeriod;
 
-    @Value("${obp.maritimecloud.broadcast.weather.enabled}")
-    private boolean broadcastWeatherEnabled;
+    @Value("${obp.maritimecloud.broadcast.beacon.listener.enabled}")
+    private boolean broadcastBeaconListenerEnabled;
 
-    @Value("${obp.maritimecloud.broadcast.weather.period}")
-    private int broadcastWeatherPeriod;
-
-    @Value("${obp.maritimecloud.broadcast.weather.listener.enabled}")
-    private boolean broadcastWeatherListenerEnabled;
+    @Autowired
+    private RemoteObpLocator obpLocator;
 
     @Autowired
     private ObpConfig config;
@@ -69,29 +69,22 @@ public class MaritimeCloudService {
             return;
         }
 
-        logger.info("init connector ("+serverUri+") ...");
+        logger.info("init connector (" + serverUri + ") ...");
 
         positionSupplier = new PositionSupplier(localObpInstance);
         cloudConnector = createCloudConnector();
 
-        /*
-        if(broadcastWeatherEnabled) {
-            logger.debug("enable weather broadcaster");
-            broadcaster.scheduleAtFixedRate(new WeatherMessageBroadcaster(localObpInstance, cloudConnector),
-                    broadcastWeatherPeriod, broadcastWeatherPeriod, TimeUnit.SECONDS);
-        }
-        */
-
-        if(broadcastAnnouncementEnabled) {
-            logger.debug("enable OBP beacon");
+        if(broadcastBeaconEnabled) {
+            logger.debug("start OBP beacon");
             broadcaster.scheduleAtFixedRate(
-                    new ObpBeacon(config.getUri(), cloudConnector), 20, broadcastAnnouncementPeriod, TimeUnit.SECONDS);
+                    new ObpBeacon(localObpInstance, cloudConnector),
+                    20, broadcastBeaconPeriod, TimeUnit.SECONDS);
         }
 
         cloudConnector.init();
-        if(broadcastWeatherListenerEnabled) {
-            logger.debug("add weather broadcast listener");
-            cloudConnector.addBroadcastListener(WeatherMessage.class, new WeatherMessageListener());
+        if(broadcastBeaconListenerEnabled) {
+            logger.debug("add OBP announcement listener");
+            cloudConnector.addBroadcastListener(ObpBeaconMessage.class, obpLocator);
         }
 
         logger.info("done.");

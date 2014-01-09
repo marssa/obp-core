@@ -62,8 +62,8 @@ public class MaritimeCloudConnector {
     public void broadcast(BroadcastMessage message) {
         try {
             if (client != null) {
-                BroadcastFuture f = client.broadcast(message, broadcastOptions);
-                f.onAck(new Consumer<BroadcastMessage.Ack>() {
+                BroadcastFuture bf = client.broadcast(message, broadcastOptions);
+                bf.onAck(new Consumer<BroadcastMessage.Ack>() {
                     public void accept(BroadcastMessage.Ack t) {
                         logger.debug("received by " + t.getId());
                     }
