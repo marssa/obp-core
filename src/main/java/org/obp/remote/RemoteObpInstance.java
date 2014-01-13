@@ -12,9 +12,35 @@ import java.util.UUID;
  */
 public class RemoteObpInstance implements ObpInstance {
 
+    private UUID uuid;
+    private URI uri;
+    private String name;
+
+    public RemoteObpInstance(URI uri) {
+        this.uuid = UUID.randomUUID();
+        this.name = "manually defined at "+uri;
+        this.uri = uri;
+    }
+
+    public RemoteObpInstance(UUID uuid, URI uri, String name) {
+        this.uuid = uuid;
+        this.uri = uri;
+        this.name = name;
+    }
+
     @Override
     public URI getUri() {
-        return null;
+        return uri;
+    }
+
+    @Override
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
     @Override
@@ -66,16 +92,6 @@ public class RemoteObpInstance implements ObpInstance {
     @Override
     public int knownRemotes() {
         return 0;
-    }
-
-    @Override
-    public UUID getUuid() {
-        return null;
-    }
-
-    @Override
-    public String getName() {
-        return null;
     }
 
     @Override

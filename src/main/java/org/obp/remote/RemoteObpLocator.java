@@ -12,6 +12,9 @@ import org.springframework.stereotype.Service;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -24,15 +27,21 @@ public class RemoteObpLocator implements BroadcastListener<ObpBeaconMessage> {
 
     private Logger logger = Logger.getLogger(RemoteObpLocator.class);
 
+    private ConcurrentMap<UUID,RemoteObpInstance> remoteInstances;
     private List<ObpInstance> remotes;
 
     @Autowired
     public RemoteObpLocator(@Value("#{'${obp.remote.uris}'.split(',')}") URI[] remoteUris) {
         List<ObpInstance> instances =  new ArrayList<>(remoteUris.length);
         for(URI uri : remoteUris) {
-            instances.add(new RemoteObpInstance());
+            instances.add(new RemoteObpInstance(uri));
         }
         remotes = new CopyOnWriteArrayList<>(instances);
+        remoteInstances = new ConcurrentHashMap<>();
+    }
+
+    private void updateRemote(RemoteObpInstance remoteObpInstance) {
+
     }
 
     private int calculateBeingInformedRank(ObpInstance obpInstance) {
