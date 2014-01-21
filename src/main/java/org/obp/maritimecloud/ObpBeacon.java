@@ -22,7 +22,6 @@ public class ObpBeacon implements Runnable {
 
     @Override
     public void run() {
-        logger.debug("broadcasting obp presence ...");
         connector.broadcast(announcement);
     }
 }

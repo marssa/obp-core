@@ -46,7 +46,7 @@
         }
     </style>
 </head>
-<body style="background: #5f859f; font-family: sans-serif; color: black">
+<body style="background: navy; font-family: sans-serif; color: black">
 <table id="mainTable" align="center" style="height: 100%; width: 100%; text-align: center">
     <tr>
         <td>
