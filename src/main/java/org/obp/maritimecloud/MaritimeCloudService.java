@@ -2,6 +2,7 @@ package org.obp.maritimecloud;
 
 import net.maritimecloud.net.broadcast.BroadcastListener;
 import net.maritimecloud.net.broadcast.BroadcastMessageHeader;
+import net.maritimecloud.util.geometry.PositionReader;
 import org.apache.log4j.Logger;
 import org.obp.local.LocalObpInstance;
 import org.obp.remote.RemoteObpLocator;
@@ -27,7 +28,7 @@ public class MaritimeCloudService {
 
     private static Logger logger = Logger.getLogger(MaritimeCloudService.class);
 
-    private PositionSupplier positionSupplier;
+    private PositionReader positionReader;
     private MaritimeCloudConnector cloudConnector;
     private ScheduledExecutorService broadcaster = Executors.newScheduledThreadPool(1);
 
@@ -59,7 +60,7 @@ public class MaritimeCloudService {
     private ObpConfig config;
 
     private MaritimeCloudConnector createCloudConnector() throws URISyntaxException {
-        return new MaritimeCloudConnector(serverUri,clientUri,positionSupplier);
+        return new MaritimeCloudConnector(serverUri,clientUri,positionReader);
     }
 
     @PostConstruct
@@ -71,7 +72,7 @@ public class MaritimeCloudService {
 
         logger.info("init connector (" + serverUri + ") ...");
 
-        positionSupplier = new PositionSupplier(localObpInstance);
+        positionReader = new ObpPositionReader(localObpInstance);
         cloudConnector = createCloudConnector();
 
         if(broadcastBeaconEnabled) {

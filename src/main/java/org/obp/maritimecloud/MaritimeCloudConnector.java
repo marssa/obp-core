@@ -8,6 +8,7 @@ import net.maritimecloud.net.broadcast.BroadcastMessage;
 import net.maritimecloud.net.broadcast.BroadcastOptions;
 import net.maritimecloud.util.function.Consumer;
 import net.maritimecloud.util.function.Supplier;
+import net.maritimecloud.util.geometry.PositionReader;
 import net.maritimecloud.util.geometry.PositionTime;
 import org.apache.log4j.Logger;
 
@@ -28,9 +29,9 @@ public class MaritimeCloudConnector {
     private MaritimeCloudClient client;
     private BroadcastOptions broadcastOptions;
 
-    public MaritimeCloudConnector(String serverUri, String clientId, Supplier<PositionTime> positionSupplier) {
+    public MaritimeCloudConnector(String serverUri, String clientId, PositionReader positionReader) {
         clientConfiguration = MaritimeCloudClientConfiguration.create(clientId);
-        clientConfiguration.setPositionSupplier(positionSupplier);
+        clientConfiguration.setPositionReader(positionReader);
         clientConfiguration.setHost(serverUri);
 
         broadcastOptions = new BroadcastOptions();

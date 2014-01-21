@@ -1,26 +1,28 @@
 package org.obp.maritimecloud;
 
-import net.maritimecloud.util.function.Supplier;
+import net.maritimecloud.util.geometry.PositionReader;
 import net.maritimecloud.util.geometry.PositionTime;
 import org.obp.Attributes;
 import org.obp.ObpInstance;
 
-import static org.obp.AttributeNames.*;
+import static org.obp.AttributeNames.LATITUDE;
+import static org.obp.AttributeNames.LONGITUDE;
+import static org.obp.AttributeNames.TIME;
 
 /**
  * Created by Robert Jaremczak
- * Date: 2013-12-13
+ * Date: 2014-1-21
  */
-class PositionSupplier extends Supplier<PositionTime> {
+public class ObpPositionReader extends PositionReader {
 
     private ObpInstance obpInstance;
 
-    PositionSupplier(ObpInstance obpInstance) {
+    public ObpPositionReader(ObpInstance obpInstance) {
         this.obpInstance = obpInstance;
     }
 
     @Override
-    public PositionTime get() {
+    public PositionTime getCurrentPosition() {
         Attributes attributes = obpInstance.resolveAttributes(LATITUDE, LONGITUDE, TIME);
         return PositionTime.create(
                 attributes.getDouble(LATITUDE),

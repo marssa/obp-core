@@ -56,7 +56,7 @@ public class LocalObpInstance extends BaseObpInstance {
         attachInstrument(dummyIndoorWeatherStation());
         attachExplorer(new DummyRadar());
 
-        logger.info("init local OBP instance:\n"+toString()+"\n");
+        logger.info("init local OBP instance:\n\n"+toString()+"\n");
     }
 
     private Instrument dummyOutdoorWeatherStation() {
