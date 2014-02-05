@@ -15,12 +15,12 @@ current set-up:
 
 supported hardware:
 
-GlobalSat BU-353 compatible GPS receiver
+NMEA compatible GPS receiver (tested with: GlobalSat BU-353 and Navibe GM 720)
 - accessible via serial port device (originally via internal USB/serial Prolific interface)
 - supported NMEA messages: GPGGA, GPGLL, GPGSA, GPGSV, GPRMC, GPVTG
 - default connection parameters as for NMEA 0183 (4800 8n1)
 
-LCJ Capteurs CV3Fm6 40 ultrasound wind-vane
+NMEA compatible weather station providing wind data (tested with LCJ Capteurs CV3Fm6 40 ultrasound wind-vane)
 - accessible via serial port device, physical serial port (Rx,Tx only) required
 - supported NMEA messages: IIMWV, WIXDR
 - LCJ specific messages ignored as they don't have a valid NMEA format
