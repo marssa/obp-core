@@ -70,7 +70,7 @@ public class MaritimeCloudService {
             return;
         }
 
-        logger.info("init connector (" + serverUri + ") ...");
+        logger.info("initKeys connector (" + serverUri + ") ...");
 
         positionReader = new ObpPositionReader(localObpInstance);
         cloudConnector = createCloudConnector();

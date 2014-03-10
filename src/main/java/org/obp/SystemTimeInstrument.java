@@ -1,8 +1,4 @@
-package org.obp.dummy;
-
-import org.obp.Attributes;
-import org.obp.BaseInstrument;
-import org.obp.Reliability;
+package org.obp;
 
 import java.util.Arrays;
 import java.util.UUID;
@@ -14,11 +10,12 @@ import static org.obp.AttributeNames.TIME;
  * Date: 2013-11-28
  */
 
-public class DummyTimeServer extends BaseInstrument {
+public class SystemTimeInstrument extends BaseInstrument {
 
-    public DummyTimeServer() {
-        super(UUID.randomUUID(),"timeServer", "dummy time server", Arrays.asList(TIME));
-        reliability = Reliability.DUMMY;
+    public SystemTimeInstrument() {
+        super(UUID.randomUUID(),"timeServer", "system time server");
+        initKeys(Arrays.asList(TIME));
+        reliability = Reliability.DEFAULT;
     }
 
     @Override

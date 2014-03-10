@@ -1,5 +1,7 @@
 package org.obp;
 
+import org.apache.log4j.Logger;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +14,8 @@ import java.util.concurrent.ConcurrentMap;
  * Date: 2013-11-28
  */
 public abstract class BaseObpInstance extends BaseIdentified implements ObpInstance {
+
+    private static Logger logger = Logger.getLogger(BaseObpInstance.class);
 
     protected ConcurrentMap<UUID,Instrument> instruments = new ConcurrentHashMap<>();
     protected ConcurrentMap<UUID, Explorer> explorers = new ConcurrentHashMap<>();

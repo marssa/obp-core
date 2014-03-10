@@ -5,5 +5,5 @@ package org.obp;
  * Date: 2013-11-26
  */
 public enum Reliability {
-    DUMMY, UNDEFINED, LOW, AVERAGE, GOOD, HIGH;
+    DEFAULT, UNDEFINED, LOW, AVERAGE, GOOD, HIGH;
 }

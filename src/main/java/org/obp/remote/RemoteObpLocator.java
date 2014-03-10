@@ -69,5 +69,6 @@ public class RemoteObpLocator implements BroadcastListener<ObpBeaconMessage> {
 
     @Override
     public void onMessage(BroadcastMessageHeader header, ObpBeaconMessage broadcast) {
+        logger.info("OBP beacon message received: "+broadcast);
     }
 }

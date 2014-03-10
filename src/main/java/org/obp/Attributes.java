@@ -24,7 +24,7 @@ public class Attributes implements Map<String, Object> {
         this.map = new HashMap<String, Object>();
     }
 
-    private Attributes(Map<String, Object> map) {
+    protected Attributes(Map<String, Object> map) {
         this.map = map;
     }
 

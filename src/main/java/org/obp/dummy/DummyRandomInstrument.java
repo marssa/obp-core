@@ -32,9 +32,10 @@ public class DummyRandomInstrument extends BaseInstrument {
     private Map<String, DoubleRange> attributeRanges;
 
     public DummyRandomInstrument(String name, String description, Map<String, DoubleRange> attributeRanges) {
-        super(UUID.randomUUID(), name, description, attributeRanges.keySet());
+        super(UUID.randomUUID(), name, description);
+        initKeys(attributeRanges.keySet());
         this.attributeRanges = attributeRanges;
-        this.reliability = Reliability.DUMMY;
+        this.reliability = Reliability.DEFAULT;
         setStatus(Status.OPERATIONAL);
     }
 

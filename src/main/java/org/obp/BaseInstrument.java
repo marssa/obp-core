@@ -17,16 +17,22 @@ public abstract class BaseInstrument extends BaseIdentified implements Instrumen
     protected volatile Status status = Status.OFF;
     protected Reliability reliability = Reliability.UNDEFINED;
 
-    public BaseInstrument(UUID uuid, String name, String description, Collection<String> keys) {
+    public BaseInstrument(UUID uuid, String name, String description) {
         super(uuid, name, description);
 
         this.updateTime = TimeUtil.currentUtc();
         this.attributes = Attributes.newConcurrent();
+    }
 
+    protected void initKeys(Collection<String> keys) {
         providedKeys = new ArrayList<>();
         providedKeys.add(UPDATE_TIME);
         providedKeys.add(DATA_STALE);
         providedKeys.addAll(keys);
+    }
+
+    protected void initKeys(String... keys) {
+        initKeys(Arrays.asList(keys));
     }
 
     @Override

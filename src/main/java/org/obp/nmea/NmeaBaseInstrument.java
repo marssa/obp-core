@@ -18,13 +18,14 @@ public abstract class NmeaBaseInstrument extends BaseInstrument {
     private LineListener lineListener;
     private String deviceUri;
 
-    public NmeaBaseInstrument(UUID uuid, String name, String description, String deviceUri, Collection<String> keys) {
-        super(uuid, name, description, keys);
+    public NmeaBaseInstrument(UUID uuid, String name, String description, String deviceUri, String... keys) {
+        super(uuid, name, description);
+        initKeys(keys);
         this.deviceUri = deviceUri;
     }
 
     protected void initLineListener(NmeaDeviceFinder deviceFinder, String deviceUri) {
-        logger.info("init "+getName());
+        logger.info("initKeys "+getName());
         try {
             NmeaDevice device = deviceFinder.findAndOpen(deviceUri);
             if(device==null) {

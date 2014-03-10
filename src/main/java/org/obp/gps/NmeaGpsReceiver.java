@@ -55,8 +55,7 @@ public class NmeaGpsReceiver extends NmeaBaseInstrument {
             @Value("${obp.local.nmea.gpsReceiver.name}") String name,
             @Value("${obp.local.nmea.gpsReceiver.description}") String description,
             @Value("${obp.local.nmea.gpsReceiver.device}}") String deviceUri) {
-        super(uuid, name, description, deviceUri,
-                Arrays.asList(LATITUDE,LONGITUDE,ALTITUDE, SPEED_OVER_GROUND,TRUE_NORTH_COURSE));
+        super(uuid, name, description, deviceUri,LATITUDE,LONGITUDE,ALTITUDE, SPEED_OVER_GROUND,TRUE_NORTH_COURSE);
     }
 
     @Override
