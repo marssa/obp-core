@@ -15,7 +15,7 @@ import net.maritimecloud.util.geometry.PositionTime;
 
 public class MaritimeCloudConnectorCli {
 
-    public static final String SERVER_URI = "localhost";//"test.maritimecloud.net:43234/";
+    public static final String SERVER_URI = "test.maritimecloud.net";
     public static final String CLIENT_URI = "mmsi://20140109";
 
     private static PositionReader positionReader = PositionReader.fixedPosition(

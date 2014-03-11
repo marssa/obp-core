@@ -118,8 +118,8 @@ public class MaritimeCloudService {
         } catch (Exception e) {
             logger.warn("MaritimeCloud broadcasting error",e);
         }
-
     }
+
     @PreDestroy
     public void shutdown() {
         logger.info("shutting down connector ...");
