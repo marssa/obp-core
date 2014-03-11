@@ -15,6 +15,7 @@ public class RemoteObpInstance implements ObpInstance {
     private UUID uuid;
     private URI uri;
     private String name;
+    private String organization;
 
     public RemoteObpInstance(URI uri) {
         this.uuid = UUID.randomUUID();
@@ -22,10 +23,16 @@ public class RemoteObpInstance implements ObpInstance {
         this.uri = uri;
     }
 
-    public RemoteObpInstance(UUID uuid, URI uri, String name) {
+    public RemoteObpInstance(UUID uuid, URI uri, String name, String organization) {
         this.uuid = uuid;
         this.uri = uri;
         this.name = name;
+        this.organization = organization;
+    }
+
+    @Override
+    public String getOrganization() {
+        return null;
     }
 
     @Override

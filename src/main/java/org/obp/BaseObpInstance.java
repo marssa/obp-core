@@ -20,8 +20,15 @@ public abstract class BaseObpInstance extends BaseIdentified implements ObpInsta
     protected ConcurrentMap<UUID,Instrument> instruments = new ConcurrentHashMap<>();
     protected ConcurrentMap<UUID, Explorer> explorers = new ConcurrentHashMap<>();
 
-    public BaseObpInstance(UUID uuid, String name, String description) {
+    private String organization;
+
+    public BaseObpInstance(UUID uuid, String name, String description, String organization) {
         super(uuid, name, description);
+        this.organization = organization;
+    }
+
+    public String getOrganization() {
+        return organization;
     }
 
     @Override

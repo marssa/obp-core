@@ -41,8 +41,9 @@ public class LocalObpInstance extends BaseObpInstance {
     public LocalObpInstance(
             @Value("${obp.local.uuid}") UUID uuid,
             @Value("${obp.local.name}") String name,
-            @Value("${obp.local.description}") String description) {
-        super(uuid, name, description);
+            @Value("${obp.local.description}") String description,
+            @Value("${obp.local.organization}") String organization) {
+        super(uuid, name, description, organization);
     }
 
     @PostConstruct
