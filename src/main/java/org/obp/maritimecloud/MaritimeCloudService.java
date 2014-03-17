@@ -3,6 +3,7 @@ package org.obp.maritimecloud;
 import net.maritimecloud.net.MaritimeCloudClient;
 import net.maritimecloud.net.MaritimeCloudClientConfiguration;
 import net.maritimecloud.net.broadcast.*;
+import net.maritimecloud.net.service.registration.ServiceRegistration;
 import net.maritimecloud.util.function.Consumer;
 import org.apache.log4j.Logger;
 import org.obp.local.LocalObpInstance;
@@ -61,8 +62,7 @@ public class MaritimeCloudService {
     private ObpConfig config;
 
     private void initMaritimeCloudClient() throws URISyntaxException {
-        logger.info("init MaritimeCloud client");
-
+        logger.info("init client");
         MaritimeCloudClientConfiguration conf = MaritimeCloudClientConfiguration.create(clientUri);
         conf.setPositionReader(new ObpPositionReader(localObpInstance));
         conf.setHost(serverUri);
@@ -70,16 +70,29 @@ public class MaritimeCloudService {
         conf.properties().setDescription(localObpInstance.getDescription());
         conf.properties().setOrganization(localObpInstance.getOrganization());
         client = conf.build();
+
+        try {
+            client.connection().awaitConnected(10, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            logger.error("error connecting client", e);
+        } finally {
+            logger.debug("client connected: " + client.connection().isConnected());
+        }
     }
 
     @PostConstruct
     public void init() throws URISyntaxException {
-        if(!serviceEnabled) {
-            return;
+        if(serviceEnabled) {
+            logger.info("init MC services...");
+            initMaritimeCloudClient();
+            startBroadcastBeacon();
+            startBroadcastListener();
+            registerServices();
+            logger.info("done.");
         }
+    }
 
-        initMaritimeCloudClient();
-
+    private void startBroadcastBeacon() {
         if(broadcastBeaconEnabled) {
             logger.debug("start OBP beacon");
             broadcaster.scheduleAtFixedRate(new Runnable() {
@@ -93,12 +106,26 @@ public class MaritimeCloudService {
             }, 20, broadcastBeaconPeriod, TimeUnit.SECONDS);
         }
 
+    }
+
+    private void startBroadcastListener() {
         if(broadcastBeaconListenerEnabled) {
             logger.debug("add OBP announcement listener");
             client.broadcastListen(ObpBeaconMessage.class, obpLocator);
         }
+    }
 
-        logger.info("done.");
+    private void waitForRegistration(ServiceRegistration sr) {
+        try {
+            sr.awaitRegistered(10, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            logger.error("error registering service",e);
+        }
+    }
+
+    private void registerServices() {
+        logger.debug("register weather service");
+        waitForRegistration(client.serviceRegister(WeatherService.SIP, WeatherService.callback(localObpInstance)));
     }
 
     public void broadcast(BroadcastMessage message, int radius) {
@@ -123,7 +150,14 @@ public class MaritimeCloudService {
     @PreDestroy
     public void shutdown() {
         logger.info("shutting down connector ...");
+
         broadcaster.shutdown();
+        try {
+            broadcaster.awaitTermination(10, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            logger.error("broadcaster termination error",e);
+        }
+
         client.close();
         try {
             client.awaitTermination(10, TimeUnit.SECONDS);
