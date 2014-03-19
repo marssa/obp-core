@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import java.util.Arrays;
 import java.util.UUID;
 
 import static org.obp.AttributeNames.*;
@@ -58,9 +57,9 @@ public class LcjCv3f extends NmeaBaseInstrument {
     @Override
     protected void parseLine(NmeaLine line) {
         if(parserWIXDR.recognizes(line)) {
-            updateStandardInstrumentData(parserWIXDR.parse(line.scanner()));
+            updateInstrumentAttributes(parserWIXDR.parse(line.scanner()));
         } else if(parserIIMWV.recognizes(line)) {
-            updateStandardInstrumentData(parserIIMWV.parse(line.scanner()));
+            updateInstrumentAttributes(parserIIMWV.parse(line.scanner()));
         }
         reliability = Reliability.HIGH;
     }

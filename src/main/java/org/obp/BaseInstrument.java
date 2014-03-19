@@ -11,9 +11,11 @@ import static org.obp.AttributeNames.*;
  * Date: 2013-10-24
  */
 public abstract class BaseInstrument extends BaseIdentified implements Instrument {
-    protected long updateTime;
-    protected List<String> providedKeys;
-    protected Attributes attributes;
+
+    private Attributes attributes;
+    private long updateTime;
+    private List<String> providedKeys;
+
     protected volatile Status status = Status.OFF;
     protected Reliability reliability = Reliability.UNDEFINED;
 
@@ -49,14 +51,10 @@ public abstract class BaseInstrument extends BaseIdentified implements Instrumen
         return status!=Status.OFF && status!=Status.MALFUNCTION;
     }
 
-    protected void updateStandardInstrumentData(Attributes attr) {
+    protected void updateInstrumentAttributes(Attributes attr) {
+        updateTime = TimeUtil.currentUtc();
+
         attributes.putAll(attr);
-        updateStandardInstrumentData();
-    }
-
-    protected void updateStandardInstrumentData() {
-        this.updateTime = TimeUtil.currentUtc();
-
         attributes.put(UPDATE_TIME, updateTime);
         attributes.put(DATA_STALE, Boolean.FALSE.toString());
         attributes.setReliability(reliability);

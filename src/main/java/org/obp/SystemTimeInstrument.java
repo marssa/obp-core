@@ -20,8 +20,9 @@ public class SystemTimeInstrument extends BaseInstrument {
 
     @Override
     public Attributes getAttributes() {
-        updateStandardInstrumentData();
-        attributes.put(TIME, System.currentTimeMillis());
-        return attributes;
+        Attributes attr = new Attributes();
+        attr.put(TIME, System.currentTimeMillis());
+        updateInstrumentAttributes(attr);
+        return getAttributes();
     }
 }

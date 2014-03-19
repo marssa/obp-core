@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import java.util.Arrays;
 import java.util.UUID;
 
 import static org.obp.AttributeNames.*;
@@ -63,22 +62,22 @@ public class NmeaGpsReceiver extends NmeaBaseInstrument {
         NmeaLineScanner scanner = line.scanner();
 
         if(parserGPGLL.recognizes(line)) {
-            updateStandardInstrumentData(parserGPGLL.parse(scanner));
+            updateInstrumentAttributes(parserGPGLL.parse(scanner));
         } else if(parserGPVTG.recognizes(line)) {
-            updateStandardInstrumentData(parserGPVTG.parse(scanner));
+            updateInstrumentAttributes(parserGPVTG.parse(scanner));
         } else if(parserGPGGA.recognizes(line)) {
-            updateStandardInstrumentData(parserGPGGA.parse(scanner));
+            updateInstrumentAttributes(parserGPGGA.parse(scanner));
         } else if(parserGPRMC.recognizes(line)) {
-            updateStandardInstrumentData(parserGPRMC.parse(scanner));
+            updateInstrumentAttributes(parserGPRMC.parse(scanner));
         } else if(parserGPGSA.recognizes(line)) {
-            updateStandardInstrumentData(parserGPGSA.parse(scanner));
+            updateInstrumentAttributes(parserGPGSA.parse(scanner));
         } else if(parserGPGSV.recognizes(line)) {
             if(aggregateGPGSV.update(parserGPGSV.parse(scanner))) {
-                updateStandardInstrumentData(aggregateGPGSV.toAttributes());
+                updateInstrumentAttributes(aggregateGPGSV.toAttributes());
             }
         }
 
-        reliability = GpsUtil.estimateReliability(attributes);
+        reliability = GpsUtil.estimateReliability(getAttributes());
     }
 
     @PostConstruct

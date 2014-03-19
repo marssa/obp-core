@@ -40,10 +40,11 @@ public class DummyRandomInstrument extends BaseInstrument {
     }
 
     private void update() {
+        Attributes attr = new Attributes();
         for(Map.Entry<String, DoubleRange> entry : attributeRanges.entrySet()) {
-            attributes.put(entry.getKey(), entry.getValue().getRandomValue());
+            attr.put(entry.getKey(), entry.getValue().getRandomValue());
         }
-        updateStandardInstrumentData();
+        updateInstrumentAttributes(attr);
     }
 
     @Override

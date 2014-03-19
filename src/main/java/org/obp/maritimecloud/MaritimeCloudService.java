@@ -1,8 +1,10 @@
 package org.obp.maritimecloud;
 
+import net.maritimecloud.net.ConnectionFuture;
 import net.maritimecloud.net.MaritimeCloudClient;
 import net.maritimecloud.net.MaritimeCloudClientConfiguration;
 import net.maritimecloud.net.broadcast.*;
+import net.maritimecloud.net.service.ServiceEndpoint;
 import net.maritimecloud.net.service.registration.ServiceRegistration;
 import net.maritimecloud.util.function.Consumer;
 import org.apache.log4j.Logger;
@@ -16,9 +18,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.net.URISyntaxException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * Created by Robert Jaremczak
@@ -126,6 +126,15 @@ public class MaritimeCloudService {
     private void registerServices() {
         logger.debug("register weather service");
         waitForRegistration(client.serviceRegister(WeatherService.SIP, WeatherService.callback(localObpInstance)));
+    }
+
+    public WeatherService.Response callWeatherService(int radius) throws InterruptedException, ExecutionException, TimeoutException {
+        ConnectionFuture<ServiceEndpoint<WeatherService.Request, WeatherService.Response>> locator =
+                client.serviceLocate(WeatherService.SIP).withinDistanceOf(radius).nearest();
+
+        ServiceEndpoint<WeatherService.Request, WeatherService.Response> se = locator.get(10, TimeUnit.SECONDS);
+        ConnectionFuture<WeatherService.Response> invoke = se.invoke(new WeatherService.Request());
+        return invoke.get(10, TimeUnit.SECONDS);
     }
 
     public void broadcast(BroadcastMessage message, int radius) {

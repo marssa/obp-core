@@ -54,8 +54,7 @@ public class DefaultDataInstrument extends BaseInstrument {
 
     @Override
     public Attributes getAttributes() {
-        updateStandardInstrumentData();
-        attributes.putAll(defaults);
-        return attributes;
+        updateInstrumentAttributes(defaults);
+        return getAttributes();
     }
 }
