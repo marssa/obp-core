@@ -39,6 +39,6 @@ public class SystemTimeInstrument extends BaseInstrument {
         Attributes attr = new Attributes();
         attr.put(TIME, System.currentTimeMillis());
         updateInstrumentAttributes(attr);
-        return getAttributes();
+        return attr;
     }
 }

@@ -45,7 +45,10 @@ import java.util.concurrent.*;
 public class MaritimeCloudService {
 
     private static Logger logger = Logger.getLogger(MaritimeCloudService.class);
-    private static final int BROADCAST_RADIUS = 50000;
+
+    public static final int BROADCAST_RADIUS = 50000;
+    public static final int OPERATIONS_TIMEOUT = 30;
+    public static final int BEACON_PERIOD = 20;
 
     private ScheduledExecutorService broadcaster = Executors.newScheduledThreadPool(1);
     private MaritimeCloudClient client;
@@ -88,7 +91,7 @@ public class MaritimeCloudService {
         client = conf.build();
 
         try {
-            client.connection().awaitConnected(10, TimeUnit.SECONDS);
+            client.connection().awaitConnected(OPERATIONS_TIMEOUT, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             logger.error("error connecting client", e);
         } finally {
@@ -119,7 +122,7 @@ public class MaritimeCloudService {
                             localObpInstance.getUri(),
                             localObpInstance.getUuid()), BROADCAST_RADIUS);
                 }
-            }, 20, broadcastBeaconPeriod, TimeUnit.SECONDS);
+            }, BEACON_PERIOD, broadcastBeaconPeriod, TimeUnit.SECONDS);
         }
 
     }
@@ -133,7 +136,7 @@ public class MaritimeCloudService {
 
     private void waitForRegistration(ServiceRegistration sr) {
         try {
-            sr.awaitRegistered(10, TimeUnit.SECONDS);
+            sr.awaitRegistered(OPERATIONS_TIMEOUT, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             logger.error("error registering service",e);
         }
@@ -148,9 +151,9 @@ public class MaritimeCloudService {
         ConnectionFuture<ServiceEndpoint<WeatherService.Request, WeatherService.Response>> locator =
                 client.serviceLocate(WeatherService.SIP).withinDistanceOf(radius).nearest();
 
-        ServiceEndpoint<WeatherService.Request, WeatherService.Response> se = locator.get(10, TimeUnit.SECONDS);
+        ServiceEndpoint<WeatherService.Request, WeatherService.Response> se = locator.get(OPERATIONS_TIMEOUT, TimeUnit.SECONDS);
         ConnectionFuture<WeatherService.Response> invoke = se.invoke(new WeatherService.Request());
-        return invoke.get(10, TimeUnit.SECONDS);
+        return invoke.get(OPERATIONS_TIMEOUT, TimeUnit.SECONDS);
     }
 
     public void broadcast(BroadcastMessage message, int radius) {
@@ -178,14 +181,14 @@ public class MaritimeCloudService {
 
         broadcaster.shutdown();
         try {
-            broadcaster.awaitTermination(10, TimeUnit.SECONDS);
+            broadcaster.awaitTermination(OPERATIONS_TIMEOUT, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             logger.error("broadcaster termination error",e);
         }
 
         client.close();
         try {
-            client.awaitTermination(10, TimeUnit.SECONDS);
+            client.awaitTermination(OPERATIONS_TIMEOUT, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             logger.error("timeout waiting for client to close");
         }

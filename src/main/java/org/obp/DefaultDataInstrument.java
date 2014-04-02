@@ -71,6 +71,6 @@ public class DefaultDataInstrument extends BaseInstrument {
     @Override
     public Attributes getAttributes() {
         updateInstrumentAttributes(defaults);
-        return getAttributes();
+        return defaults;
     }
 }
