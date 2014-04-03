@@ -20,6 +20,7 @@ import net.maritimecloud.net.service.invocation.InvocationCallback;
 import net.maritimecloud.net.service.spi.Service;
 import net.maritimecloud.net.service.spi.ServiceInitiationPoint;
 import net.maritimecloud.net.service.spi.ServiceMessage;
+import org.apache.log4j.Logger;
 import org.obp.Attributes;
 import org.obp.ObpInstance;
 import org.obp.utils.AngleUtil;
@@ -36,10 +37,13 @@ import static org.obp.AttributeNames.WIND_TEMPERATURE;
  */
 public class WeatherService extends Service {
 
+    private static Logger logger = Logger.getLogger(WeatherService.class);
+
     public static InvocationCallback<Request, Response> callback(final ObpInstance obpInstance) {
         return new InvocationCallback<Request, Response>() {
             @Override
             public void process(Request message, Context<Response> context) {
+                logger.debug("weather service invoked by "+context.getCaller());
                 Attributes attributes = obpInstance.resolveAttributes(WIND_SPEED, WIND_ANGLE, WIND_TEMPERATURE);
                 Response response = new Response();
                 response.windSpeed = attributes.getDouble(WIND_SPEED);

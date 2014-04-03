@@ -39,7 +39,7 @@ public class DefaultDataInstrument extends BaseInstrument {
         logger.info("init default attributes");
         defaults = loadDefaultsFromResource(resourceName);
         initKeys(defaults.keySet());
-        reliability = Reliability.DEFAULT;
+        defaults.setReliability(Reliability.DEFAULT);
     }
 
     private Attributes loadDefaultsFromResource(String name) {
@@ -71,6 +71,6 @@ public class DefaultDataInstrument extends BaseInstrument {
     @Override
     public Attributes getAttributes() {
         updateInstrumentAttributes(defaults);
-        return defaults;
+        return super.getAttributes();
     }
 }

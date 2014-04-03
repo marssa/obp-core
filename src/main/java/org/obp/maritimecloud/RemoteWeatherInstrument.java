@@ -44,8 +44,8 @@ public class RemoteWeatherInstrument extends BaseInstrument {
     public RemoteWeatherInstrument(final MaritimeCloudService maritimeCloudService) {
         super(UUID.randomUUID(), "remoteWeatherService", "weather data from nearest OBP within defined range");
         this.maritimeCloudService = maritimeCloudService;
-        status = Status.OPERATIONAL;
-        reliability = Reliability.GOOD;
+        setStatus(Status.OPERATIONAL);
+        setReliability(Reliability.GOOD);
 
         logger.info("init remote weather instrument, radius: "+ DistanceUtil.format(radius)+", polling interval: "+pollingInterval+" s");
         poller.scheduleWithFixedDelay(new Runnable() {
@@ -58,10 +58,10 @@ public class RemoteWeatherInstrument extends BaseInstrument {
                     attr.put(AttributeNames.WIND_ANGLE, response.windAngle);
                     attr.put(AttributeNames.WIND_TEMPERATURE, response.windTemperature);
                     updateInstrumentAttributes(attr);
-                    status = Status.OPERATIONAL;
+                    setStatus(Status.OPERATIONAL);
                 } catch (Exception e) {
                     logger.error("error polling remote weather service",e);
-                    status = Status.MALFUNCTION;
+                    setStatus(Status.MALFUNCTION);
                 }
             }
         }, pollingInterval, pollingInterval, TimeUnit.SECONDS);

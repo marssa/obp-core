@@ -31,9 +31,7 @@ public abstract class BaseInstrument extends BaseIdentified implements Instrumen
     private Attributes attributes;
     private long updateTime;
     private List<String> providedKeys;
-
-    protected volatile Status status = Status.OFF;
-    protected Reliability reliability = Reliability.UNDEFINED;
+    private volatile Status status = Status.OFF;
 
     public BaseInstrument(UUID uuid, String name, String description) {
         super(uuid, name, description);
@@ -73,7 +71,6 @@ public abstract class BaseInstrument extends BaseIdentified implements Instrumen
         attributes.putAll(attr);
         attributes.put(UPDATE_TIME, updateTime);
         attributes.put(DATA_STALE, Boolean.FALSE.toString());
-        attributes.setReliability(reliability);
     }
 
     @Override
@@ -88,7 +85,7 @@ public abstract class BaseInstrument extends BaseIdentified implements Instrumen
 
     @Override
     public AttributeInfo getAttribute(String key) {
-        return new AttributeInfo(this, reliability, getName(), attributes.get(key));
+        return new AttributeInfo(this, getReliability(), getName(), attributes.get(key));
     }
 
     @Override
@@ -104,5 +101,9 @@ public abstract class BaseInstrument extends BaseIdentified implements Instrumen
     @Override
     public Reliability getReliability() {
         return attributes.getReliability();
+    }
+
+    protected void setReliability(Reliability reliability) {
+        attributes.setReliability(reliability);
     }
 }

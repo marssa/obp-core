@@ -18,10 +18,7 @@ package org.obp;
 
 import org.apache.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -67,11 +64,22 @@ public abstract class BaseObpInstance extends BaseIdentified implements ObpInsta
         explorers.remove(explorer.getUuid());
     }
 
+    private List<Instrument> instrumentsByReliabilityReversed() {
+        List<Instrument> list = new ArrayList<>(instruments.values());
+        Collections.sort(list, new Comparator<Instrument>() {
+            @Override
+            public int compare(Instrument i1, Instrument i2) {
+                return i2.getReliability().compareTo(i1.getReliability());
+            }
+        });
+        return list;
+    }
+
     @Override
     public Attributes resolveAttributes(String... keys) {
         Attributes attributes = new Attributes();
         for(String key : keys) {
-            for(Instrument instrument : instruments.values()) {
+            for(Instrument instrument : instrumentsByReliabilityReversed()) {
                 if(instrument.getAttributes().containsKey(key)) {
                     attributes.putIfAbsent(key, instrument.getAttributes().get(key));
                 }
@@ -83,7 +91,7 @@ public abstract class BaseObpInstance extends BaseIdentified implements ObpInsta
     @Override
     public Attributes getAttributes() {
         Attributes attributes = new Attributes();
-        for(Instrument instrument : instruments.values()) {
+        for(Instrument instrument : instrumentsByReliabilityReversed()) {
             for(Map.Entry<String,Object> entry : instrument.getAttributes().entrySet()) {
                 attributes.putIfAbsent(entry.getKey(), entry.getValue());
             }

@@ -31,7 +31,8 @@ public class SystemTimeInstrument extends BaseInstrument {
     public SystemTimeInstrument() {
         super(UUID.randomUUID(),"timeServer", "system time server");
         initKeys(Arrays.asList(TIME));
-        reliability = Reliability.DEFAULT;
+        setReliability(Reliability.DEFAULT);
+        setStatus(Status.OPERATIONAL);
     }
 
     @Override
@@ -39,6 +40,6 @@ public class SystemTimeInstrument extends BaseInstrument {
         Attributes attr = new Attributes();
         attr.put(TIME, System.currentTimeMillis());
         updateInstrumentAttributes(attr);
-        return attr;
+        return super.getAttributes();
     }
 }

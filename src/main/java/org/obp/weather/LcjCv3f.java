@@ -67,6 +67,7 @@ public class LcjCv3f extends NmeaBaseInstrument {
 
     @PostConstruct
     public void init() {
+        setReliability(Reliability.HIGH);
         initLineListener(deviceFinder, deviceUri);
     }
 
@@ -77,7 +78,6 @@ public class LcjCv3f extends NmeaBaseInstrument {
         } else if(parserIIMWV.recognizes(line)) {
             updateInstrumentAttributes(parserIIMWV.parse(line.scanner()));
         }
-        reliability = Reliability.HIGH;
     }
 
     @PreDestroy

@@ -27,6 +27,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import static java.lang.System.out;
+
 /**
  * Created by Robert Jaremczak
  * Date: 2014-3-17
@@ -47,11 +49,13 @@ public class ServicesCli {
         conf.properties().setOrganization("Marsec-XL");
 
         try(MaritimeCloudClient client = conf.build()) {
+            client.connection().awaitConnected(60,TimeUnit.SECONDS);
             ConnectionFuture<ServiceEndpoint<WeatherService.Request, WeatherService.Response>> locator = client.serviceLocate(WeatherService.SIP).nearest();
-            ServiceEndpoint<WeatherService.Request, WeatherService.Response> se = locator.get(1, TimeUnit.SECONDS);
+            ServiceEndpoint<WeatherService.Request, WeatherService.Response> se = locator.get(60, TimeUnit.SECONDS);
+            out.println("endpoint: "+se.getId());
             ConnectionFuture<WeatherService.Response> invoke = se.invoke(new WeatherService.Request());
-            WeatherService.Response response = invoke.get(10, TimeUnit.SECONDS);
-            System.out.println("response: "+response);
+            WeatherService.Response response = invoke.get(120, TimeUnit.SECONDS);
+            out.println("response: "+response);
         }
     }
 }

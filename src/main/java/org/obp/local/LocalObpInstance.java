@@ -31,6 +31,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.net.URI;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Robert Jaremczak
@@ -64,6 +65,8 @@ public class LocalObpInstance extends BaseObpInstance {
 
     @PostConstruct
     public void init() {
+        waitForReliablePosition();
+
         attachInstrument(nmeaGpsReceiver);
         attachInstrument(nmeaWindVane);
         attachInstrument(new DefaultDataInstrument("/defaults.properties"));
@@ -71,6 +74,19 @@ public class LocalObpInstance extends BaseObpInstance {
         attachExplorer(new DummyRadar());
 
         logger.info("init local OBP instance:\n\n"+toString()+"\n");
+    }
+
+    private void waitForReliablePosition() {
+        logger.info("wait until GPS reads position ...");
+        long tmax = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(20);
+        while(!nmeaGpsReceiver.isPositionReceived() && System.currentTimeMillis() < tmax) {
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                logger.error(e,e);
+            }
+        }
+        logger.info(nmeaGpsReceiver.isPositionReceived() ? "position received" : "unable to receive position");
     }
 
     @Override

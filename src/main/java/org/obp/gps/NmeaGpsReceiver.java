@@ -17,7 +17,12 @@
 package org.obp.gps;
 
 import org.apache.log4j.Logger;
-import org.obp.nmea.*;
+import org.obp.Attributes;
+import org.obp.Reliability;
+import org.obp.nmea.NmeaBaseInstrument;
+import org.obp.nmea.NmeaDeviceFinder;
+import org.obp.nmea.NmeaLine;
+import org.obp.nmea.NmeaLineScanner;
 import org.obp.nmea.parser.*;
 import org.obp.utils.GpsUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,11 +98,16 @@ public class NmeaGpsReceiver extends NmeaBaseInstrument {
             }
         }
 
-        reliability = GpsUtil.estimateReliability(getAttributes());
+        setReliability(GpsUtil.estimateReliability(getAttributes()));
+    }
+
+    public boolean isPositionReceived() {
+        return getAttributes(LATITUDE,LONGITUDE).size()==2;
     }
 
     @PostConstruct
     public void init() {
+        setReliability(Reliability.HIGH);
         initLineListener(deviceFinder, deviceUri);
     }
 

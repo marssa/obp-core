@@ -23,6 +23,8 @@ import net.maritimecloud.net.broadcast.*;
 import net.maritimecloud.net.service.ServiceEndpoint;
 import net.maritimecloud.net.service.registration.ServiceRegistration;
 import net.maritimecloud.util.function.Consumer;
+import net.maritimecloud.util.geometry.PositionReader;
+import net.maritimecloud.util.geometry.PositionTime;
 import org.apache.log4j.Logger;
 import org.obp.local.LocalObpInstance;
 import org.obp.remote.RemoteObpLocator;
@@ -47,8 +49,8 @@ public class MaritimeCloudService {
     private static Logger logger = Logger.getLogger(MaritimeCloudService.class);
 
     public static final int BROADCAST_RADIUS = 50000;
-    public static final int OPERATIONS_TIMEOUT = 30;
-    public static final int BEACON_PERIOD = 20;
+    public static final int OPERATIONS_TIMEOUT = 60;
+    public static final int BEACON_PERIOD = 60;
 
     private ScheduledExecutorService broadcaster = Executors.newScheduledThreadPool(1);
     private MaritimeCloudClient client;
@@ -88,6 +90,7 @@ public class MaritimeCloudService {
         conf.properties().setName(localObpInstance.getName());
         conf.properties().setDescription(localObpInstance.getDescription());
         conf.properties().setOrganization(localObpInstance.getOrganization());
+        logger.info("configuration:\n\n"+dumpConfiguration(conf));
         client = conf.build();
 
         try {
@@ -99,16 +102,34 @@ public class MaritimeCloudService {
         }
     }
 
+    private String dumpConfiguration(MaritimeCloudClientConfiguration conf) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("id: ").append(conf.getId()).append("\n");
+        sb.append("name: ").append(conf.properties().getName()).append("\n");
+        sb.append("description: ").append(conf.properties().getDescription()).append("\n");
+        sb.append("organization: ").append(conf.properties().getOrganization()).append("\n");
+        sb.append("position: ").append(conf.getPositionReader().getCurrentPosition()).append("\n");
+        return sb.toString();
+    }
+
     @PostConstruct
     public void init() throws URISyntaxException {
         if(serviceEnabled) {
             logger.info("init MC services...");
             initMaritimeCloudClient();
-            startBroadcastBeacon();
-            startBroadcastListener();
-            registerServices();
-            logger.info("done.");
+            if(isConnected()) {
+                startBroadcastBeacon();
+                startBroadcastListener();
+                registerServices();
+                logger.info("done.");
+            } else {
+                logger.warn("unable to connect to MaritimeCloud server");
+            }
         }
+    }
+
+    public boolean isConnected() {
+        return client!=null && client.connection()!=null ? client.connection().isConnected() : false;
     }
 
     private void startBroadcastBeacon() {

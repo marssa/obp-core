@@ -10,7 +10,8 @@ current set-up:
 - Oracle JDK 7 with hard-fp or OpenJDK 7 with soft-fp
 - USB/serial converters based on Prolific PL2303 chipset, supported natively by the kernel
 - serial communication provided with jSSC library (proven its supremacy over RXTX :-))
-- servlet container: Apache Tomcat 7.x
+- servlet container: Apache Tomcat 7.0.50 or newer recommended (WebSocket implementation required)
+  consider using faster entropy generator (e.g. by setting java.security.egd=file:/dev/./urandom)
 - database: file based H2 embedded engine
 
 supported hardware:

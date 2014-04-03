@@ -18,8 +18,11 @@ package org.obp.maritimecloud;
 
 import net.maritimecloud.util.geometry.PositionReader;
 import net.maritimecloud.util.geometry.PositionTime;
+import org.apache.log4j.Logger;
 import org.obp.Attributes;
 import org.obp.ObpInstance;
+
+import java.util.concurrent.TimeUnit;
 
 import static org.obp.AttributeNames.LATITUDE;
 import static org.obp.AttributeNames.LONGITUDE;
@@ -31,6 +34,7 @@ import static org.obp.AttributeNames.TIME;
  */
 public class ObpPositionReader extends PositionReader {
 
+    private static Logger logger = Logger.getLogger(ObpPositionReader.class);
     private ObpInstance obpInstance;
 
     public ObpPositionReader(ObpInstance obpInstance) {

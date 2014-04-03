@@ -51,7 +51,7 @@ public class DummyRandomInstrument extends BaseInstrument {
         super(UUID.randomUUID(), name, description);
         initKeys(attributeRanges.keySet());
         this.attributeRanges = attributeRanges;
-        this.reliability = Reliability.DEFAULT;
+        setReliability(Reliability.DEFAULT);
         setStatus(Status.OPERATIONAL);
     }
 

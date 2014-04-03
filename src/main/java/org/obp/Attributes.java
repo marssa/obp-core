@@ -33,7 +33,7 @@ public class Attributes implements Map<String, Object> {
 
     private Map<String, Object> map;
     private UUID intrumentUuid;
-    private Reliability reliability;
+    private Reliability reliability = Reliability.UNDEFINED;
     private boolean allRequested = false;
 
     public Attributes() {
