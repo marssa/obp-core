@@ -91,8 +91,10 @@ public class LocalObpInstance extends BaseObpInstance {
 
         maritimeCloudAgent.connect(createPositionReader());
         if(maritimeCloudAgent.isConnected()) {
-            attachInstrument(new RemoteWeatherInstrument(scanner, maritimeCloudAgent));
             maritimeCloudAgent.registerService(WeatherService.SIP, WeatherService.callback(this));
+            if(config.isRemoteWeatherScanner()) {
+                attachInstrument(new RemoteWeatherInstrument(scanner, maritimeCloudAgent));
+            }
         }
 
         logger.info("init local OBP instance:\n\n" + toString() + "\n");
@@ -117,7 +119,7 @@ public class LocalObpInstance extends BaseObpInstance {
 
     private PositionReader createPositionReader() {
         logger.info("waiting for position data ...");
-        long tmax = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(5);
+        long tmax = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(15);
         while(!nmeaGpsReceiver.isPositionReceived() && System.currentTimeMillis() < tmax) {
             try {
                 Thread.sleep(200);

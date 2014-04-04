@@ -65,6 +65,7 @@ public class RemoteWeatherInstrument extends BaseInstrument {
                         attr.put(AttributeNames.WIND_TEMPERATURE, response.windTemperature);
                         updateInstrumentAttributes(attr);
                         setStatus(Status.OPERATIONAL);
+                        logger.debug("remote weather data received");
                     } else {
                         setStatus(Status.OFF);
                     }

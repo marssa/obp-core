@@ -163,12 +163,16 @@ public class MaritimeCloudAgent {
         }
     }
 
-    public <T, S extends ServiceMessage<T>> T callNearestServiceProvider(ServiceInitiationPoint<S>  sip, S request, int radius) throws InterruptedException, ExecutionException, TimeoutException {
-        ConnectionFuture<ServiceEndpoint<S, T>> locator = client.serviceLocate(sip).withinDistanceOf(radius).nearest();
-        ServiceEndpoint<S, T> se = locator.get(OPERATIONS_TIMEOUT, TimeUnit.SECONDS);
-        if(se!=null) {
-            ServiceInvocationFuture<T> invoke = se.invoke(request);
-            return invoke.get(OPERATIONS_TIMEOUT, TimeUnit.SECONDS);
+    public <T, S extends ServiceMessage<T>> T callNearestServiceProvider(ServiceInitiationPoint<S>  sip, S request, int radius) {
+        try {
+            ConnectionFuture<ServiceEndpoint<S, T>> locator = client.serviceLocate(sip).withinDistanceOf(radius).nearest();
+            ServiceEndpoint<S, T> se = locator.get(OPERATIONS_TIMEOUT, TimeUnit.SECONDS);
+            if(se!=null) {
+                ServiceInvocationFuture<T> invoke = se.invoke(request);
+                return invoke.get(OPERATIONS_TIMEOUT, TimeUnit.SECONDS);
+            }
+        } catch (Exception e) {
+            logger.warn("exception calling remote service "+sip.getName(),e);
         }
 
         return null;

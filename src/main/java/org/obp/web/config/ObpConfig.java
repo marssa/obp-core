@@ -46,6 +46,9 @@ public class ObpConfig {
     @Value("${obp.local.uri}")
     private URI uri;
 
+    @Value("${obp.maritimecloud.remote.scanner.weather.enabled}")
+    private boolean remoteWeatherScanner;
+
     public boolean isHub() {
         return hub;
     }
@@ -64,6 +67,10 @@ public class ObpConfig {
 
     public Object getOsInfo() {
         return MapUtil.filterByKeyPrefix(System.getProperties(),"os.");
+    }
+
+    public boolean isRemoteWeatherScanner() {
+        return remoteWeatherScanner;
     }
 
     public Map<String,Object> getComponents() {

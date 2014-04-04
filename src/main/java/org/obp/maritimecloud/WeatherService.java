@@ -27,9 +27,7 @@ import org.obp.utils.AngleUtil;
 import org.obp.utils.SpeedUtil;
 import org.obp.utils.TemperatureUtil;
 
-import static org.obp.AttributeNames.WIND_ANGLE;
-import static org.obp.AttributeNames.WIND_SPEED;
-import static org.obp.AttributeNames.WIND_TEMPERATURE;
+import static org.obp.AttributeNames.*;
 
 /**
  * Created by Robert Jaremczak
@@ -44,11 +42,13 @@ public class WeatherService extends Service {
             @Override
             public void process(Request message, Context<Response> context) {
                 logger.debug("weather service invoked by "+context.getCaller());
-                Attributes attributes = obpInstance.resolveAttributes(WIND_SPEED, WIND_ANGLE, WIND_TEMPERATURE);
+                Attributes attributes = obpInstance.resolveAttributes(WIND_SPEED, WIND_ANGLE, WIND_TEMPERATURE, LATITUDE, LONGITUDE);
                 Response response = new Response();
                 response.windSpeed = attributes.getDouble(WIND_SPEED);
                 response.windAngle = attributes.getDouble(WIND_ANGLE);
                 response.windTemperature = attributes.getDouble(WIND_TEMPERATURE);
+                response.latitude = attributes.getDouble(LATITUDE);
+                response.longitude = attributes.getDouble(LONGITUDE);
                 context.complete(response);
             }
         };
@@ -60,6 +60,8 @@ public class WeatherService extends Service {
 
     public static class Response extends ServiceMessage<Void> {
 
+        public double latitude;
+        public double longitude;
         public double windSpeed;
         public double windAngle;
         public double windTemperature;
