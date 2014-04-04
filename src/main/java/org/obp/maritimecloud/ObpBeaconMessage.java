@@ -27,33 +27,21 @@ import java.util.UUID;
  */
 public class ObpBeaconMessage extends BroadcastMessage {
 
-    private URI uri;
-    private UUID uuid;
     private String name;
 
     ObpBeaconMessage() {
     }
 
-    public ObpBeaconMessage(String name, URI uri, UUID uuid) {
+    public ObpBeaconMessage(String name) {
         this.name = name;
-        this.uri = uri;
-        this.uuid = uuid;
-    }
-
-    public URI getUri() {
-        return uri;
     }
 
     public String getName() {
         return name;
     }
 
-    public UUID getUuid() {
-        return uuid;
-    }
-
     @Override
     public String toString() {
-        return name+" "+uri+" UUID: "+uuid;
+        return name;
     }
 }

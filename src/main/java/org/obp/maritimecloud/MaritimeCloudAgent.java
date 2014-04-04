@@ -19,23 +19,24 @@ package org.obp.maritimecloud;
 import net.maritimecloud.net.ConnectionFuture;
 import net.maritimecloud.net.MaritimeCloudClient;
 import net.maritimecloud.net.MaritimeCloudClientConfiguration;
-import net.maritimecloud.net.broadcast.*;
+import net.maritimecloud.net.broadcast.BroadcastFuture;
+import net.maritimecloud.net.broadcast.BroadcastMessage;
+import net.maritimecloud.net.broadcast.BroadcastOptions;
 import net.maritimecloud.net.service.ServiceEndpoint;
+import net.maritimecloud.net.service.ServiceInvocationFuture;
+import net.maritimecloud.net.service.invocation.InvocationCallback;
 import net.maritimecloud.net.service.registration.ServiceRegistration;
+import net.maritimecloud.net.service.spi.ServiceInitiationPoint;
+import net.maritimecloud.net.service.spi.ServiceMessage;
 import net.maritimecloud.util.function.Consumer;
 import net.maritimecloud.util.geometry.PositionReader;
-import net.maritimecloud.util.geometry.PositionTime;
 import org.apache.log4j.Logger;
-import org.obp.local.LocalObpInstance;
 import org.obp.remote.RemoteObpLocator;
-import org.obp.web.config.ObpConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import java.net.URISyntaxException;
 import java.util.concurrent.*;
 
 /**
@@ -44,9 +45,9 @@ import java.util.concurrent.*;
  */
 
 @Service
-public class MaritimeCloudService {
+public class MaritimeCloudAgent {
 
-    private static Logger logger = Logger.getLogger(MaritimeCloudService.class);
+    private static Logger logger = Logger.getLogger(MaritimeCloudAgent.class);
 
     public static final int BROADCAST_RADIUS = 50000;
     public static final int OPERATIONS_TIMEOUT = 60;
@@ -55,8 +56,14 @@ public class MaritimeCloudService {
     private ScheduledExecutorService broadcaster = Executors.newScheduledThreadPool(1);
     private MaritimeCloudClient client;
 
-    @Autowired
-    private LocalObpInstance localObpInstance;
+    @Value("${obp.local.name}")
+    private String name;
+
+    @Value("${obp.local.description}")
+    private String description;
+
+    @Value("${obp.local.organization}")
+    private String organization;
 
     @Value("${obp.maritimecloud.client.uri}")
     private String clientUri;
@@ -79,17 +86,14 @@ public class MaritimeCloudService {
     @Autowired
     private RemoteObpLocator obpLocator;
 
-    @Autowired
-    private ObpConfig config;
-
-    private void initMaritimeCloudClient() throws URISyntaxException {
+    private void buildAndConnectClient(PositionReader positionReader) {
         logger.info("init client");
         MaritimeCloudClientConfiguration conf = MaritimeCloudClientConfiguration.create(clientUri);
-        conf.setPositionReader(new ObpPositionReader(localObpInstance));
+        conf.setPositionReader(positionReader);
         conf.setHost(serverUri);
-        conf.properties().setName(localObpInstance.getName());
-        conf.properties().setDescription(localObpInstance.getDescription());
-        conf.properties().setOrganization(localObpInstance.getOrganization());
+        conf.properties().setName(name);
+        conf.properties().setDescription(description);
+        conf.properties().setOrganization(organization);
         logger.info("configuration:\n\n"+dumpConfiguration(conf));
         client = conf.build();
 
@@ -112,15 +116,13 @@ public class MaritimeCloudService {
         return sb.toString();
     }
 
-    @PostConstruct
-    public void init() throws URISyntaxException {
+    public void connect(PositionReader positionReader) {
         if(serviceEnabled) {
-            logger.info("init MC services...");
-            initMaritimeCloudClient();
+            logger.info("connecting ...");
+            buildAndConnectClient(positionReader);
             if(isConnected()) {
-                startBroadcastBeacon();
+                startObpBeacon();
                 startBroadcastListener();
-                registerServices();
                 logger.info("done.");
             } else {
                 logger.warn("unable to connect to MaritimeCloud server");
@@ -132,20 +134,16 @@ public class MaritimeCloudService {
         return client!=null && client.connection()!=null ? client.connection().isConnected() : false;
     }
 
-    private void startBroadcastBeacon() {
+    public void startObpBeacon() {
         if(broadcastBeaconEnabled) {
             logger.debug("start OBP beacon");
             broadcaster.scheduleAtFixedRate(new Runnable() {
                 @Override
                 public void run() {
-                    broadcast(new ObpBeaconMessage(
-                            localObpInstance.getName(),
-                            localObpInstance.getUri(),
-                            localObpInstance.getUuid()), BROADCAST_RADIUS);
+                    broadcast(new ObpBeaconMessage(name), BROADCAST_RADIUS);
                 }
             }, BEACON_PERIOD, broadcastBeaconPeriod, TimeUnit.SECONDS);
         }
-
     }
 
     private void startBroadcastListener() {
@@ -155,7 +153,9 @@ public class MaritimeCloudService {
         }
     }
 
-    private void waitForRegistration(ServiceRegistration sr) {
+    public <T, S extends ServiceMessage<T>> void registerService(ServiceInitiationPoint<S> sip, InvocationCallback<S,T> callback) {
+        logger.debug("register service: "+sip.getName());
+        ServiceRegistration sr =client.serviceRegister(sip, callback);
         try {
             sr.awaitRegistered(OPERATIONS_TIMEOUT, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
@@ -163,18 +163,15 @@ public class MaritimeCloudService {
         }
     }
 
-    private void registerServices() {
-        logger.debug("register weather service");
-        waitForRegistration(client.serviceRegister(WeatherService.SIP, WeatherService.callback(localObpInstance)));
-    }
+    public <T, S extends ServiceMessage<T>> T callNearestServiceProvider(ServiceInitiationPoint<S>  sip, S request, int radius) throws InterruptedException, ExecutionException, TimeoutException {
+        ConnectionFuture<ServiceEndpoint<S, T>> locator = client.serviceLocate(sip).withinDistanceOf(radius).nearest();
+        ServiceEndpoint<S, T> se = locator.get(OPERATIONS_TIMEOUT, TimeUnit.SECONDS);
+        if(se!=null) {
+            ServiceInvocationFuture<T> invoke = se.invoke(request);
+            return invoke.get(OPERATIONS_TIMEOUT, TimeUnit.SECONDS);
+        }
 
-    public WeatherService.Response callWeatherService(int radius) throws InterruptedException, ExecutionException, TimeoutException {
-        ConnectionFuture<ServiceEndpoint<WeatherService.Request, WeatherService.Response>> locator =
-                client.serviceLocate(WeatherService.SIP).withinDistanceOf(radius).nearest();
-
-        ServiceEndpoint<WeatherService.Request, WeatherService.Response> se = locator.get(OPERATIONS_TIMEOUT, TimeUnit.SECONDS);
-        ConnectionFuture<WeatherService.Response> invoke = se.invoke(new WeatherService.Request());
-        return invoke.get(OPERATIONS_TIMEOUT, TimeUnit.SECONDS);
+        return null;
     }
 
     public void broadcast(BroadcastMessage message, int radius) {
@@ -197,29 +194,31 @@ public class MaritimeCloudService {
     }
 
     @PreDestroy
-    public void shutdown() {
-        logger.info("shutting down connector ...");
+    public void disconnect() {
+        if(isConnected()) {
+            logger.info("disconnecting from MaritimeCloud ...");
 
-        broadcaster.shutdown();
-        try {
-            broadcaster.awaitTermination(OPERATIONS_TIMEOUT, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            logger.error("broadcaster termination error",e);
-        }
+            broadcaster.shutdown();
+            try {
+                broadcaster.awaitTermination(OPERATIONS_TIMEOUT, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                logger.error("broadcaster termination error",e);
+            }
 
-        client.close();
-        try {
-            client.awaitTermination(OPERATIONS_TIMEOUT, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            logger.error("timeout waiting for client to close");
-        }
+            client.close();
+            try {
+                client.awaitTermination(OPERATIONS_TIMEOUT, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                logger.error("timeout waiting for client to close");
+            }
 
-        if(!client.isClosed()) {
-            logger.warn("client is not closed");
-        }
+            if(!client.isClosed()) {
+                logger.warn("client is not closed");
+            }
 
-        if(!client.isTerminated()) {
-            logger.warn("client is not terminated");
+            if(!client.isTerminated()) {
+                logger.warn("client is not terminated");
+            }
         }
     }
 }

@@ -16,11 +16,15 @@
 
 package org.obp.local;
 
+import net.maritimecloud.util.geometry.PositionReader;
+import net.maritimecloud.util.geometry.PositionTime;
 import org.apache.log4j.Logger;
 import org.obp.*;
-import org.obp.dummy.DummyRandomInstrument;
 import org.obp.gps.NmeaGpsReceiver;
 import org.obp.dummy.DummyRadar;
+import org.obp.maritimecloud.MaritimeCloudAgent;
+import org.obp.maritimecloud.RemoteWeatherInstrument;
+import org.obp.maritimecloud.WeatherService;
 import org.obp.remote.RemoteObpLocator;
 import org.obp.weather.LcjCv3f;
 import org.obp.web.config.ObpConfig;
@@ -29,9 +33,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import java.net.URI;
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
+import static org.obp.AttributeNames.LATITUDE;
+import static org.obp.AttributeNames.LONGITUDE;
+import static org.obp.AttributeNames.TIME;
 
 /**
  * Created by Robert Jaremczak
@@ -55,6 +66,11 @@ public class LocalObpInstance extends BaseObpInstance {
     private RemoteObpLocator remoteObpLocator;
 
     @Autowired
+    private MaritimeCloudAgent maritimeCloudAgent;
+
+    private ScheduledExecutorService scanner;
+
+    @Autowired
     public LocalObpInstance(
             @Value("${obp.local.uuid}") UUID uuid,
             @Value("${obp.local.name}") String name,
@@ -65,20 +81,43 @@ public class LocalObpInstance extends BaseObpInstance {
 
     @PostConstruct
     public void init() {
-        waitForReliablePosition();
-
         attachInstrument(nmeaGpsReceiver);
         attachInstrument(nmeaWindVane);
         attachInstrument(new DefaultDataInstrument("/defaults.properties"));
         attachInstrument(new SystemTimeInstrument());
         attachExplorer(new DummyRadar());
 
-        logger.info("init local OBP instance:\n\n"+toString()+"\n");
+        scanner = Executors.newScheduledThreadPool(1);
+
+        maritimeCloudAgent.connect(createPositionReader());
+        if(maritimeCloudAgent.isConnected()) {
+            attachInstrument(new RemoteWeatherInstrument(scanner, maritimeCloudAgent));
+            maritimeCloudAgent.registerService(WeatherService.SIP, WeatherService.callback(this));
+        }
+
+        logger.info("init local OBP instance:\n\n" + toString() + "\n");
     }
 
-    private void waitForReliablePosition() {
-        logger.info("wait until GPS reads position ...");
-        long tmax = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(20);
+    @PreDestroy
+    public void shutdown() {
+        logger.debug("shutting down local instance...");
+
+        logger.debug("shutting down scanner");
+        scanner.shutdown();
+        try {
+            scanner.awaitTermination(10, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            logger.error("error shutting down executorService",e);
+        }
+
+        maritimeCloudAgent.disconnect();
+
+        logger.debug("done.");
+    }
+
+    private PositionReader createPositionReader() {
+        logger.info("waiting for position data ...");
+        long tmax = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(5);
         while(!nmeaGpsReceiver.isPositionReceived() && System.currentTimeMillis() < tmax) {
             try {
                 Thread.sleep(200);
@@ -86,7 +125,21 @@ public class LocalObpInstance extends BaseObpInstance {
                 logger.error(e,e);
             }
         }
-        logger.info(nmeaGpsReceiver.isPositionReceived() ? "position received" : "unable to receive position");
+
+        if(!nmeaGpsReceiver.isPositionReceived()) {
+            logger.warn("position can't be determined");
+        }
+
+        return new PositionReader() {
+            @Override
+            public PositionTime getCurrentPosition() {
+                Attributes attributes = resolveAttributes(LATITUDE, LONGITUDE, TIME);
+                return PositionTime.create(
+                        attributes.getDouble(LATITUDE),
+                        attributes.getDouble(LONGITUDE),
+                        attributes.getLong(TIME));
+            }
+        };
     }
 
     @Override

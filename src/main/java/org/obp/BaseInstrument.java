@@ -61,6 +61,11 @@ public abstract class BaseInstrument extends BaseIdentified implements Instrumen
     }
 
     @Override
+    public boolean isLocal() {
+        return true;
+    }
+
+    @Override
     public boolean isWorking() {
         return status!=Status.OFF && status!=Status.MALFUNCTION;
     }

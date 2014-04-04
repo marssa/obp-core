@@ -36,48 +36,48 @@ public class RemoteWeatherInstrument extends BaseInstrument {
     public static final int POLLING_INTERVAL = 60;
     public static final int MAX_RADIUS = 20000;
 
-    private ScheduledExecutorService poller = Executors.newScheduledThreadPool(1);
-    private MaritimeCloudService maritimeCloudService;
+    private ScheduledExecutorService executorService;
+    private MaritimeCloudAgent maritimeCloudAgent;
     private int radius = MAX_RADIUS;
     private int pollingInterval = POLLING_INTERVAL;
 
-    public RemoteWeatherInstrument(final MaritimeCloudService maritimeCloudService) {
+    public RemoteWeatherInstrument(ScheduledExecutorService executorService, final MaritimeCloudAgent maritimeCloudAgent) {
         super(UUID.randomUUID(), "remoteWeatherService", "weather data from nearest OBP within defined range");
-        this.maritimeCloudService = maritimeCloudService;
+        this.maritimeCloudAgent = maritimeCloudAgent;
+        this.executorService = executorService;
         setStatus(Status.OPERATIONAL);
         setReliability(Reliability.GOOD);
 
         logger.info("init remote weather instrument, radius: "+ DistanceUtil.format(radius)+", polling interval: "+pollingInterval+" s");
-        poller.scheduleWithFixedDelay(new Runnable() {
+        this.executorService.scheduleWithFixedDelay(new Runnable() {
             @Override
             public void run() {
                 try {
-                    WeatherService.Response response = maritimeCloudService.callWeatherService(radius);
-                    Attributes attr = new Attributes();
-                    attr.put(AttributeNames.WIND_SPEED, response.windSpeed);
-                    attr.put(AttributeNames.WIND_ANGLE, response.windAngle);
-                    attr.put(AttributeNames.WIND_TEMPERATURE, response.windTemperature);
-                    updateInstrumentAttributes(attr);
-                    setStatus(Status.OPERATIONAL);
+                    WeatherService.Response response = maritimeCloudAgent.callNearestServiceProvider(
+                            WeatherService.SIP,
+                            new WeatherService.Request(),
+                            radius);
+
+                    if (response != null) {
+                        Attributes attr = new Attributes();
+                        attr.put(AttributeNames.WIND_SPEED, response.windSpeed);
+                        attr.put(AttributeNames.WIND_ANGLE, response.windAngle);
+                        attr.put(AttributeNames.WIND_TEMPERATURE, response.windTemperature);
+                        updateInstrumentAttributes(attr);
+                        setStatus(Status.OPERATIONAL);
+                    } else {
+                        setStatus(Status.OFF);
+                    }
                 } catch (Exception e) {
-                    logger.error("error polling remote weather service",e);
+                    logger.error("error polling remote weather service", e);
                     setStatus(Status.MALFUNCTION);
                 }
             }
         }, pollingInterval, pollingInterval, TimeUnit.SECONDS);
     }
 
-    public void shutdown() {
-        logger.debug("shutting down instrument...");
-
-        poller.shutdown();
-        try {
-            poller.awaitTermination(10, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            logger.error("error shutting down poller",e);
-        }
-
-        logger.debug("done.");
+    @Override
+    public boolean isLocal() {
+        return false;
     }
-
 }

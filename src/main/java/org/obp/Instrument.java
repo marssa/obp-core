@@ -27,6 +27,7 @@ public interface Instrument extends Identified {
         OFF, MALFUNCTION, OPERATIONAL;
     }
 
+    boolean isLocal();
     boolean isWorking();
     Reliability getReliability();
     BaseInstrument.Status getStatus();
