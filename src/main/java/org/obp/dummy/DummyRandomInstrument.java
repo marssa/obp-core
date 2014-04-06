@@ -16,7 +16,7 @@
 
 package org.obp.dummy;
 
-import org.obp.Attributes;
+import org.obp.Readouts;
 import org.obp.BaseInstrument;
 import org.obp.Reliability;
 
@@ -49,24 +49,21 @@ public class DummyRandomInstrument extends BaseInstrument {
 
     public DummyRandomInstrument(String name, String description, Map<String, DoubleRange> attributeRanges) {
         super(UUID.randomUUID(), name, description);
-        initKeys(attributeRanges.keySet());
         this.attributeRanges = attributeRanges;
-        setReliability(Reliability.DEFAULT);
         setStatus(Status.OPERATIONAL);
     }
 
-    private void update() {
-        Attributes attr = new Attributes();
-        for(Map.Entry<String, DoubleRange> entry : attributeRanges.entrySet()) {
-            attr.put(entry.getKey(), entry.getValue().getRandomValue());
-        }
-        updateInstrumentAttributes(attr);
+    @Override
+    public Reliability getReliability() {
+        return Reliability.DEFAULT;
     }
 
     @Override
-    public Attributes getAttributes() {
+    public Readouts getReadouts() {
         // TODO: instead updating here add a timer-task simulating periodical readouts
-        update();
-        return super.getAttributes();
+        for(Map.Entry<String, DoubleRange> entry : attributeRanges.entrySet()) {
+            updateReadout(entry.getKey(), entry.getValue().getRandomValue());
+        }
+        return super.getReadouts();
     }
 }

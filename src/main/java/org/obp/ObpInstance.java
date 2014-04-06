@@ -27,10 +27,10 @@ public interface ObpInstance extends Identified {
     String getOrganization();
     URI getUri();
     List<Body> getBodies();
-    Attributes resolveAttributes(String... keys);
-    Attributes getAttributes();
-    AttributeInfo getAttributeInfo(String key);
-    List<AttributeInfo> getAttributeInfos();
+    Readouts resolveReadouts(String... keys);
+    Readouts resolveReadouts();
+    Readout resolveReadout(String key);
+    List<Readout> getAllReadouts();
     void attachInstrument(Instrument instrument);
     void detachInstrument(Instrument instrument);
     void attachExplorer(Explorer explorer);

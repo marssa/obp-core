@@ -16,14 +16,15 @@
 
 package org.obp.nmea.parser;
 
-import org.obp.Attributes;
-import org.obp.nmea.NmeaAttributeParser;
 import org.obp.nmea.NmeaLine;
 import org.obp.nmea.NmeaLineScanner;
-import org.obp.utils.GpsUtil;
+import org.obp.nmea.NmeaParser;
 import org.springframework.stereotype.Service;
 
-import static org.obp.AttributeNames.*;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.obp.Readout.*;
 
 /**
  * Created by Robert Jaremczak
@@ -31,7 +32,7 @@ import static org.obp.AttributeNames.*;
  */
 
 @Service
-public class ParserGPGGA implements NmeaAttributeParser {
+public class ParserGPGGA implements NmeaParser {
 
     @Override
     public boolean recognizes(NmeaLine line) {
@@ -41,16 +42,15 @@ public class ParserGPGGA implements NmeaAttributeParser {
     }
 
     @Override
-    public Attributes parse(NmeaLineScanner scanner) {
-        Attributes am = new Attributes();
-        am.put(TIME, scanner.nextUtcHHMMSS());
-        am.put(LATITUDE, scanner.nextLatitudeDDMM());
-        am.put(LONGITUDE, scanner.nextLongitudeDDMM());
-        am.put(GPS_FIX_QUALITY, scanner.next());
-        am.put(GPS_EFFECTIVE_SATELLITES, scanner.nextByte());
-        am.put(HDOP, scanner.nextDouble());
-        am.put(ALTITUDE, scanner.nextAltitude());
-        am.setReliability(GpsUtil.estimateReliability(am));
-        return am;
+    public Map<String,Object> parse(NmeaLineScanner scanner) {
+        Map<String,Object> map = new HashMap<>();
+        map.put(TIME, scanner.nextUtcHHMMSS());
+        map.put(LATITUDE, scanner.nextLatitudeDDMM());
+        map.put(LONGITUDE, scanner.nextLongitudeDDMM());
+        map.put(GPS_FIX_QUALITY, scanner.next());
+        map.put(GPS_EFFECTIVE_SATELLITES, scanner.nextByte());
+        map.put(HDOP, scanner.nextDouble());
+        map.put(ALTITUDE, scanner.nextAltitude());
+        return map;
     }
 }

@@ -29,7 +29,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.util.UUID;
 
-import static org.obp.AttributeNames.*;
+import static org.obp.Readout.*;
 
 /**
  * Created by Robert Jaremczak
@@ -67,16 +67,15 @@ public class LcjCv3f extends NmeaBaseInstrument {
 
     @PostConstruct
     public void init() {
-        setReliability(Reliability.HIGH);
         initLineListener(deviceFinder, deviceUri);
     }
 
     @Override
     protected void parseLine(NmeaLine line) {
         if(parserWIXDR.recognizes(line)) {
-            updateInstrumentAttributes(parserWIXDR.parse(line.scanner()));
+            updateReadouts(parserWIXDR.parse(line.scanner()));
         } else if(parserIIMWV.recognizes(line)) {
-            updateInstrumentAttributes(parserIIMWV.parse(line.scanner()));
+            updateReadouts(parserIIMWV.parse(line.scanner()));
         }
     }
 
@@ -85,4 +84,8 @@ public class LcjCv3f extends NmeaBaseInstrument {
         destroyLineListener();
     }
 
+    @Override
+    public Reliability getReliability() {
+        return Reliability.HIGH;
+    }
 }

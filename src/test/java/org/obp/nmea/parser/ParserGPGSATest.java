@@ -18,15 +18,16 @@ package org.obp.nmea.parser;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.obp.Attributes;
+import org.obp.Readouts;
 import org.obp.nmea.NmeaBufferedReader;
 import org.obp.nmea.NmeaLine;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
 
-import static org.obp.AttributeNames.*;
+import static org.obp.Readout.*;
 
 /**
  * Created by Robert Jaremczak
@@ -42,12 +43,12 @@ public class ParserGPGSATest {
         NmeaLine line = reader.fetchLine();
         Assert.assertNotNull(line);
         Assert.assertTrue(parser.recognizes(line));
-        Attributes am = parser.parse(line.scanner());
+        Map<String,Object> am = parser.parse(line.scanner());
         Assert.assertEquals(GpsFixMode.AUTO, am.get(GPS_FIX_MODE));
         Assert.assertEquals(GpsFixType.FIX3D, am.get(GPS_FIX_TYPE));
-        Assert.assertEquals(8, am.getByte(GPS_EFFECTIVE_SATELLITES));
-        Assert.assertEquals(1.7, am.getDouble(PDOP),0.0001);
-        Assert.assertEquals(1.0, am.getDouble(HDOP),0.0001);
-        Assert.assertEquals(1.3, am.getDouble(VDOP),0.0001);
+        Assert.assertEquals(8, am.get(GPS_EFFECTIVE_SATELLITES));
+        Assert.assertEquals(1.7, (double)am.get(PDOP),0.0001);
+        Assert.assertEquals(1.0, (double)am.get(HDOP),0.0001);
+        Assert.assertEquals(1.3, (double)am.get(VDOP),0.0001);
     }
 }

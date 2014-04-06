@@ -36,7 +36,6 @@ public abstract class NmeaBaseInstrument extends BaseInstrument {
 
     public NmeaBaseInstrument(UUID uuid, String name, String description, String deviceUri, String... keys) {
         super(uuid, name, description);
-        initKeys(keys);
         this.deviceUri = deviceUri;
     }
 

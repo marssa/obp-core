@@ -18,13 +18,15 @@ package org.obp.nmea.parser;
 
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.obp.Attributes;
-import org.obp.nmea.NmeaAttributeParser;
 import org.obp.nmea.NmeaLine;
 import org.obp.nmea.NmeaLineScanner;
+import org.obp.nmea.NmeaParser;
 import org.springframework.stereotype.Service;
 
-import static org.obp.AttributeNames.*;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.obp.Readout.*;
 
 /**
  * Created by Robert Jaremczak
@@ -32,7 +34,7 @@ import static org.obp.AttributeNames.*;
  */
 
 @Service
-public class ParserGPRMC implements NmeaAttributeParser {
+public class ParserGPRMC implements NmeaParser {
 
     private static final DateTimeFormatter FIX_DATETIME_FORMATTER = DateTimeFormat.forPattern("ddMMyy HHmmss.SSS").withZoneUTC();
 
@@ -42,20 +44,20 @@ public class ParserGPRMC implements NmeaAttributeParser {
     }
 
     @Override
-    public Attributes parse(NmeaLineScanner scanner) {
-        Attributes am = new Attributes();
+    public Map<String,Object> parse(NmeaLineScanner scanner) {
+        Map<String,Object> map = new HashMap<>();
         String fixTime = scanner.next();
 
-        am.put(LATITUDE, scanner.skip().nextLatitudeDDMM());
-        am.put(LONGITUDE, scanner.nextLongitudeDDMM());
-        am.put(SPEED_OVER_GROUND, scanner.nextVelocityKnots());
-        am.put(TRUE_NORTH_COURSE, scanner.nextDouble());
+        map.put(LATITUDE, scanner.skip().nextLatitudeDDMM());
+        map.put(LONGITUDE, scanner.nextLongitudeDDMM());
+        map.put(SPEED_OVER_GROUND, scanner.nextVelocityKnots());
+        map.put(TRUE_NORTH_COURSE, scanner.nextDouble());
 
         String fixDate = scanner.next();
 
-        am.put(GPS_MAGNETIC_VARIATION, scanner.nextAzimuthDegrees());
-        am.put(TIME, FIX_DATETIME_FORMATTER.parseMillis(fixDate+" "+fixTime));
+        map.put(GPS_MAGNETIC_VARIATION, scanner.nextAzimuthDegrees());
+        map.put(TIME, FIX_DATETIME_FORMATTER.parseMillis(fixDate+" "+fixTime));
 
-        return am;
+        return map;
     }
 }

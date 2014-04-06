@@ -76,45 +76,46 @@ public abstract class BaseObpInstance extends BaseIdentified implements ObpInsta
     }
 
     @Override
-    public Attributes resolveAttributes(String... keys) {
-        Attributes attributes = new Attributes();
+    public Readouts resolveReadouts(String... keys) {
+        Readouts readouts = new Readouts();
         for(String key : keys) {
             for(Instrument instrument : instrumentsByReliabilityReversed()) {
-                if(instrument.getAttributes().containsKey(key)) {
-                    attributes.putIfAbsent(key, instrument.getAttributes().get(key));
+                if(instrument.getReadouts().containsKey(key)) {
+                    readouts.putIfAbsent(key, instrument.getReadouts().get(key));
                 }
             }
         }
-        return attributes;
+        return readouts;
     }
 
     @Override
-    public Attributes getAttributes() {
-        Attributes attributes = new Attributes();
+    public Readouts resolveReadouts() {
+        Readouts readouts = new Readouts();
         for(Instrument instrument : instrumentsByReliabilityReversed()) {
-            for(Map.Entry<String,Object> entry : instrument.getAttributes().entrySet()) {
-                attributes.putIfAbsent(entry.getKey(), entry.getValue());
+            for(Map.Entry<String,Readout> entry : instrument.getReadouts().entrySet()) {
+                readouts.putIfAbsent(entry.getKey(), entry.getValue());
             }
         }
-        return attributes;
+        return readouts;
     }
 
     @Override
-    public AttributeInfo getAttributeInfo(String key) {
-        for(Instrument instrument : instruments.values()) {
-            if(instrument.getAttributes().containsKey(key)) {
-                return instrument.getAttribute(key);
+    public Readout resolveReadout(String name) {
+        for(Instrument instrument : instrumentsByReliabilityReversed()) {
+            Readout readout = instrument.getReadouts().get(name);
+            if(readout!=null) {
+                return readout;
             }
         }
         return null;
     }
 
     @Override
-    public List<AttributeInfo> getAttributeInfos() {
-        List<AttributeInfo> infos = new ArrayList<>();
+    public List<Readout> getAllReadouts() {
+        List<Readout> infos = new ArrayList<>();
         for(Instrument instrument : instruments.values()) {
-            for(Map.Entry<String,Object> entry : instrument.getAttributes().entrySet()) {
-                infos.add(new AttributeInfo(instrument, instrument.getReliability(), entry.getKey(), entry.getValue()));
+            for(Map.Entry<String,Readout> entry : instrument.getReadouts().entrySet()) {
+                infos.add(entry.getValue());
             }
         }
         return infos;

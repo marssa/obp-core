@@ -16,7 +16,6 @@
 
 package org.obp.gps;
 
-import org.obp.Attributes;
 import org.obp.nmea.parser.GPGSV;
 
 import java.util.ArrayList;
@@ -25,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static org.obp.AttributeNames.*;
+import static org.obp.Readout.*;
 
 /**
  * Created by Robert Jaremczak
@@ -58,9 +57,9 @@ public class AggregateGPGSV {
         return list;
     }
 
-    public Attributes toAttributes() {
-        Attributes am = new Attributes();
-        am.put(GPS_VISIBLE_SATELLITES, (byte)visibleSatellites.get().size());
+    public Map<String,Object> toAttributes() {
+        Map<String,Object> map = new HashMap<>();
+        map.put(GPS_VISIBLE_SATELLITES, (byte)visibleSatellites.get().size());
         List<Map<String,Object>> satellites = new ArrayList<>();
         for(GPGSV.SV sv : visibleSatellites.get()) {
             Map<String,Object> satellite = new HashMap<>();
@@ -70,7 +69,7 @@ public class AggregateGPGSV {
             satellite.put(GPS_SATELLITE_SNR, sv.getSnr());
             satellites.add(satellite);
         }
-        am.put(GPS_SATELLITES, satellites);
-        return am;
+        map.put(GPS_SATELLITES, satellites);
+        return map;
     }
 }

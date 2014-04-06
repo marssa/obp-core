@@ -16,11 +16,7 @@
 
 package org.obp;
 
-import org.obp.utils.TimeUtil;
-
 import java.util.*;
-
-import static org.obp.AttributeNames.*;
 
 /**
  * Created by Robert Jaremczak
@@ -28,27 +24,13 @@ import static org.obp.AttributeNames.*;
  */
 public abstract class BaseInstrument extends BaseIdentified implements Instrument {
 
-    private Attributes attributes;
-    private long updateTime;
-    private List<String> providedKeys;
+    private Readouts readouts;
     private volatile Status status = Status.OFF;
 
     public BaseInstrument(UUID uuid, String name, String description) {
         super(uuid, name, description);
 
-        this.updateTime = TimeUtil.currentUtc();
-        this.attributes = Attributes.newConcurrent();
-    }
-
-    protected void initKeys(Collection<String> keys) {
-        providedKeys = new ArrayList<>();
-        providedKeys.add(UPDATE_TIME);
-        providedKeys.add(DATA_STALE);
-        providedKeys.addAll(keys);
-    }
-
-    protected void initKeys(String... keys) {
-        initKeys(Arrays.asList(keys));
+        this.readouts = Readouts.newConcurrent();
     }
 
     @Override
@@ -70,45 +52,27 @@ public abstract class BaseInstrument extends BaseIdentified implements Instrumen
         return status!=Status.OFF && status!=Status.MALFUNCTION;
     }
 
-    protected void updateInstrumentAttributes(Attributes attr) {
-        updateTime = TimeUtil.currentUtc();
-
-        attributes.putAll(attr);
-        attributes.put(UPDATE_TIME, updateTime);
-        attributes.put(DATA_STALE, Boolean.FALSE.toString());
-    }
-
     @Override
-    public Attributes getAttributes() {
-        return attributes.clone();
+    public Readouts getReadouts() {
+        return readouts;
     }
 
-    @Override
-    public Attributes getAttributes(String... keys) {
-        return attributes.filter(keys);
+    protected void updateReadout(String name, Object value) {
+        updateReadout(name, value, getReliability());
     }
 
-    @Override
-    public AttributeInfo getAttribute(String key) {
-        return new AttributeInfo(this, getReliability(), getName(), attributes.get(key));
+    protected void updateReadout(String name, Object value, Reliability reliability) {
+        readouts.put(name, new Readout(this, reliability, name, value));
     }
 
-    @Override
-    public Object get(String key) {
-        return attributes.get(key);
+    protected void updateReadouts(Map<String, Object> data) {
+        updateReadouts(data, getReliability());
     }
 
-    @Override
-    public long getUpdateTime() {
-        return updateTime;
+    protected void updateReadouts(Map<String, Object> data, Reliability reliability) {
+        for(Map.Entry<String,Object> entry : data.entrySet()) {
+            updateReadout(entry.getKey(), entry.getValue(), reliability);
+        }
     }
 
-    @Override
-    public Reliability getReliability() {
-        return attributes.getReliability();
-    }
-
-    protected void setReliability(Reliability reliability) {
-        attributes.setReliability(reliability);
-    }
 }

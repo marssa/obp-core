@@ -72,22 +72,22 @@ public class RemoteObpInstance implements ObpInstance {
     }
 
     @Override
-    public Attributes resolveAttributes(String... keys) {
+    public Readouts resolveReadouts(String... keys) {
         return null;
     }
 
     @Override
-    public Attributes getAttributes() {
+    public Readouts resolveReadouts() {
         return null;
     }
 
     @Override
-    public AttributeInfo getAttributeInfo(String key) {
+    public Readout resolveReadout(String key) {
         return null;
     }
 
     @Override
-    public List<AttributeInfo> getAttributeInfos() {
+    public List<Readout> getAllReadouts() {
         return null;
     }
 

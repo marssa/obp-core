@@ -32,31 +32,29 @@ public class DefaultDataInstrument extends BaseInstrument {
 
     private static Logger logger = Logger.getLogger(DefaultDataInstrument.class);
 
-    private Attributes defaults;
-
     public DefaultDataInstrument(String resourceName) {
         super(UUID.randomUUID(), "defaults", "predefined default data");
         logger.info("init default attributes");
-        defaults = loadDefaultsFromResource(resourceName);
-        initKeys(defaults.keySet());
-        defaults.setReliability(Reliability.DEFAULT);
+        loadDefaultsFromResource(resourceName);
     }
 
-    private Attributes loadDefaultsFromResource(String name) {
+    @Override
+    public Reliability getReliability() {
+        return Reliability.DEFAULT;
+    }
+
+    private void loadDefaultsFromResource(String resourceName) {
         Properties properties = new Properties();
-        try(InputStream is = getClass().getResourceAsStream(name)) {
+        try(InputStream is = getClass().getResourceAsStream(resourceName)) {
             properties.load(is);
         } catch (IOException e) {
-            logger.error("unable to load properties from "+name,e);
+            logger.error("unable to load properties from "+ resourceName,e);
         }
 
-        Attributes attributes = new Attributes();
         for(Map.Entry entry : properties.entrySet()) {
             logger.info(entry.getKey() + " = " + entry.getValue());
-            attributes.put((String) entry.getKey(), parseValue(entry.getValue()));
+            updateReadout((String) entry.getKey(), parseValue(entry.getValue()));
         }
-
-        return attributes;
     }
 
     private Object parseValue(Object value) {
@@ -66,11 +64,5 @@ public class DefaultDataInstrument extends BaseInstrument {
         } catch (Exception e) {
             return str;
         }
-    }
-
-    @Override
-    public Attributes getAttributes() {
-        updateInstrumentAttributes(defaults);
-        return super.getAttributes();
     }
 }

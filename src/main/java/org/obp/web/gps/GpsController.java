@@ -16,10 +16,7 @@
 
 package org.obp.web.gps;
 
-import org.obp.AttributeNames;
-import org.obp.Attributes;
 import org.obp.gps.NmeaGpsReceiver;
-import org.obp.utils.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,7 +24,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Map;
 
-import static org.obp.AttributeNames.*;
+import static org.obp.Readout.*;
 
 /**
  * Created by Robert Jaremczak
@@ -42,15 +39,15 @@ public class GpsController {
     @ResponseBody
     @RequestMapping("/api/gps/position")
     public Map<String,Object> position() {
-        return gpsReceiver.getAttributes().filter(LATITUDE, LONGITUDE);
+        return gpsReceiver.getReadouts().filter(LATITUDE, LONGITUDE).toValueMap();
     }
 
     @ResponseBody
     @RequestMapping(value = {"/api/gps/all","/simple/gps/all"})
     public Map<String,Object> all() {
-        Attributes attributes = gpsReceiver.getAttributes();
-        attributes.put("dateTime", attributes.formatDateTime(TIME));
-        return attributes;
+        Map<String,Object> map = gpsReceiver.getReadouts().toValueMap();
+        map.put("dateTime", gpsReceiver.getReadouts().formatDateTime(TIME));
+        return map;
     }
 
     @RequestMapping("/liveGpsData")

@@ -31,9 +31,5 @@ public interface Instrument extends Identified {
     boolean isWorking();
     Reliability getReliability();
     BaseInstrument.Status getStatus();
-    Attributes getAttributes();
-    Attributes getAttributes(String... keys);
-    AttributeInfo getAttribute(String key);
-    Object get(String key);
-    long getUpdateTime();
+    Readouts getReadouts();
 }

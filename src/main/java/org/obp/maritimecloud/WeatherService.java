@@ -21,13 +21,13 @@ import net.maritimecloud.net.service.spi.Service;
 import net.maritimecloud.net.service.spi.ServiceInitiationPoint;
 import net.maritimecloud.net.service.spi.ServiceMessage;
 import org.apache.log4j.Logger;
-import org.obp.Attributes;
 import org.obp.ObpInstance;
+import org.obp.Readouts;
 import org.obp.utils.AngleUtil;
 import org.obp.utils.SpeedUtil;
 import org.obp.utils.TemperatureUtil;
 
-import static org.obp.AttributeNames.*;
+import static org.obp.Readout.*;
 
 /**
  * Created by Robert Jaremczak
@@ -42,13 +42,13 @@ public class WeatherService extends Service {
             @Override
             public void process(Request message, Context<Response> context) {
                 logger.debug("weather service invoked by "+context.getCaller());
-                Attributes attributes = obpInstance.resolveAttributes(WIND_SPEED, WIND_ANGLE, WIND_TEMPERATURE, LATITUDE, LONGITUDE);
+                Readouts readouts = obpInstance.resolveReadouts(WIND_SPEED, WIND_ANGLE, WIND_TEMPERATURE, LATITUDE, LONGITUDE);
                 Response response = new Response();
-                response.windSpeed = attributes.getDouble(WIND_SPEED);
-                response.windAngle = attributes.getDouble(WIND_ANGLE);
-                response.windTemperature = attributes.getDouble(WIND_TEMPERATURE);
-                response.latitude = attributes.getDouble(LATITUDE);
-                response.longitude = attributes.getDouble(LONGITUDE);
+                response.windSpeed = readouts.getDouble(WIND_SPEED);
+                response.windAngle = readouts.getDouble(WIND_ANGLE);
+                response.windTemperature = readouts.getDouble(WIND_TEMPERATURE);
+                response.latitude = readouts.getDouble(LATITUDE);
+                response.longitude = readouts.getDouble(LONGITUDE);
                 context.complete(response);
             }
         };

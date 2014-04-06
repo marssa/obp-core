@@ -18,11 +18,12 @@ package org.obp.nmea.parser;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.obp.Attributes;
+import org.obp.Readouts;
 import org.obp.nmea.NmeaBufferedReader;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
 
 /**
  * Created by Robert Jaremczak
@@ -39,7 +40,7 @@ public class ParserGPGLLTest {
         while(reader.lineReady()) {
             if(parser.recognizes(reader.getLine())) {
                 count++;
-                Attributes am = parser.parse(reader.getLine().scanner());
+                Map<String,Object> am = parser.parse(reader.getLine().scanner());
             } else {
                 Assert.assertFalse(reader.getLine().equals("GPGLL"));
             }

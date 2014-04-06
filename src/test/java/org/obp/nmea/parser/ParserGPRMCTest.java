@@ -20,15 +20,15 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.Assert;
 import org.junit.Test;
-import org.obp.Attributes;
 import org.obp.nmea.NmeaBufferedReader;
 import org.obp.nmea.NmeaLine;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
 
-import static org.obp.AttributeNames.*;
+import static org.obp.Readout.TIME;
 
 /**
  * Created by Robert Jaremczak
@@ -43,7 +43,7 @@ public class ParserGPRMCTest {
         NmeaLine line = reader.fetchLine();
         Assert.assertNotNull(line);
         Assert.assertTrue(parser.recognizes(line));
-        Attributes am = parser.parse(line.scanner());
-        Assert.assertEquals(new DateTime(2013, 10, 16, 8, 44, 26, 963, DateTimeZone.UTC).getMillis(), am.getLong(TIME));
+        Map<String,Object> am = parser.parse(line.scanner());
+        Assert.assertEquals(new DateTime(2013, 10, 16, 8, 44, 26, 963, DateTimeZone.UTC).getMillis(), am.get(TIME));
     }
 }

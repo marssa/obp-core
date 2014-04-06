@@ -18,11 +18,11 @@ package org.obp.nmea.parser;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.obp.Attributes;
-import org.obp.AttributeNames;
+import org.obp.Readout;
 import org.obp.nmea.NmeaLine;
 
 import java.io.IOException;
+import java.util.Map;
 
 /**
  * Created by Robert Jaremczak
@@ -45,8 +45,8 @@ public class ParserWIXDRTest extends ParserTest {
         NmeaLine line = lineFrom("$WIXDR,C,024.0,C,,");
         Assert.assertNotNull(line);
         Assert.assertTrue(parser.recognizes(line));
-        Attributes am = parser.parse(line.scanner());
-        Assert.assertEquals(24.0, am.getDouble(AttributeNames.WIND_TEMPERATURE),0.01);
+        Map<String,Object> am = parser.parse(line.scanner());
+        Assert.assertEquals(24.0, (double)am.get(Readout.WIND_TEMPERATURE),0.01);
     }
 
 }

@@ -16,13 +16,16 @@
 
 package org.obp.nmea.parser;
 
-import org.obp.Attributes;
-import org.obp.nmea.NmeaAttributeParser;
+import org.obp.Readouts;
+import org.obp.nmea.NmeaParser;
 import org.obp.nmea.NmeaLine;
 import org.obp.nmea.NmeaLineScanner;
 import org.springframework.stereotype.Service;
 
-import static org.obp.AttributeNames.*;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.obp.Readout.*;
 
 /**
  * Created by Robert Jaremczak
@@ -30,20 +33,20 @@ import static org.obp.AttributeNames.*;
  */
 
 @Service
-public class ParserGPGLL implements NmeaAttributeParser {
+public class ParserGPGLL implements NmeaParser {
     @Override
     public boolean recognizes(NmeaLine line) {
         return line.getName().equals("GPGLL") && line.getDataSize() >= 4;
     }
 
     @Override
-    public Attributes parse(NmeaLineScanner scanner) {
-        Attributes am = new Attributes();
-        am.put(LATITUDE, scanner.nextLatitudeDDMM());
-        am.put(LONGITUDE, scanner.nextLongitudeDDMM());
+    public Map<String,Object> parse(NmeaLineScanner scanner) {
+        Map<String,Object> map = new HashMap<>();
+        map.put(LATITUDE, scanner.nextLatitudeDDMM());
+        map.put(LONGITUDE, scanner.nextLongitudeDDMM());
         if(scanner.hasNext()) {
-            am.put(TIME, scanner.nextUtcHHMMSS());
+            map.put(TIME, scanner.nextUtcHHMMSS());
         }
-        return am;
+        return map;
     }
 }

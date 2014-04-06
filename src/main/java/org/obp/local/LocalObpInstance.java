@@ -40,9 +40,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static org.obp.AttributeNames.LATITUDE;
-import static org.obp.AttributeNames.LONGITUDE;
-import static org.obp.AttributeNames.TIME;
+import static org.obp.Readout.LATITUDE;
+import static org.obp.Readout.LONGITUDE;
+import static org.obp.Readout.TIME;
 
 /**
  * Created by Robert Jaremczak
@@ -135,11 +135,11 @@ public class LocalObpInstance extends BaseObpInstance {
         return new PositionReader() {
             @Override
             public PositionTime getCurrentPosition() {
-                Attributes attributes = resolveAttributes(LATITUDE, LONGITUDE, TIME);
+                Readouts readouts = resolveReadouts(LATITUDE, LONGITUDE, TIME);
                 return PositionTime.create(
-                        attributes.getDouble(LATITUDE),
-                        attributes.getDouble(LONGITUDE),
-                        attributes.getLong(TIME));
+                        readouts.getDouble(LATITUDE),
+                        readouts.getDouble(LONGITUDE),
+                        readouts.getLong(TIME));
             }
         };
     }

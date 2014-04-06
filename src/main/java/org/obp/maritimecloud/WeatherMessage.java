@@ -17,10 +17,10 @@
 package org.obp.maritimecloud;
 
 import net.maritimecloud.net.broadcast.BroadcastMessage;
-import org.obp.Attributes;
 import org.obp.ObpInstance;
+import org.obp.Readouts;
 
-import static org.obp.AttributeNames.*;
+import static org.obp.Readout.*;
 
 /**
  * Created by Robert Jaremczak
@@ -33,10 +33,10 @@ class WeatherMessage extends BroadcastMessage {
     private double windTemperature;
 
     public WeatherMessage(ObpInstance obpInstance) {
-        Attributes attributes = obpInstance.resolveAttributes(WIND_ANGLE, WIND_SPEED, WIND_TEMPERATURE);
-        windAngle = attributes.getDouble(WIND_ANGLE);
-        windSpeed = attributes.getDouble(WIND_SPEED);
-        windTemperature = attributes.getDouble(WIND_TEMPERATURE);
+        Readouts readouts = obpInstance.resolveReadouts(WIND_ANGLE, WIND_SPEED, WIND_TEMPERATURE);
+        windAngle = readouts.getDouble(WIND_ANGLE);
+        windSpeed = readouts.getDouble(WIND_SPEED);
+        windTemperature = readouts.getDouble(WIND_TEMPERATURE);
     }
 
     public double getWindAngle() {

@@ -17,14 +17,16 @@
 package org.obp.maritimecloud;
 
 import org.apache.log4j.Logger;
-import org.obp.AttributeNames;
-import org.obp.Attributes;
 import org.obp.BaseInstrument;
+import org.obp.Readout;
 import org.obp.Reliability;
 import org.obp.utils.DistanceUtil;
 
 import java.util.UUID;
-import java.util.concurrent.*;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+import static org.obp.Readout.*;
 
 /**
  * Created by Robert Jaremczak
@@ -46,7 +48,6 @@ public class RemoteWeatherInstrument extends BaseInstrument {
         this.maritimeCloudAgent = maritimeCloudAgent;
         this.executorService = executorService;
         setStatus(Status.OPERATIONAL);
-        setReliability(Reliability.GOOD);
 
         logger.info("init remote weather instrument, radius: "+ DistanceUtil.format(radius)+", polling interval: "+pollingInterval+" s");
         this.executorService.scheduleWithFixedDelay(new Runnable() {
@@ -59,11 +60,9 @@ public class RemoteWeatherInstrument extends BaseInstrument {
                             radius);
 
                     if (response != null) {
-                        Attributes attr = new Attributes();
-                        attr.put(AttributeNames.WIND_SPEED, response.windSpeed);
-                        attr.put(AttributeNames.WIND_ANGLE, response.windAngle);
-                        attr.put(AttributeNames.WIND_TEMPERATURE, response.windTemperature);
-                        updateInstrumentAttributes(attr);
+                        updateReadout(WIND_SPEED, response.windSpeed);
+                        updateReadout(WIND_ANGLE, response.windAngle);
+                        updateReadout(WIND_TEMPERATURE, response.windTemperature);
                         setStatus(Status.OPERATIONAL);
                         logger.debug("remote weather data received");
                     } else {
@@ -80,5 +79,13 @@ public class RemoteWeatherInstrument extends BaseInstrument {
     @Override
     public boolean isLocal() {
         return false;
+    }
+
+    @Override
+    public Reliability getReliability() {
+
+        // TODO: consider using distance combined from the remote's reliability to provide calculated value
+
+        return Reliability.GOOD;
     }
 }

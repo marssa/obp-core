@@ -18,14 +18,14 @@ package org.obp.nmea.parser;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.obp.AttributeNames;
-import org.obp.Attributes;
 import org.obp.nmea.NmeaLine;
 import org.obp.utils.SpeedUtil;
 
 import java.io.IOException;
+import java.util.Map;
 
-import static org.obp.AttributeNames.*;
+import static org.obp.Readout.WIND_ANGLE;
+import static org.obp.Readout.WIND_SPEED;
 
 /**
  * Created by Robert Jaremczak
@@ -47,8 +47,8 @@ public class ParserIIMWVTest extends ParserTest {
         NmeaLine line = lineFrom("$IIMWV,270.0,R,1.12,N,A");
         Assert.assertNotNull(line);
         Assert.assertTrue(parser.recognizes(line));
-        Attributes am = parser.parse(line.scanner());
-        Assert.assertEquals(270.0, am.getDouble(WIND_ANGLE),0.001);
-        Assert.assertEquals(1.12, SpeedUtil.toKnots(am.getDouble(WIND_SPEED)),0.001);
+        Map<String,Object> am = parser.parse(line.scanner());
+        Assert.assertEquals(270.0, (double)am.get(WIND_ANGLE),0.001);
+        Assert.assertEquals(1.12, SpeedUtil.toKnots((double)am.get(WIND_SPEED)),0.001);
     }
 }

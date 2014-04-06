@@ -16,13 +16,15 @@
 
 package org.obp.nmea.parser;
 
-import org.obp.Attributes;
-import org.obp.nmea.NmeaAttributeParser;
 import org.obp.nmea.NmeaLine;
 import org.obp.nmea.NmeaLineScanner;
+import org.obp.nmea.NmeaParser;
 import org.springframework.stereotype.Service;
 
-import static org.obp.AttributeNames.*;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.obp.Readout.*;
 
 /**
  * Created by Robert Jaremczak
@@ -30,7 +32,7 @@ import static org.obp.AttributeNames.*;
  */
 
 @Service
-public class ParserGPGSA implements NmeaAttributeParser {
+public class ParserGPGSA implements NmeaParser {
 
     @Override
     public boolean recognizes(NmeaLine line) {
@@ -48,14 +50,14 @@ public class ParserGPGSA implements NmeaAttributeParser {
     }
 
     @Override
-    public Attributes parse(NmeaLineScanner scanner) {
-        Attributes am = new Attributes();
-        am.put(GPS_FIX_MODE, GpsFixMode.fromString(scanner.next()));
-        am.put(GPS_FIX_TYPE, GpsFixType.fromString(scanner.next()));
-        am.put(GPS_EFFECTIVE_SATELLITES, parseSatellitesUsed(scanner));
-        am.put(PDOP, scanner.nextDouble());
-        am.put(HDOP, scanner.nextDouble());
-        am.put(VDOP, scanner.nextDouble());
-        return am;
+    public Map<String,Object> parse(NmeaLineScanner scanner) {
+        Map<String,Object> map = new HashMap<>();
+        map.put(GPS_FIX_MODE, GpsFixMode.fromString(scanner.next()));
+        map.put(GPS_FIX_TYPE, GpsFixType.fromString(scanner.next()));
+        map.put(GPS_EFFECTIVE_SATELLITES, parseSatellitesUsed(scanner));
+        map.put(PDOP, scanner.nextDouble());
+        map.put(HDOP, scanner.nextDouble());
+        map.put(VDOP, scanner.nextDouble());
+        return map;
     }
 }

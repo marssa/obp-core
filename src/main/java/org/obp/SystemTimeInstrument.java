@@ -16,10 +16,9 @@
 
 package org.obp;
 
-import java.util.Arrays;
 import java.util.UUID;
 
-import static org.obp.AttributeNames.TIME;
+import static org.obp.Readout.TIME;
 
 /**
  * Created by Robert Jaremczak
@@ -29,17 +28,18 @@ import static org.obp.AttributeNames.TIME;
 public class SystemTimeInstrument extends BaseInstrument {
 
     public SystemTimeInstrument() {
-        super(UUID.randomUUID(),"timeServer", "system time server");
-        initKeys(Arrays.asList(TIME));
-        setReliability(Reliability.DEFAULT);
+        super(UUID.randomUUID(), "timeServer", "system time server");
         setStatus(Status.OPERATIONAL);
     }
 
     @Override
-    public Attributes getAttributes() {
-        Attributes attr = new Attributes();
-        attr.put(TIME, System.currentTimeMillis());
-        updateInstrumentAttributes(attr);
-        return super.getAttributes();
+    public Reliability getReliability() {
+        return Reliability.DEFAULT;
+    }
+
+    @Override
+    public Readouts getReadouts() {
+        updateReadout(TIME, System.currentTimeMillis());
+        return super.getReadouts();
     }
 }

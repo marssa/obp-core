@@ -17,7 +17,6 @@
 package org.obp.gps;
 
 import org.apache.log4j.Logger;
-import org.obp.Attributes;
 import org.obp.Reliability;
 import org.obp.nmea.NmeaBaseInstrument;
 import org.obp.nmea.NmeaDeviceFinder;
@@ -33,7 +32,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.util.UUID;
 
-import static org.obp.AttributeNames.*;
+import static org.obp.Readout.*;
 
 /**
  * Created by Robert Jaremczak
@@ -83,36 +82,39 @@ public class NmeaGpsReceiver extends NmeaBaseInstrument {
         NmeaLineScanner scanner = line.scanner();
 
         if(parserGPGLL.recognizes(line)) {
-            updateInstrumentAttributes(parserGPGLL.parse(scanner));
+            updateReadouts(parserGPGLL.parse(scanner));
         } else if(parserGPVTG.recognizes(line)) {
-            updateInstrumentAttributes(parserGPVTG.parse(scanner));
+            updateReadouts(parserGPVTG.parse(scanner));
         } else if(parserGPGGA.recognizes(line)) {
-            updateInstrumentAttributes(parserGPGGA.parse(scanner));
+            updateReadouts(parserGPGGA.parse(scanner));
         } else if(parserGPRMC.recognizes(line)) {
-            updateInstrumentAttributes(parserGPRMC.parse(scanner));
+            updateReadouts(parserGPRMC.parse(scanner));
         } else if(parserGPGSA.recognizes(line)) {
-            updateInstrumentAttributes(parserGPGSA.parse(scanner));
+            updateReadouts(parserGPGSA.parse(scanner));
         } else if(parserGPGSV.recognizes(line)) {
             if(aggregateGPGSV.update(parserGPGSV.parse(scanner))) {
-                updateInstrumentAttributes(aggregateGPGSV.toAttributes());
+                updateReadouts(aggregateGPGSV.toAttributes());
             }
         }
-
-        setReliability(GpsUtil.estimateReliability(getAttributes()));
     }
 
     public boolean isPositionReceived() {
-        return getAttributes(LATITUDE,LONGITUDE).size()==2;
+        return getReadouts().filter(LATITUDE, LONGITUDE).size()==2;
     }
 
     @PostConstruct
     public void init() {
-        setReliability(Reliability.HIGH);
         initLineListener(deviceFinder, deviceUri);
     }
 
     @PreDestroy
     public void destroy() {
         destroyLineListener();
+    }
+
+    @Override
+    public Reliability getReliability() {
+        Reliability reliability = GpsUtil.estimateReliability(getReadouts());
+        return reliability==Reliability.UNDEFINED ? Reliability.GOOD : reliability;
     }
 }

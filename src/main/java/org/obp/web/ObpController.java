@@ -16,9 +16,10 @@
 
 package org.obp.web;
 
-import org.obp.Attributes;
+import org.obp.Readouts;
 import org.obp.local.LocalObpInstance;
-import org.obp.utils.*;
+import org.obp.utils.LatitudeUtil;
+import org.obp.utils.LongitudeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -28,7 +29,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.obp.AttributeNames.*;
+import static org.obp.Readout.*;
 
 /**
  * Created by Robert Jaremczak
@@ -64,32 +65,32 @@ public class ObpController {
 
     @RequestMapping("/simple/navigation")
     public String simpleNavigationDetails(ModelMap model) {
-        Attributes attributes = obp.resolveAttributes(SPEED_OVER_GROUND,TRUE_NORTH_COURSE,LONGITUDE,LATITUDE);
-        model.addAttribute("sog", attributes.formatKnots(SPEED_OVER_GROUND));
-        model.addAttribute("cog", attributes.formatAngle(TRUE_NORTH_COURSE));
-        model.addAttribute("position", formatPosition(attributes));
+        Readouts readouts = obp.resolveReadouts(SPEED_OVER_GROUND,TRUE_NORTH_COURSE,LONGITUDE,LATITUDE);
+        model.addAttribute("sog", readouts.formatKnots(SPEED_OVER_GROUND));
+        model.addAttribute("cog", readouts.formatAngle(TRUE_NORTH_COURSE));
+        model.addAttribute("position", formatPosition(readouts));
         return "simple/navigation";
     }
 
     @RequestMapping("/simple/wind")
     public String simpleWindDetails(ModelMap model) {
-        Attributes attributes = obp.resolveAttributes(WIND_TEMPERATURE,WIND_SPEED,WIND_ANGLE);
-        model.addAttribute("speed", attributes.formatKnots(WIND_SPEED));
-        model.addAttribute("angle", attributes.formatAngle(WIND_ANGLE));
-        model.addAttribute("temperature", attributes.formatTemperature(WIND_TEMPERATURE));
+        Readouts readouts = obp.resolveReadouts(WIND_TEMPERATURE,WIND_SPEED,WIND_ANGLE);
+        model.addAttribute("speed", readouts.formatKnots(WIND_SPEED));
+        model.addAttribute("angle", readouts.formatAngle(WIND_ANGLE));
+        model.addAttribute("temperature", readouts.formatTemperature(WIND_TEMPERATURE));
         return "simple/wind";
     }
 
     @RequestMapping("/simple/map")
     public String simpleMap(ModelMap model) {
-        model.addAllAttributes(obp.resolveAttributes(LATITUDE, LONGITUDE));
+        model.addAllAttributes(obp.resolveReadouts(LATITUDE, LONGITUDE));
         return "simple/map";
     }
 
-    private String formatPosition(Attributes attributes) {
-        if(attributes.containsAllKeys(LATITUDE,LONGITUDE)) {
-            return LatitudeUtil.toStringShort(attributes.getDouble(LATITUDE))+" "+
-                    LongitudeUtil.toStringShort(attributes.getDouble(LONGITUDE));
+    private String formatPosition(Readouts readouts) {
+        if(readouts.containsAllKeys(LATITUDE,LONGITUDE)) {
+            return LatitudeUtil.toStringShort(readouts.getDouble(LATITUDE))+" "+
+                    LongitudeUtil.toStringShort(readouts.getDouble(LONGITUDE));
         } else {
             return "n/a";
         }
@@ -98,18 +99,17 @@ public class ObpController {
     @ResponseBody
     @RequestMapping("/simple/viewDataFeed")
     public Map<String,Object> all() {
-        Attributes attributes = obp.resolveAttributes(
-                LATITUDE, LONGITUDE, SPEED_OVER_GROUND, TRUE_NORTH_COURSE, WIND_SPEED, WIND_TEMPERATURE, TIME);
+        Readouts readouts = obp.resolveReadouts(LATITUDE, LONGITUDE, SPEED_OVER_GROUND, TRUE_NORTH_COURSE, WIND_SPEED, WIND_TEMPERATURE, TIME);
         Map<String,Object> map = new HashMap<>();
-        map.put("sog", attributes.formatKnots(SPEED_OVER_GROUND));
-        map.put("cog", attributes.formatAngle(TRUE_NORTH_COURSE));
-        map.put("wind", attributes.formatKnots(WIND_SPEED));
-        map.put("position", formatPosition(attributes));
-        map.put("latitude", attributes.getDouble(LATITUDE));
-        map.put("longitude", attributes.getDouble(LONGITUDE));
+        map.put("sog", readouts.formatKnots(SPEED_OVER_GROUND));
+        map.put("cog", readouts.formatAngle(TRUE_NORTH_COURSE));
+        map.put("wind", readouts.formatKnots(WIND_SPEED));
+        map.put("position", formatPosition(readouts));
+        map.put("latitude", readouts.getDouble(LATITUDE));
+        map.put("longitude", readouts.getDouble(LONGITUDE));
         map.put("water","n/a");
         map.put("depth","n/a");
-        map.put("dateTime", attributes.formatDateTime(TIME));
+        map.put("dateTime", readouts.formatDateTime(TIME));
         return map;
     }
 }

@@ -27,8 +27,9 @@
         <td style="text-align: left"><b>attribute</b></td>
         <td style="text-align: left"><b>value</b></td>
         <td style="text-align: left"><b>reliability</b></td>
+        <td style="text-align: left"><b>update time</b></td>
     </tr>
-    <c:forEach items="${realm.attributeInfos}" var="entry">
+    <c:forEach items="${realm.allReadouts}" var="entry">
         <tr>
             <td style="text-align: left">
                 <span>${entry.instrument.name}.</span>
@@ -39,6 +40,9 @@
             </td>
             <td style="text-align: left">
                     <small>${entry.reliability}</small>
+            </td>
+            <td style="text-align: left">
+                <small>${entry.updateTime}</small>
             </td>
         </tr>
     </c:forEach>

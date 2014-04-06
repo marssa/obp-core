@@ -16,10 +16,10 @@
 
 package org.obp.utils;
 
-import org.obp.Attributes;
+import org.obp.Readouts;
 import org.obp.Reliability;
 
-import static org.obp.AttributeNames.*;
+import static org.obp.Readout.GPS_EFFECTIVE_SATELLITES;
 
 /**
  * Created by Robert Jaremczak
@@ -29,7 +29,7 @@ public final class GpsUtil {
     private GpsUtil() {
     }
 
-    public static Reliability estimateReliability(Attributes am) {
+    public static Reliability estimateReliability(Readouts am) {
         // TODO: make this one of quality factors
         //GpsFixQuality fixQuality = GpsFixQuality.fromString(am.getString(GPS_FIX_QUALITY));
 
