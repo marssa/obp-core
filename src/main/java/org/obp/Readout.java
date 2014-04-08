@@ -91,4 +91,9 @@ public class Readout {
     public long getUpdateTime() {
         return updateTime;
     }
+
+    @Override
+    public String toString() {
+        return value.toString();
+    }
 }
