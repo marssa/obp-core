@@ -22,10 +22,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.ServletContext;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.net.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * Created by Robert Jaremczak
@@ -76,6 +76,22 @@ public class ObpConfig {
     public Map<String,Object> getComponents() {
         Map<String,Object> map = new HashMap<>();
         return map;
+    }
+
+    public String getShortOsInfo() {
+        return System.getProperty("os.name")+" "+System.getProperty("os.version")+" ("+System.getProperty("os.arch")+")";
+    }
+
+    public String getShortJavaInfo() {
+        return System.getProperty("java.version")+" "+System.getProperty("java.vendor")+" ("+System.getProperty("java.vm.name")+")";
+    }
+
+    public String getShortHostInfo() {
+        try {
+            return InetAddress.getLocalHost().getHostName();
+        } catch (UnknownHostException e) {
+            return "unable to determine host name";
+        }
     }
 
     public URI getUri() {

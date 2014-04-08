@@ -13,7 +13,6 @@
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
     <link rel="stylesheet" href="<c:url value="/styles/obp.css"/>"/>
     <script src="<c:url value="/scripts/jquery-2.0.3.min.js"/>"></script>
-    <meta http-equiv="refresh" content="3"/>
 </head>
 <body>
 <obp:header headline="Manifest" btnHome="false"/>
@@ -21,7 +20,11 @@
 <div id="backButton" style="width: 300px; text-align: center; font-size: 1em">
     <div class="shortButton" onclick="location.href='<c:url value="/simple/view"/>'">back</div>
 </div>
-<h3>&nbsp;&nbsp;local instance name: ${realm.name}</h3>
+<div style="margin-left: 20px">
+    ${realm.name} (${obpConfig.shortHostInfo})<br>
+    ${obpConfig.shortOsInfo}<br>
+    ${obpConfig.shortJavaInfo}<br><br>
+</div>
 <table class='tabularData'>
     <tr>
         <td style="text-align: left"><b>attribute</b></td>

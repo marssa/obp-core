@@ -61,7 +61,6 @@ public class LocalObpInfo {
         return dto;
     }
 
-    @Secured("ROLE_ADMIN")
     @ResponseBody
     @RequestMapping(API_1_0_PREFIX+"/diagnostic")
     public DiagnosticDto diagnostic() {

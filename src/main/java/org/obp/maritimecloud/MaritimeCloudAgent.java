@@ -171,7 +171,10 @@ public class MaritimeCloudAgent {
                 ServiceInvocationFuture<T> invoke = se.invoke(request);
                 return invoke.get(OPERATIONS_TIMEOUT, TimeUnit.SECONDS);
             }
-        } catch (Exception e) {
+        } catch (TimeoutException e) {
+            // intentionally swallowed
+        }
+        catch (Exception e) {
             logger.warn("exception calling remote service "+sip.getName(),e);
         }
 
