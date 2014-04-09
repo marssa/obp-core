@@ -83,7 +83,7 @@
             <br>
             <div class="obpButton">
                 <span class="propLabel">Water</span></br>
-                <span id="waterTemp" class="propValue">n/a</span>
+                <span id="water" class="propValue">n/a</span>
             </div>
             <br>
             <div class="obpButton clickable" onclick="location.href='<c:url value="/simple/manifest"/>'">
@@ -95,19 +95,34 @@
 </table>
 <script type="text/javascript">
 
+    function showValue(elementId, readoutView) {
+        var element = $(elementId);
+        element.text(readoutView.value);
+        if(!readoutView.local) {
+            element.css('color','green');
+        }
+        if(readoutView.reliability == 'MANUAL') {
+            element.css('color','blue');
+        } else if(readoutView.reliability == 'LOW') {
+            element.css('color','red');
+        } else if(readoutView.reliability == 'UNDEFINED') {
+            element.css('color','lightgrey');
+        }
+    }
+
     function ajaxd() {
         $.ajax({
             type: "GET",
             url: "<c:url value="/simple/viewDataFeed"/>",
             data: "user=success",
             success: function(data){
-                $("#position").text(data.position);
-                $("#cog").text(data.cog);
-                $("#sog").text(data.sog);
-                $("#water").text(data.water);
-                $("#wind").text(data.wind);
-                $("#depth").text(data.depth);
-                $("#dateTime").text(data.dateTime);
+                showValue("#position",data.position);
+                showValue("#cog",data.cog);
+                showValue("#sog",data.sog);
+                showValue("#water",data.water);
+                showValue("#wind",data.wind);
+                showValue("#depth",data.depth);
+                showValue("#dateTime",data.dateTime);
             }
         });
     }

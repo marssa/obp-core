@@ -44,11 +44,11 @@
         function refreshMap() {
             $.ajax({
                 type: "GET",
-                url: "<c:url value="/simple/viewDataFeed"/>",
+                url: "<c:url value="/simple/gps/position"/>",
                 data: "user=success",
                 success: function(data) {
                     mapMarker.setPosition(new google.maps.LatLng(data.latitude,data.longitude));
-                    mapMarker.setTitle("The Tower ("+data.position+")");
+                    mapMarker.setTitle("The Tower ("+data.latitude+" "+data.longitude+")");
                     mapMarker.setAnimation(google.maps.Animation.BOUNCE);
                     setTimeout(function() {mapMarker.setAnimation(null); }, 750);
                 }

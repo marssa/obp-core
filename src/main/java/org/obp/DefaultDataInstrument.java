@@ -40,7 +40,7 @@ public class DefaultDataInstrument extends BaseInstrument {
 
     @Override
     public Reliability getReliability() {
-        return Reliability.DEFAULT;
+        return Reliability.MANUAL;
     }
 
     private void loadDefaultsFromResource(String resourceName) {

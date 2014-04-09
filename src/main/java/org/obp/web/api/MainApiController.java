@@ -20,11 +20,15 @@ import org.apache.commons.lang3.Range;
 import org.obp.local.LocalObpInstance;
 import org.obp.web.config.ObpConfig;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.Map;
+
+import static org.obp.Readout.LATITUDE;
+import static org.obp.Readout.LONGITUDE;
 
 /**
  * Created by Robert Jaremczak
@@ -32,8 +36,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 
 @Controller
-@RequestMapping(LocalObpInfo.API_PREFIX)
-public class LocalObpInfo {
+@RequestMapping(MainApiController.API_PREFIX)
+public class MainApiController {
 
     public static Range<Double> supportedApiLevels = Range.between(1.0, 1.0);
 
@@ -41,7 +45,7 @@ public class LocalObpInfo {
     public static final String API_1_0_PREFIX = "/1.0";
 
     @Autowired
-    private LocalObpInstance localObpInstance;
+    private LocalObpInstance obpInstance;
 
     @Autowired
     private ObpConfig config;
@@ -55,9 +59,9 @@ public class LocalObpInfo {
         dto.apiRequestedLevel = apiLevel;
         dto.apiRequestedLevelSupported = supportedApiLevels.contains(apiLevel);
         dto.buildId = config.getBuildId();
-        dto.obpUuid = localObpInstance.getUuid();
-        dto.obpName = localObpInstance.getName();
-        dto.obpDescription = localObpInstance.getDescription();
+        dto.obpUuid = obpInstance.getUuid();
+        dto.obpName = obpInstance.getName();
+        dto.obpDescription = obpInstance.getDescription();
         return dto;
     }
 
@@ -70,4 +74,9 @@ public class LocalObpInfo {
         return dto;
     }
 
+    @ResponseBody
+    @RequestMapping(API_1_0_PREFIX+"/gps/position")
+    public Map<String,Object> position() {
+        return obpInstance.resolveReadouts(LATITUDE, LONGITUDE).toValueMap();
+    }
 }

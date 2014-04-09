@@ -64,7 +64,7 @@ public class Readout {
         this.updateTime = System.currentTimeMillis();
     }
 
-    public Identified getInstrument() {
+    public Instrument getInstrument() {
         return instrument;
     }
 
@@ -82,6 +82,10 @@ public class Readout {
 
     public double getDouble() {
         return (double)value;
+    }
+
+    public long getLong() {
+        return (long)value;
     }
 
     public String getString() {

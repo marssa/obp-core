@@ -111,19 +111,35 @@ public class Readouts implements Map<String, Readout> {
         return o!=null ? SpeedUtil.formatKnots((double)o.getValue()) : NA;
     }
 
+    public ReadoutView speedInKnots(String key) {
+        Readout readout = get(key);
+        return readout==null ? ReadoutView.NA : new ReadoutView(SpeedUtil.formatKnots(readout.getDouble()),readout);
+    }
+
+
+    public ReadoutView angle(String key) {
+        Readout readout = get(key);
+        return readout==null ? ReadoutView.NA : new ReadoutView(AngleUtil.format(readout.getDouble()),readout);
+    }
+
+    public ReadoutView dateTime(String key) {
+        Readout readout = get(key);
+        return readout==null ? ReadoutView.NA : new ReadoutView(TimeUtil.formatDateTime(readout.getLong()),readout);
+    }
+
     public String formatAngle(String key) {
         Readout o = get(key);
-        return o!=null ? AngleUtil.format((double)o.getValue()) : NA;
+        return o!=null ? AngleUtil.format((double) o.getValue()) : NA;
     }
 
     public String formatTime(String key) {
         Readout o = get(key);
-        return o!=null ? TimeUtil.formatTime((long)o.getValue()) : NA;
+        return o!=null ? TimeUtil.formatTime((long) o.getValue()) : NA;
     }
 
     public String formatDateTime(String key) {
         Readout o = get(key);
-        return o!=null ? TimeUtil.formatDateTime((long)o.getValue()) : NA;
+        return o!=null ? TimeUtil.formatDateTime((long) o.getValue()) : NA;
     }
 
     public Object formatTemperature(String key) {
@@ -194,5 +210,4 @@ public class Readouts implements Map<String, Readout> {
     public static Readouts newConcurrent() {
         return new Readouts(new ConcurrentHashMap<String,Readout>());
     }
-
 }

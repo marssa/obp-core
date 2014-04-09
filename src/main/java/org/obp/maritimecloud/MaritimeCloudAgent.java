@@ -158,6 +158,7 @@ public class MaritimeCloudAgent {
         ServiceRegistration sr =client.serviceRegister(sip, callback);
         try {
             sr.awaitRegistered(OPERATIONS_TIMEOUT, TimeUnit.SECONDS);
+            logger.debug("registered.");
         } catch (InterruptedException e) {
             logger.error("error registering service",e);
         }

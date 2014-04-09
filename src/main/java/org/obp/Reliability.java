@@ -21,5 +21,9 @@ package org.obp;
  * Date: 2013-11-26
  */
 public enum Reliability {
-    UNDEFINED, DEFAULT, LOW, AVERAGE, GOOD, HIGH;
+    UNDEFINED, MANUAL, LOW, AVERAGE, GOOD, HIGH;
+
+    public Reliability combineWith(Reliability other) {
+        return this.compareTo(other) < 0 ? this : other;
+    }
 }

@@ -91,9 +91,10 @@ public class LocalObpInstance extends BaseObpInstance {
 
         maritimeCloudAgent.connect(createPositionReader());
         if(maritimeCloudAgent.isConnected()) {
-            maritimeCloudAgent.registerService(WeatherService.SIP, WeatherService.callback(this));
             if(config.isRemoteWeatherScanner()) {
                 attachInstrument(new RemoteWeatherInstrument(scanner, maritimeCloudAgent));
+            } else {
+                maritimeCloudAgent.registerService(WeatherService.SIP, WeatherService.callback(this));
             }
         }
 

@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package org.obp.web.gps;
+package org.obp.web.api;
 
 import org.obp.gps.NmeaGpsReceiver;
+import org.obp.local.LocalObpInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,23 +32,27 @@ import static org.obp.Readout.*;
  * Date: 2013-10-4
  */
 @Controller
+@RequestMapping("/simple")
 public class GpsController {
 
     @Autowired
     private NmeaGpsReceiver gpsReceiver;
 
-    @ResponseBody
-    @RequestMapping("/api/gps/position")
-    public Map<String,Object> position() {
-        return gpsReceiver.getReadouts().filter(LATITUDE, LONGITUDE).toValueMap();
-    }
+    @Autowired
+    private LocalObpInstance obpInstance;
 
     @ResponseBody
-    @RequestMapping(value = {"/api/gps/all","/simple/gps/all"})
+    @RequestMapping("/gps/all")
     public Map<String,Object> all() {
         Map<String,Object> map = gpsReceiver.getReadouts().toValueMap();
         map.put("dateTime", gpsReceiver.getReadouts().formatDateTime(TIME));
         return map;
+    }
+
+    @ResponseBody
+    @RequestMapping("/gps/position")
+    public Map<String,Object> position() {
+        return obpInstance.resolveReadouts(LATITUDE, LONGITUDE).toValueMap();
     }
 
     @RequestMapping("/liveGpsData")

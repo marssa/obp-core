@@ -55,7 +55,7 @@ public class DummyRandomInstrument extends BaseInstrument {
 
     @Override
     public Reliability getReliability() {
-        return Reliability.DEFAULT;
+        return Reliability.MANUAL;
     }
 
     @Override

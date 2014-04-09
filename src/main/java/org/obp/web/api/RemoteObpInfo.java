@@ -31,14 +31,14 @@ import java.util.List;
  */
 
 @Controller
-@RequestMapping(LocalObpInfo.API_PREFIX)
+@RequestMapping(MainApiController.API_PREFIX)
 public class RemoteObpInfo {
 
     @Autowired
     private LocalObpInstance localObpInstance;
 
     @ResponseBody
-    @RequestMapping(LocalObpInfo.API_1_0_PREFIX+"/remote")
+    @RequestMapping(MainApiController.API_1_0_PREFIX+"/remote")
     public List<ObpInfoDto> remote() {
         return new ArrayList<>();
     }

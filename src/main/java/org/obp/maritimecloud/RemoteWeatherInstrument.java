@@ -39,13 +39,11 @@ public class RemoteWeatherInstrument extends BaseInstrument {
     public static final int MAX_RADIUS = 20000;
 
     private ScheduledExecutorService executorService;
-    private MaritimeCloudAgent maritimeCloudAgent;
     private int radius = MAX_RADIUS;
     private int pollingInterval = POLLING_INTERVAL;
 
     public RemoteWeatherInstrument(ScheduledExecutorService executorService, final MaritimeCloudAgent maritimeCloudAgent) {
         super(UUID.randomUUID(), "remoteWeatherService", "weather data from nearest OBP within defined range");
-        this.maritimeCloudAgent = maritimeCloudAgent;
         this.executorService = executorService;
         setStatus(Status.OPERATIONAL);
 
@@ -66,6 +64,7 @@ public class RemoteWeatherInstrument extends BaseInstrument {
                         setStatus(Status.OPERATIONAL);
                         logger.debug("remote weather data received");
                     } else {
+                        logger.debug("unable to retrieve remote weather data");
                         setStatus(Status.OFF);
                     }
                 } catch (Exception e) {

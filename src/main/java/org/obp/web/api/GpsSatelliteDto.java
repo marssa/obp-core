@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.obp.web.gps;
+package org.obp.web.api;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 

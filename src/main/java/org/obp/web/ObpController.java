@@ -16,6 +16,8 @@
 
 package org.obp.web;
 
+import org.obp.Readout;
+import org.obp.ReadoutView;
 import org.obp.Readouts;
 import org.obp.local.LocalObpInstance;
 import org.obp.utils.LatitudeUtil;
@@ -87,12 +89,17 @@ public class ObpController {
         return "simple/map";
     }
 
-    private String formatPosition(Readouts readouts) {
+    private ReadoutView formatPosition(Readouts readouts) {
         if(readouts.containsAllKeys(LATITUDE,LONGITUDE)) {
-            return LatitudeUtil.toStringShort(readouts.getDouble(LATITUDE))+" "+
-                    LongitudeUtil.toStringShort(readouts.getDouble(LONGITUDE));
+            Readout latitude = readouts.get(LATITUDE);
+            Readout longitude = readouts.get(LONGITUDE);
+            return new ReadoutView(
+                    LatitudeUtil.toStringShort(latitude.getDouble())+" "+
+                    LongitudeUtil.toStringShort(longitude.getDouble()),
+                    latitude.getReliability().combineWith(longitude.getReliability()),
+                    latitude.getInstrument().isLocal() && longitude.getInstrument().isLocal());
         } else {
-            return "n/a";
+            return ReadoutView.NA;
         }
     }
 
@@ -101,15 +108,16 @@ public class ObpController {
     public Map<String,Object> all() {
         Readouts readouts = obp.resolveReadouts(LATITUDE, LONGITUDE, SPEED_OVER_GROUND, TRUE_NORTH_COURSE, WIND_SPEED, WIND_TEMPERATURE, TIME);
         Map<String,Object> map = new HashMap<>();
-        map.put("sog", readouts.formatKnots(SPEED_OVER_GROUND));
-        map.put("cog", readouts.formatAngle(TRUE_NORTH_COURSE));
-        map.put("wind", readouts.formatKnots(WIND_SPEED));
+        //map.put("sog", readouts.formatKnots(SPEED_OVER_GROUND));
+        map.put("sog", readouts.speedInKnots(SPEED_OVER_GROUND));
+        map.put("cog", readouts.angle(TRUE_NORTH_COURSE));
+        map.put("wind", readouts.speedInKnots(WIND_SPEED));
         map.put("position", formatPosition(readouts));
-        map.put("latitude", readouts.getDouble(LATITUDE));
-        map.put("longitude", readouts.getDouble(LONGITUDE));
-        map.put("water","n/a");
-        map.put("depth","n/a");
-        map.put("dateTime", readouts.formatDateTime(TIME));
+//        map.put("latitude", readouts.angle(LATITUDE));
+//        map.put("longitude", readouts.angle(LONGITUDE));
+        map.put("water",ReadoutView.NA);
+        map.put("depth",ReadoutView.NA);
+        map.put("dateTime", readouts.dateTime(TIME));
         return map;
     }
 }
