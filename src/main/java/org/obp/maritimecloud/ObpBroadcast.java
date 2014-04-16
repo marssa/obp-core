@@ -25,14 +25,14 @@ import java.util.UUID;
  * Created by Robert Jaremczak
  * Date: 2014-1-8
  */
-public class ObpBeaconMessage extends BroadcastMessage {
+public class ObpBroadcast extends BroadcastMessage {
 
     private String name;
 
-    ObpBeaconMessage() {
+    ObpBroadcast() {
     }
 
-    public ObpBeaconMessage(String name) {
+    public ObpBroadcast(String name) {
         this.name = name;
     }
 

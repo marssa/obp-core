@@ -20,7 +20,6 @@ import net.maritimecloud.net.MaritimeCloudClient;
 import net.maritimecloud.net.MaritimeCloudClientConfiguration;
 import net.maritimecloud.net.broadcast.BroadcastListener;
 import net.maritimecloud.net.broadcast.BroadcastMessageHeader;
-import net.maritimecloud.net.broadcast.BroadcastOptions;
 import net.maritimecloud.util.geometry.PositionReader;
 import net.maritimecloud.util.geometry.PositionTime;
 
@@ -46,9 +45,9 @@ public class MaritimeCloudConnectorCli {
         conf.properties().setOrganization("Marsec-XL");
 
         try(MaritimeCloudClient client = conf.build()) {
-            client.broadcastListen(ObpBeaconMessage.class, new BroadcastListener<ObpBeaconMessage>() {
+            client.broadcastListen(ObpBroadcast.class, new BroadcastListener<ObpBroadcast>() {
                 @Override
-                public void onMessage(BroadcastMessageHeader header, ObpBeaconMessage broadcast) {
+                public void onMessage(BroadcastMessageHeader header, ObpBroadcast broadcast) {
                     System.out.println("OBP client found: "+header.getId() + " - " + broadcast);
                 }
             });

@@ -16,12 +16,11 @@
 
 package org.obp.maritimecloud;
 
+import dk.dma.epd.common.prototype.enavcloud.intendedroute.IntendedRouteBroadcast;
 import net.maritimecloud.net.ConnectionFuture;
 import net.maritimecloud.net.MaritimeCloudClient;
 import net.maritimecloud.net.MaritimeCloudClientConfiguration;
-import net.maritimecloud.net.broadcast.BroadcastFuture;
-import net.maritimecloud.net.broadcast.BroadcastMessage;
-import net.maritimecloud.net.broadcast.BroadcastOptions;
+import net.maritimecloud.net.broadcast.*;
 import net.maritimecloud.net.service.ServiceEndpoint;
 import net.maritimecloud.net.service.ServiceInvocationFuture;
 import net.maritimecloud.net.service.invocation.InvocationCallback;
@@ -32,6 +31,7 @@ import net.maritimecloud.util.function.Consumer;
 import net.maritimecloud.util.geometry.PositionReader;
 import org.apache.log4j.Logger;
 import org.obp.remote.RemoteObpLocator;
+import org.obp.route.IntendedRouteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -45,7 +45,7 @@ import java.util.concurrent.*;
  */
 
 @Service
-public class MaritimeCloudAgent {
+public class MaritimeCloudAgent implements BroadcastListener<IntendedRouteBroadcast> {
 
     private static Logger logger = Logger.getLogger(MaritimeCloudAgent.class);
 
@@ -83,8 +83,13 @@ public class MaritimeCloudAgent {
     @Value("${obp.maritimecloud.broadcast.beacon.listener.enabled}")
     private boolean broadcastBeaconListenerEnabled;
 
+    private boolean intendedRouteListenerEnabled = true;
+
     @Autowired
     private RemoteObpLocator obpLocator;
+
+    @Autowired
+    private IntendedRouteService intendedRouteService;
 
     private void buildAndConnectClient(PositionReader positionReader) {
         logger.info("init client");
@@ -140,7 +145,7 @@ public class MaritimeCloudAgent {
             broadcaster.scheduleAtFixedRate(new Runnable() {
                 @Override
                 public void run() {
-                    broadcast(new ObpBeaconMessage(name), BROADCAST_RADIUS);
+                    broadcast(new ObpBroadcast(name), BROADCAST_RADIUS);
                 }
             }, BEACON_PERIOD, broadcastBeaconPeriod, TimeUnit.SECONDS);
         }
@@ -149,7 +154,14 @@ public class MaritimeCloudAgent {
     private void startBroadcastListener() {
         if(broadcastBeaconListenerEnabled) {
             logger.debug("add OBP announcement listener");
-            client.broadcastListen(ObpBeaconMessage.class, obpLocator);
+            client.broadcastListen(ObpBroadcast.class, obpLocator);
+        }
+    }
+
+    private void startIntendedRouteListener() {
+        if(intendedRouteListenerEnabled) {
+            logger.debug("add intended route broadcast listener");
+            client.broadcastListen(IntendedRouteBroadcast.class, this);
         }
     }
 
@@ -228,5 +240,10 @@ public class MaritimeCloudAgent {
                 logger.warn("client is not terminated");
             }
         }
+    }
+
+    @Override
+    public void onMessage(BroadcastMessageHeader broadcastMessageHeader, IntendedRouteBroadcast intendedRouteBroadcast) {
+        logger.debug("intended route announcement received: \n"+intendedRouteBroadcast.getRoute());
     }
 }
