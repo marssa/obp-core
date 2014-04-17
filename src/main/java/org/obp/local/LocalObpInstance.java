@@ -20,6 +20,7 @@ import net.maritimecloud.util.geometry.PositionReader;
 import net.maritimecloud.util.geometry.PositionTime;
 import org.apache.log4j.Logger;
 import org.obp.*;
+import org.obp.data.Coordinate;
 import org.obp.gps.NmeaGpsReceiver;
 import org.obp.dummy.DummyRadar;
 import org.obp.maritimecloud.MaritimeCloudAgent;
@@ -158,6 +159,11 @@ public class LocalObpInstance extends BaseObpInstance {
     @Override
     public int knownRemotes() {
         return remoteObpLocator.knownRemotes();
+    }
+
+    public Coordinate getLocalPosition() {
+        Readouts readouts = resolveReadouts(LATITUDE,LONGITUDE);
+        return new Coordinate(readouts.get(LATITUDE).getDouble(),readouts.get(LONGITUDE).getDouble());
     }
 
     @Override

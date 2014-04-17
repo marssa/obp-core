@@ -37,7 +37,7 @@
         var mapMarker;
 
         $(document).ready(function() {
-            setInterval("refreshMap()",3000);
+            setInterval("refreshMap()",5000);
             refreshMap();
         });
 
@@ -51,6 +51,8 @@
                     mapMarker.setTitle("The Tower ("+data.latitude+" "+data.longitude+")");
                     mapMarker.setAnimation(google.maps.Animation.BOUNCE);
                     setTimeout(function() {mapMarker.setAnimation(null); }, 750);
+
+
                 }
             });
         }
@@ -71,6 +73,20 @@
                 animation: google.maps.Animation.DROP,
                 title: "The Tower"
             });
+
+            var myPath = [
+                myPosition, new google.maps.LatLng(myPosition.lat()+0.001,myPosition.lng()+0.001)
+            ];
+
+            intendedRoute = new google.maps.Polyline({
+                path: myPath,
+                geodesic: true,
+                strokeColor: '#FF0000',
+                strokeOpacity: 1.0,
+                strokeWeight: 3
+            });
+
+            intendedRoute.setMap(map);
         }
         google.maps.event.addDomListener(window, 'load', initialize);
     </script>
