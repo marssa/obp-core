@@ -14,29 +14,16 @@
  * limitations under the License.
  */
 
-package org.obp.route;
+package org.obp.web.route;
 
-import java.util.Collections;
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 
 /**
  * Created by Robert Jaremczak
- * Date: 2013-10-22
+ * Date: 2014-4-18
  */
-public class Route {
-    private String name;
-    private List<Waypoint> waypoints;
-
-    public Route(String name, List<Waypoint> waypoints) {
-        this.name = name;
-        this.waypoints = Collections.unmodifiableList(waypoints);
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public List<Waypoint> getWaypoints() {
-        return waypoints;
-    }
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.NON_PRIVATE)
+class WaypointDto {
+    double latitude;
+    double longitude;
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.obp.route;
+package org.obp.data;
 
 import java.util.UUID;
 
@@ -22,11 +22,9 @@ import java.util.UUID;
  * Created by Robert Jaremczak
  * Date: 2013-10-22
  */
-public class Waypoint {
+public class Waypoint extends Coordinates {
     private UUID uuid;
     private int revision;
-    private double latitude;
-    private double longitude;
     private double portsideXtd;
     private double starboardXtd;
     private double turnRadius;
@@ -34,22 +32,16 @@ public class Waypoint {
     private long arrivalTime;
     private double speed;
 
-    public Waypoint(double latitude, double longitude) {
-        this(null,0,latitude,longitude,Double.NaN,Double.NaN,Double.NaN,0,0,Double.NaN);
-    }
-
-    public Waypoint(UUID uuid, int revision, double latitude, double longitude,
-                    double portsideXtd, double starboardXtd, double turnRadius) {
-        this(uuid,revision,latitude,longitude,portsideXtd,starboardXtd,turnRadius,0,0,Double.NaN);
+    public Waypoint(double latitude, double longitude, double turnRadius) {
+        this(null,1,latitude,longitude,Double.NaN,Double.NaN,turnRadius,0,0,Double.NaN);
     }
 
     public Waypoint(UUID uuid, int revision, double latitude, double longitude,
                     double portsideXtd, double starboardXtd, double turnRadius,
                     long departureTime, long arrivalTime, double speed) {
+        super(latitude,longitude);
         this.uuid = uuid;
         this.revision = revision;
-        this.latitude = latitude;
-        this.longitude = longitude;
         this.portsideXtd = portsideXtd;
         this.starboardXtd = starboardXtd;
         this.turnRadius = turnRadius;
@@ -66,14 +58,6 @@ public class Waypoint {
         return revision;
     }
 
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public double getLongitude() {
-        return longitude;
-    }
-
     public double getPortsideXtd() {
         return portsideXtd;
     }
@@ -84,5 +68,9 @@ public class Waypoint {
 
     public double getTurnRadius() {
         return turnRadius;
+    }
+
+    public Coordinates getCoordinates() {
+        return new Coordinates(this);
     }
 }

@@ -59,7 +59,7 @@ public class MainApiController {
         dto.apiRequestedLevel = apiLevel;
         dto.apiRequestedLevelSupported = supportedApiLevels.contains(apiLevel);
         dto.buildId = config.getBuildId();
-        dto.obpUuid = obpInstance.getUuid();
+        dto.obpUuid = obpInstance.getId();
         dto.obpName = obpInstance.getName();
         dto.obpDescription = obpInstance.getDescription();
         return dto;

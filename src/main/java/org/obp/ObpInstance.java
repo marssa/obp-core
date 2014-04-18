@@ -16,6 +16,8 @@
 
 package org.obp;
 
+import org.obp.data.Body;
+
 import java.net.URI;
 import java.util.List;
 

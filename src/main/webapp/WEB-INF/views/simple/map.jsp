@@ -35,6 +35,7 @@
         var mapLatitude = ${latitude};
         var mapLongitude = ${longitude};
         var mapMarker;
+        var mapMyPath;
 
         $(document).ready(function() {
             setInterval("refreshMap()",5000);
@@ -51,8 +52,19 @@
                     mapMarker.setTitle("The Tower ("+data.latitude+" "+data.longitude+")");
                     mapMarker.setAnimation(google.maps.Animation.BOUNCE);
                     setTimeout(function() {mapMarker.setAnimation(null); }, 750);
+                }
+            });
 
-
+            $.ajax({
+                type: "GET",
+                url: "<c:url value="/local/ownPath"/>",
+                data: "user=success",
+                success: function(data) {
+                    var path = new Array();
+                    for(var i=0; i<data.length; i++) {
+                        path[i] = new google.maps.LatLng(data[i].latitude,data[i].longitude);
+                    }
+                    mapMyPath.setPath(path);
                 }
             });
         }
@@ -74,19 +86,15 @@
                 title: "The Tower"
             });
 
-            var myPath = [
-                myPosition, new google.maps.LatLng(myPosition.lat()+0.001,myPosition.lng()+0.001)
-            ];
-
-            intendedRoute = new google.maps.Polyline({
-                path: myPath,
+            mapMyPath = new google.maps.Polyline({
+                path: new Array(),
                 geodesic: true,
                 strokeColor: '#FF0000',
                 strokeOpacity: 1.0,
                 strokeWeight: 3
             });
 
-            intendedRoute.setMap(map);
+            mapMyPath.setMap(map);
         }
         google.maps.event.addDomListener(window, 'load', initialize);
     </script>

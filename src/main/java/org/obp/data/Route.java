@@ -14,39 +14,32 @@
  * limitations under the License.
  */
 
-package org.obp;
+package org.obp.data;
 
-import org.apache.log4j.Logger;
-import org.springframework.stereotype.Component;
-
-import javax.annotation.PostConstruct;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Created by Robert Jaremczak
- * Date: 2013-10-24
+ * Date: 2013-10-22
  */
+public class Route {
+    private List<Waypoint> waypoints;
 
-@Component
-public class Introspector extends BaseExplorer {
-    private static Logger logger = Logger.getLogger(Introspector.class);
-
-    private List<Body> bodies;
-
-    public Introspector() {
-        super(UUID.randomUUID(), "introspector", "discovers local bodies");
+    public Route(List<Waypoint> waypoints) {
+        this.waypoints = Collections.unmodifiableList(waypoints);
     }
 
-    @PostConstruct
-    protected void init() {
-        bodies = Collections.unmodifiableList(Arrays.asList(new Body("own")));
+    public List<Waypoint> getWaypoints() {
+        return waypoints;
     }
 
-    @Override
-    public List<Body> scan() {
-        return bodies;
+    public List<Coordinates> getPath() {
+        List<Coordinates> list = new ArrayList<>();
+        for(Waypoint wp : waypoints) {
+            list.add(wp.getCoordinates());
+        }
+        return list;
     }
 }

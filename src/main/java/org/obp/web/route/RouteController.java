@@ -16,8 +16,12 @@
 
 package org.obp.web.route;
 
-import org.obp.data.Coordinate;
+import org.obp.StringIdentified;
+import org.obp.data.Body;
+import org.obp.data.Coordinates;
+import org.obp.data.Waypoint;
 import org.obp.local.LocalObpInstance;
+import org.obp.remote.RemoteBodiesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,15 +39,38 @@ import java.util.List;
 public class RouteController {
 
     @Autowired
-    LocalObpInstance localObpInstance;
+    private LocalObpInstance localObpInstance;
+
+    @Autowired
+    private RemoteBodiesService remoteBodiesService;
 
     @ResponseBody
-    @RequestMapping("/local/route/intended")
-    public List<Coordinate> intendedRoute() {
-        Coordinate position = localObpInstance.getLocalPosition();
-        List<Coordinate> list = new ArrayList<>();
-        list.add(position);
-        list.add(new Coordinate(position.getLatitude() + 0.001, position.getLongitude()));
+    @RequestMapping("/local/ownPath")
+    public List<Coordinates> ownPath() {
+        return localObpInstance.getIntendedRoute().getPath();
+    }
+
+    @ResponseBody
+    @RequestMapping("/local/otherRoutes")
+    public List<BodyRouteDto> otherRoutes() {
+        List<BodyRouteDto> list = new ArrayList<>();
+        for(Body body : remoteBodiesService.getAll()) {
+            BodyRouteDto bodyRouteDto = new BodyRouteDto();
+            bodyRouteDto.body = new StringIdentified(body.getId(),body.getName(),body.getDescription());
+            bodyRouteDto.path = convertFromWaypoints(body.getRoute().getWaypoints());
+        }
         return list;
     }
+
+    private List<WaypointDto> convertFromWaypoints(List<Waypoint> waypoints) {
+        List<WaypointDto> list = new ArrayList<>();
+        for(Waypoint wp : waypoints) {
+            WaypointDto wdto = new WaypointDto();
+            wdto.latitude = wp.getLatitude();
+            wdto.longitude = wp.getLongitude();
+            list.add(wdto);
+        }
+        return list;
+    }
+
 }

@@ -18,8 +18,7 @@ package org.obp.dummy;
 
 import org.apache.log4j.Logger;
 import org.obp.BaseExplorer;
-import org.obp.Body;
-import org.springframework.stereotype.Component;
+import org.obp.data.Body;
 
 import javax.annotation.PostConstruct;
 import java.util.Arrays;

@@ -17,6 +17,7 @@
 package org.obp.maritimecloud;
 
 import dk.dma.epd.common.prototype.enavcloud.intendedroute.IntendedRouteBroadcast;
+import net.maritimecloud.core.id.MaritimeId;
 import net.maritimecloud.net.ConnectionFuture;
 import net.maritimecloud.net.MaritimeCloudClient;
 import net.maritimecloud.net.MaritimeCloudClientConfiguration;
@@ -31,7 +32,6 @@ import net.maritimecloud.util.function.Consumer;
 import net.maritimecloud.util.geometry.PositionReader;
 import org.apache.log4j.Logger;
 import org.obp.remote.RemoteObpLocator;
-import org.obp.route.IntendedRouteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -87,9 +87,6 @@ public class MaritimeCloudAgent implements BroadcastListener<IntendedRouteBroadc
 
     @Autowired
     private RemoteObpLocator obpLocator;
-
-    @Autowired
-    private IntendedRouteService intendedRouteService;
 
     private void buildAndConnectClient(PositionReader positionReader) {
         logger.info("init client");
@@ -244,6 +241,7 @@ public class MaritimeCloudAgent implements BroadcastListener<IntendedRouteBroadc
 
     @Override
     public void onMessage(BroadcastMessageHeader broadcastMessageHeader, IntendedRouteBroadcast intendedRouteBroadcast) {
-        logger.debug("intended route announcement received: \n"+intendedRouteBroadcast.getRoute());
+        MaritimeId id = broadcastMessageHeader.getId();
+        logger.debug("intended route announcement received from "+id+":\n"+intendedRouteBroadcast.getRoute());
     }
 }

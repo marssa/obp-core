@@ -28,7 +28,7 @@ import java.util.UUID;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.NON_PRIVATE)
 class ObpInfoDto {
-    UUID obpUuid;
+    Object obpUuid;
     String obpName;
     String obpDescription;
     String buildId;

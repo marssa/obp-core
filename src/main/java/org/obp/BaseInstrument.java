@@ -22,13 +22,13 @@ import java.util.*;
  * Created by Robert Jaremczak
  * Date: 2013-10-24
  */
-public abstract class BaseInstrument extends BaseIdentified implements Instrument {
+public abstract class BaseInstrument extends StringIdentified implements Instrument {
 
     private Readouts readouts;
     private volatile Status status = Status.OFF;
 
-    public BaseInstrument(UUID uuid, String name, String description) {
-        super(uuid, name, description);
+    public BaseInstrument(UUID id, String name, String description) {
+        super(id, name, description);
 
         this.readouts = Readouts.newConcurrent();
     }

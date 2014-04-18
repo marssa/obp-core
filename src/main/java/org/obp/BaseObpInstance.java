@@ -17,6 +17,7 @@
 package org.obp;
 
 import org.apache.log4j.Logger;
+import org.obp.data.Body;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -26,12 +27,12 @@ import java.util.concurrent.ConcurrentMap;
  * Created by Robert Jaremczak
  * Date: 2013-11-28
  */
-public abstract class BaseObpInstance extends BaseIdentified implements ObpInstance {
+public abstract class BaseObpInstance extends StringIdentified implements ObpInstance {
 
     private static Logger logger = Logger.getLogger(BaseObpInstance.class);
 
-    protected ConcurrentMap<UUID,Instrument> instruments = new ConcurrentHashMap<>();
-    protected ConcurrentMap<UUID, Explorer> explorers = new ConcurrentHashMap<>();
+    protected ConcurrentMap<Object,Instrument> instruments = new ConcurrentHashMap<>();
+    protected ConcurrentMap<Object, Explorer> explorers = new ConcurrentHashMap<>();
 
     private String organization;
 
@@ -46,22 +47,22 @@ public abstract class BaseObpInstance extends BaseIdentified implements ObpInsta
 
     @Override
     public void attachInstrument(Instrument instrument) {
-        instruments.put(instrument.getUuid(), instrument);
+        instruments.put(instrument.getId(), instrument);
     }
 
     @Override
     public void detachInstrument(Instrument instrument) {
-        instruments.remove(instrument.getUuid());
+        instruments.remove(instrument.getId());
     }
 
     @Override
     public void attachExplorer(Explorer explorer) {
-        explorers.put(explorer.getUuid(), explorer);
+        explorers.put(explorer.getId(), explorer);
     }
 
     @Override
     public void detachExplorer(Explorer explorer) {
-        explorers.remove(explorer.getUuid());
+        explorers.remove(explorer.getId());
     }
 
     private List<Instrument> instrumentsByReliabilityReversed() {

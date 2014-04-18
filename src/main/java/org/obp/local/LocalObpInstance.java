@@ -20,7 +20,9 @@ import net.maritimecloud.util.geometry.PositionReader;
 import net.maritimecloud.util.geometry.PositionTime;
 import org.apache.log4j.Logger;
 import org.obp.*;
-import org.obp.data.Coordinate;
+import org.obp.data.Coordinates;
+import org.obp.data.Route;
+import org.obp.data.Waypoint;
 import org.obp.gps.NmeaGpsReceiver;
 import org.obp.dummy.DummyRadar;
 import org.obp.maritimecloud.MaritimeCloudAgent;
@@ -70,6 +72,8 @@ public class LocalObpInstance extends BaseObpInstance {
     private MaritimeCloudAgent maritimeCloudAgent;
 
     private ScheduledExecutorService scanner;
+    private Route intendedRoute;
+
 
     @Autowired
     public LocalObpInstance(
@@ -99,7 +103,18 @@ public class LocalObpInstance extends BaseObpInstance {
             }
         }
 
+        initIntendedRoute();
+
         logger.info("init local OBP instance:\n\n" + toString() + "\n");
+    }
+
+    private void initIntendedRoute() {
+        Coordinates position = getPosition();
+        List<Waypoint> waypoints = new ArrayList<>();
+        waypoints.add(new Waypoint(position.getLatitude(),position.getLongitude(),20));
+        waypoints.add(new Waypoint(position.getLatitude()+0.001, position.getLongitude()-0.002,10));
+        waypoints.add(new Waypoint(position.getLatitude()+0.002, position.getLongitude()-0.001,10));
+        intendedRoute = new Route(waypoints);
     }
 
     @PreDestroy
@@ -161,15 +176,19 @@ public class LocalObpInstance extends BaseObpInstance {
         return remoteObpLocator.knownRemotes();
     }
 
-    public Coordinate getLocalPosition() {
+    public Coordinates getPosition() {
         Readouts readouts = resolveReadouts(LATITUDE,LONGITUDE);
-        return new Coordinate(readouts.get(LATITUDE).getDouble(),readouts.get(LONGITUDE).getDouble());
+        return new Coordinates(readouts.get(LATITUDE).getDouble(),readouts.get(LONGITUDE).getDouble());
+    }
+
+    public Route getIntendedRoute() {
+        return intendedRoute;
     }
 
     @Override
     public String toString() {
         StringBuffer sb = new StringBuffer();
-        sb.append("name: ").append(getName()).append(" (").append(getUuid()).append(")\n");
+        sb.append("name: ").append(getName()).append(" (").append(getId()).append(")\n");
         sb.append("type: ").append(isHub() ? "hub" : "standard node").append("\n");
         sb.append("external URI: ").append(getUri());
         return sb.toString();

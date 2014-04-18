@@ -17,6 +17,7 @@
 package org.obp.remote;
 
 import org.obp.*;
+import org.obp.data.Body;
 
 import java.net.URI;
 import java.util.List;
@@ -26,24 +27,13 @@ import java.util.UUID;
  * Created by Robert Jaremczak
  * Date: 2013-12-17
  */
-public class RemoteObpInstance implements ObpInstance {
+public class RemoteObpInstance extends StringIdentified implements ObpInstance {
 
-    private UUID uuid;
     private URI uri;
-    private String name;
-    private String organization;
 
     public RemoteObpInstance(URI uri) {
-        this.uuid = UUID.randomUUID();
-        this.name = "manually defined at "+uri;
+        super(UUID.randomUUID(),"remote obp at "+uri,"");
         this.uri = uri;
-    }
-
-    public RemoteObpInstance(UUID uuid, URI uri, String name, String organization) {
-        this.uuid = uuid;
-        this.uri = uri;
-        this.name = name;
-        this.organization = organization;
     }
 
     @Override
@@ -54,16 +44,6 @@ public class RemoteObpInstance implements ObpInstance {
     @Override
     public URI getUri() {
         return uri;
-    }
-
-    @Override
-    public UUID getUuid() {
-        return uuid;
-    }
-
-    @Override
-    public String getName() {
-        return name;
     }
 
     @Override
@@ -115,10 +95,5 @@ public class RemoteObpInstance implements ObpInstance {
     @Override
     public int knownRemotes() {
         return 0;
-    }
-
-    @Override
-    public String getDescription() {
-        return null;
     }
 }
