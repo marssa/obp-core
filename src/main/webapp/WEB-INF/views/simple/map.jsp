@@ -39,11 +39,17 @@
         var mapMyPath;
         var remoteMarkers = new Array();
         var remotePaths = new Array();
+        var localName = "${localName}";
+        var localDescription = "${localDescription}";
 
         $(document).ready(function() {
             setInterval("refreshMap()",5000);
             refreshMap();
         });
+
+        function formatPosition(latitude,longitude) {
+            return new Number(latitude).toFixed(2)+" "+new Number(longitude).toFixed(2);
+        }
 
         function refreshMap() {
             $.ajax({
@@ -52,7 +58,7 @@
                 data: "user=success",
                 success: function(data) {
                     mapMarker.setPosition(new google.maps.LatLng(data.latitude,data.longitude));
-                    mapMarker.setTitle("The Tower ("+data.latitude+" "+data.longitude+")");
+                    mapMarker.setTitle("name: "+localName+"\ndescription: "+localDescription+"\nposition: "+formatPosition(data.latitude,data.longitude));
                     mapMarker.setAnimation(google.maps.Animation.BOUNCE);
                     setTimeout(function() {mapMarker.setAnimation(null); }, 750);
                 }
@@ -84,12 +90,15 @@
                     remotePaths = new Array();
 
                     for(var i=0; i<data.length; i++) {
-                        remoteMarkers.push(new google.maps.Marker({
-                            position: new google.maps.LatLng(data[i].position.latitude,data[i].position.longitude),
+                        var position = data[i].position;
+                        var marker = new google.maps.Marker({
+                            position: new google.maps.LatLng(position.latitude,position.longitude),
                             map: theMap,
-                            title: data[i].name,
+                            title: "name: "+data[i].body.name+"\ndescription: "+data[i].body.description+"\nposition: "+formatPosition(position.latitude,position.longitude),
                             icon: '../images/green-dot.png'
-                        }));
+                        });
+
+                        remoteMarkers.push(marker);
 
                         var path = new google.maps.Polyline({
                             path: convertToPath(data[i].path),

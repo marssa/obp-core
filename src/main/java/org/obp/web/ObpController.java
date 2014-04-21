@@ -86,6 +86,8 @@ public class ObpController {
     @RequestMapping("/simple/map")
     public String simpleMap(ModelMap model) {
         model.addAllAttributes(obp.resolveReadouts(LATITUDE, LONGITUDE));
+        model.addAttribute("localName",obp.getName());
+        model.addAttribute("localDescription",obp.getDescription());
         return "simple/map";
     }
 

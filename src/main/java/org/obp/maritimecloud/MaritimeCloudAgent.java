@@ -125,6 +125,7 @@ public class MaritimeCloudAgent implements BroadcastListener<IntendedRouteBroadc
             if(isConnected()) {
                 startObpBeacon();
                 startBroadcastListener();
+                startIntendedRouteListener();
                 logger.info("done.");
             } else {
                 logger.warn("unable to connect to MaritimeCloud server");
