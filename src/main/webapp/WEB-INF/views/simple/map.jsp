@@ -69,6 +69,21 @@
             });
         }
 
+        function newRoute() {
+            $.ajax({
+                type: "GET",
+                url: "<c:url value="/local/ownPath?randomize=true"/>",
+                data: "user=success",
+                success: function(data) {
+                    var path = new Array();
+                    for(var i=0; i<data.length; i++) {
+                        path[i] = new google.maps.LatLng(data[i].latitude,data[i].longitude);
+                    }
+                    mapMyPath.setPath(path);
+                }
+            });
+        }
+
         function initialize() {
             var myPosition = new google.maps.LatLng(${latitude},${longitude});
             var mapOptions = {
@@ -100,11 +115,14 @@
     </script>
 </head>
 <body style="text-align: center">
-<div style="display: inline-block; width: 150px">
+<div style="display: inline-block; width: 130px">
     <div class="shortButton" onclick="location.href='<c:url value="/simple/view"/>'">back</div>
 </div>
-<div style="display: inline-block; width: 150px">
+<div style="display: inline-block; width: 130px">
     <div class="shortButton" onclick="location.href='<c:url value="/simple/position"/>'">details</div>
+</div>
+<div style="display: inline-block; width: 130px">
+    <div class="shortButton" onclick="newRoute()">new route</div>
 </div>
 <div style="height: 87%" id="map-canvas"/>
 </body>

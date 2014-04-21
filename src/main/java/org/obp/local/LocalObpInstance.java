@@ -72,7 +72,8 @@ public class LocalObpInstance extends BaseObpInstance {
     private MaritimeCloudAgent maritimeCloudAgent;
 
     private ScheduledExecutorService scanner;
-    private Route intendedRoute;
+
+    private volatile Route intendedRoute;
 
 
     @Autowired
@@ -103,7 +104,8 @@ public class LocalObpInstance extends BaseObpInstance {
             }
         }
 
-        initIntendedRoute();
+        //initIntendedRoute();
+        randomizeIntendedRoute();
 
         logger.info("init local OBP instance:\n\n" + toString() + "\n");
     }
@@ -179,6 +181,20 @@ public class LocalObpInstance extends BaseObpInstance {
     public Coordinates getPosition() {
         Readouts readouts = resolveReadouts(LATITUDE,LONGITUDE);
         return new Coordinates(readouts.get(LATITUDE).getDouble(),readouts.get(LONGITUDE).getDouble());
+    }
+
+    public void randomizeIntendedRoute() {
+        Coordinates position = getPosition();
+        int numPoints = 3 + (int)(Math.random()*2);
+        Stack<Waypoint> waypoints = new Stack<>();
+        waypoints.push(new Waypoint(position.getLatitude(),position.getLongitude(),20));
+        for(int i=0; i<numPoints; i++) {
+            Waypoint last = waypoints.peek();
+            waypoints.push(new Waypoint(
+                    last.getLatitude()-0.001+(Math.random()*0.002),
+                    last.getLongitude()-0.001+(Math.random()*0.002),20));
+        }
+        intendedRoute = new Route(waypoints);
     }
 
     public Route getIntendedRoute() {
