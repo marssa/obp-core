@@ -63,7 +63,9 @@ public class RouteController {
         for(Body body : remoteBodiesService.getAll()) {
             BodyRouteDto bodyRouteDto = new BodyRouteDto();
             bodyRouteDto.body = new StringIdentified(body.getId(),body.getName(),body.getDescription());
+            bodyRouteDto.position = body.getCoordinates();
             bodyRouteDto.path = convertFromWaypoints(body.getRoute().getWaypoints());
+            list.add(bodyRouteDto);
         }
         return list;
     }

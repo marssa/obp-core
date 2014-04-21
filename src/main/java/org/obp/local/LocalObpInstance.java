@@ -20,14 +20,15 @@ import net.maritimecloud.util.geometry.PositionReader;
 import net.maritimecloud.util.geometry.PositionTime;
 import org.apache.log4j.Logger;
 import org.obp.*;
+import org.obp.data.Body;
 import org.obp.data.Coordinates;
 import org.obp.data.Route;
-import org.obp.data.Waypoint;
 import org.obp.gps.NmeaGpsReceiver;
 import org.obp.dummy.DummyRadar;
 import org.obp.maritimecloud.MaritimeCloudAgent;
 import org.obp.maritimecloud.RemoteWeatherInstrument;
 import org.obp.maritimecloud.WeatherService;
+import org.obp.remote.RemoteBodiesService;
 import org.obp.remote.RemoteObpLocator;
 import org.obp.weather.LcjCv3f;
 import org.obp.web.config.ObpConfig;
@@ -71,6 +72,9 @@ public class LocalObpInstance extends BaseObpInstance {
     @Autowired
     private MaritimeCloudAgent maritimeCloudAgent;
 
+    @Autowired
+    private RemoteBodiesService remoteBodiesService;
+
     private ScheduledExecutorService scanner;
 
     private volatile Route intendedRoute;
@@ -104,19 +108,17 @@ public class LocalObpInstance extends BaseObpInstance {
             }
         }
 
-        //initIntendedRoute();
         randomizeIntendedRoute();
+        initRemoteBodies();
 
         logger.info("init local OBP instance:\n\n" + toString() + "\n");
     }
 
-    private void initIntendedRoute() {
-        Coordinates position = getPosition();
-        List<Waypoint> waypoints = new ArrayList<>();
-        waypoints.add(new Waypoint(position.getLatitude(),position.getLongitude(),20));
-        waypoints.add(new Waypoint(position.getLatitude()+0.001, position.getLongitude()-0.002,10));
-        waypoints.add(new Waypoint(position.getLatitude()+0.002, position.getLongitude()-0.001,10));
-        intendedRoute = new Route(waypoints);
+    private void initRemoteBodies() {
+        Body shadow = new Body("shadow",getPosition().getLatitude()-0.0005,getPosition().getLongitude());
+        shadow.setRoute(Route.randomStartingAt(shadow.getCoordinates()));
+        remoteBodiesService.put(shadow);
+        logger.debug("remote bodies: "+remoteBodiesService.getAll().size());
     }
 
     @PreDestroy
@@ -184,17 +186,7 @@ public class LocalObpInstance extends BaseObpInstance {
     }
 
     public void randomizeIntendedRoute() {
-        Coordinates position = getPosition();
-        int numPoints = 3 + (int)(Math.random()*2);
-        Stack<Waypoint> waypoints = new Stack<>();
-        waypoints.push(new Waypoint(position.getLatitude(),position.getLongitude(),20));
-        for(int i=0; i<numPoints; i++) {
-            Waypoint last = waypoints.peek();
-            waypoints.push(new Waypoint(
-                    last.getLatitude()-0.001+(Math.random()*0.002),
-                    last.getLongitude()-0.001+(Math.random()*0.002),20));
-        }
-        intendedRoute = new Route(waypoints);
+        intendedRoute = Route.randomStartingAt(getPosition());
     }
 
     public Route getIntendedRoute() {

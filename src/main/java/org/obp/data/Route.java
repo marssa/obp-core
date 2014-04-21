@@ -19,6 +19,7 @@ package org.obp.data;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Stack;
 
 /**
  * Created by Robert Jaremczak
@@ -41,5 +42,18 @@ public class Route {
             list.add(wp.getCoordinates());
         }
         return list;
+    }
+
+    public static Route randomStartingAt(Coordinates position) {
+        int numPoints = 3 + (int)(Math.random()*2);
+        Stack<Waypoint> waypoints = new Stack<>();
+        waypoints.push(new Waypoint(position.getLatitude(),position.getLongitude(),20));
+        for(int i=0; i<numPoints; i++) {
+            Waypoint last = waypoints.peek();
+            waypoints.push(new Waypoint(
+                    last.getLatitude()-0.001+(Math.random()*0.002),
+                    last.getLongitude()-0.001+(Math.random()*0.002),20));
+        }
+        return new Route(waypoints);
     }
 }

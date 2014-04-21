@@ -18,6 +18,7 @@ package org.obp.web.route;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import org.obp.Identified;
+import org.obp.data.Coordinates;
 
 import java.util.List;
 
@@ -29,5 +30,6 @@ import java.util.List;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.NON_PRIVATE)
 class BodyRouteDto {
     Identified body;
+    Coordinates position;
     List<WaypointDto> path;
 }

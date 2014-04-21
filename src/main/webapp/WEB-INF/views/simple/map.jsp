@@ -32,10 +32,13 @@
     </script>
     <script type="text/javascript">
 
+        var theMap;
         var mapLatitude = ${latitude};
         var mapLongitude = ${longitude};
         var mapMarker;
         var mapMyPath;
+        var remoteMarkers = new Array();
+        var remotePaths = new Array();
 
         $(document).ready(function() {
             setInterval("refreshMap()",5000);
@@ -60,13 +63,47 @@
                 url: "<c:url value="/local/ownPath"/>",
                 data: "user=success",
                 success: function(data) {
-                    var path = new Array();
-                    for(var i=0; i<data.length; i++) {
-                        path[i] = new google.maps.LatLng(data[i].latitude,data[i].longitude);
-                    }
-                    mapMyPath.setPath(path);
+                    mapMyPath.setPath(convertToPath(data));
                 }
             });
+
+            $.ajax({
+                type: "GET",
+                url: "<c:url value="/local/otherRoutes"/>",
+                data: "user=success",
+                success: function(data) {
+                    for(var i=0; i<remoteMarkers.length; i++) {
+                        remoteMarkers[i].setMap(null);
+                    }
+
+                    for(var i=0; i<remotePaths.length; i++) {
+                        remotePaths[i].setMap(null);
+                    }
+
+                    remoteMarkers = new Array();
+                    remotePaths = new Array();
+
+                    for(var i=0; i<data.length; i++) {
+                        remoteMarkers.push(new google.maps.Marker({
+                            position: new google.maps.LatLng(data[i].position.latitude,data[i].position.longitude),
+                            map: theMap,
+                            title: data[i].name,
+                            icon: '../images/green-dot.png'
+                        }));
+
+                        var path = new google.maps.Polyline({
+                            path: convertToPath(data[i].path),
+                            geodesic: true,
+                            strokeColor: '#00FF00',
+                            strokeOpacity: 1.0,
+                            strokeWeight: 3
+                        });
+
+                        remotePaths.push(path);
+                        path.setMap(theMap);
+                    }
+                }
+            })
         }
 
         function newRoute() {
@@ -75,13 +112,17 @@
                 url: "<c:url value="/local/ownPath?randomize=true"/>",
                 data: "user=success",
                 success: function(data) {
-                    var path = new Array();
-                    for(var i=0; i<data.length; i++) {
-                        path[i] = new google.maps.LatLng(data[i].latitude,data[i].longitude);
-                    }
-                    mapMyPath.setPath(path);
+                    mapMyPath.setPath(convertToPath(data));
                 }
             });
+        }
+
+        function convertToPath(data) {
+            var path = new Array();
+            for(var i=0; i<data.length; i++) {
+                path[i] = new google.maps.LatLng(data[i].latitude,data[i].longitude);
+            }
+            return path;
         }
 
         function initialize() {
@@ -92,11 +133,11 @@
                 mapTypeId: google.maps.MapTypeId.ROADMAP
             };
 
-            map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+            theMap = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
 
             mapMarker = new google.maps.Marker({
                 position: myPosition,
-                map: map,
+                map: theMap,
                 animation: google.maps.Animation.DROP,
                 title: "The Tower"
             });
@@ -109,19 +150,20 @@
                 strokeWeight: 3
             });
 
-            mapMyPath.setMap(map);
+            mapMyPath.setMap(theMap);
         }
+
         google.maps.event.addDomListener(window, 'load', initialize);
     </script>
 </head>
 <body style="text-align: center">
-<div style="display: inline-block; width: 130px">
+<div style="display: inline-block; width: 100px">
     <div class="shortButton" onclick="location.href='<c:url value="/simple/view"/>'">back</div>
 </div>
-<div style="display: inline-block; width: 130px">
+<div style="display: inline-block; width: 120px">
     <div class="shortButton" onclick="location.href='<c:url value="/simple/position"/>'">details</div>
 </div>
-<div style="display: inline-block; width: 130px">
+<div style="display: inline-block; width: 140px">
     <div class="shortButton" onclick="newRoute()">new route</div>
 </div>
 <div style="height: 87%" id="map-canvas"/>

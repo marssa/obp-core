@@ -50,8 +50,12 @@ public class Body extends StringIdentified {
         return list;
     }
 
-    public void updateWith(List<dk.dma.epd.common.prototype.enavcloud.intendedroute.Waypoint> waypoints) {
-        route = new Route(convertFromDmaFormat(waypoints));
+    public void setRouteWaypoints(List<dk.dma.epd.common.prototype.enavcloud.intendedroute.Waypoint> waypoints) {
+        this.route = new Route(convertFromDmaFormat(waypoints));
+    }
+
+    public void setRoute(Route route) {
+        this.route = route;
     }
 
     public List<Coordinates> getPath() {
