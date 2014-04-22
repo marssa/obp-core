@@ -43,6 +43,7 @@ import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.obp.Readout.LATITUDE;
 import static org.obp.Readout.LONGITUDE;
@@ -77,7 +78,7 @@ public class LocalObpInstance extends BaseObpInstance {
 
     private ScheduledExecutorService scanner;
 
-    private volatile Route intendedRoute;
+    private AtomicReference<Route> intendedRouteRef = new AtomicReference<>();
 
 
     @Autowired
@@ -99,7 +100,8 @@ public class LocalObpInstance extends BaseObpInstance {
 
         scanner = Executors.newScheduledThreadPool(1);
 
-        maritimeCloudAgent.connect(createPositionReader());
+        randomizeIntendedRoute();
+        maritimeCloudAgent.connect(createPositionReader(),intendedRouteRef);
         if(maritimeCloudAgent.isConnected()) {
             if(config.isRemoteWeatherScanner()) {
                 attachInstrument(new RemoteWeatherInstrument(scanner, maritimeCloudAgent));
@@ -108,8 +110,7 @@ public class LocalObpInstance extends BaseObpInstance {
             }
         }
 
-        randomizeIntendedRoute();
-        initRemoteBodies();
+        //initRemoteBodies();
 
         logger.info("init local OBP instance:\n\n" + toString() + "\n");
     }
@@ -186,11 +187,11 @@ public class LocalObpInstance extends BaseObpInstance {
     }
 
     public void randomizeIntendedRoute() {
-        intendedRoute = Route.randomStartingAt(getPosition());
+        intendedRouteRef.set(Route.randomStartingAt(getPosition()));
     }
 
     public Route getIntendedRoute() {
-        return intendedRoute;
+        return intendedRouteRef.get();
     }
 
     @Override

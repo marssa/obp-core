@@ -18,6 +18,7 @@ package org.obp.data;
 
 import org.obp.StringIdentified;
 import org.obp.data.Coordinates;
+import org.obp.utils.DmaUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,20 +39,18 @@ public class Body extends StringIdentified {
         this.route = null;
     }
 
+    public Body(String id, String name, double latitude, double longitude, List<dk.dma.epd.common.prototype.enavcloud.intendedroute.Waypoint> waypoints) {
+        super(id,name,"");
+        this.coordinates = new Coordinates(latitude,longitude);
+        setRouteWaypoints(waypoints);
+    }
+
     public Coordinates getCoordinates() {
         return coordinates;
     }
 
-    private List<Waypoint> convertFromDmaFormat(List<dk.dma.epd.common.prototype.enavcloud.intendedroute.Waypoint> waypoints) {
-        List<Waypoint> list = new ArrayList<>();
-        for(dk.dma.epd.common.prototype.enavcloud.intendedroute.Waypoint wp : waypoints) {
-            list.add(new Waypoint(wp.getLatitude(),wp.getLongitude(), wp.getTurnRad()));
-        }
-        return list;
-    }
-
     public void setRouteWaypoints(List<dk.dma.epd.common.prototype.enavcloud.intendedroute.Waypoint> waypoints) {
-        this.route = new Route(convertFromDmaFormat(waypoints));
+        this.route = new Route(DmaUtil.convertWaypointsFromDmaFormat(waypoints));
     }
 
     public void setRoute(Route route) {

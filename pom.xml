@@ -107,6 +107,11 @@
             <artifactId>flyway-core</artifactId>
             <version>2.2.1</version>
         </dependency>
+        <dependency>
+            <groupId>org.scream3r</groupId>
+            <artifactId>jssc</artifactId>
+            <version>2.8.0</version>
+        </dependency>
 
         <!-- provided by container -->
 
@@ -122,16 +127,6 @@
             <artifactId>tomcat7-websocket</artifactId>
             <version>7.0.47</version>
             <scope>provided</scope>
-        </dependency>
-
-        <!-- filesystem scope -->
-
-        <dependency>
-            <groupId>jssc</groupId>
-            <artifactId>jssc</artifactId>
-            <version>2.6.0-release</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/src/main/webapp/WEB-INF/lib/jssc.jar</systemPath>
         </dependency>
 
         <!-- test -->
