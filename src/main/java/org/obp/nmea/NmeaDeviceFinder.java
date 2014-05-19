@@ -18,6 +18,7 @@ package org.obp.nmea;
 
 import jssc.SerialPortList;
 import org.apache.log4j.Logger;
+import org.obp.serial.ZeroBytesReadException;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -41,18 +42,24 @@ public class NmeaDeviceFinder {
                     NmeaBufferedReader reader = device.getReader();
                     for(int i=0; i<MESSAGES_TO_READ; i++) {
                         NmeaLine line = reader.fetchLine();
-                        remaining.remove(line.getName());
-                        if(remaining.isEmpty()) {
-                            logger.debug("all required messages found");
-                            return true;
+                        if(line!=null) {
+                            remaining.remove(line.getName());
+                            if(remaining.isEmpty()) {
+                                logger.debug("all required messages found");
+                                return true;
+                            }
+                        } else {
+                            logger.debug("failed to read line");
+                            return false;
                         }
                     }
                 }
             }
-
             logger.debug("following messages not found: "+remaining);
             return false;
-
+        } catch (ZeroBytesReadException e) {
+            logger.warn("failed to read from port "+portName);
+            return false;
         } catch(Exception e) {
             logger.error("error auto-sensing port "+portName,e);
             return false;

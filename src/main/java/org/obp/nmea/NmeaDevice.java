@@ -38,8 +38,8 @@ public class NmeaDevice implements AutoCloseable {
     private SerialPort serialPort;
 
     public NmeaDevice(String portName) throws Exception {
-        logger.debug("open NMEA device on port "+portName);
         serialPort = new SerialPort(portName);
+        logger.debug("open NMEA device on port "+portName);
         if(serialPort.isOpened()) {
             throw new Exception("port "+portName+"already in use");
         }

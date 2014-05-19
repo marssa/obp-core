@@ -17,6 +17,7 @@
 package org.obp.nmea;
 
 import org.apache.log4j.Logger;
+import org.obp.serial.ZeroBytesReadException;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
