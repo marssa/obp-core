@@ -24,12 +24,13 @@ public interface Instrument extends Identified {
     public static final String NO_VALUE = "0";
 
     public static enum Status {
-        OFF, MALFUNCTION, OPERATIONAL;
+        OFF, MALFUNCTION, PAUSED, OPERATIONAL;
     }
 
     boolean isLocal();
-    boolean isWorking();
     Reliability getReliability();
     BaseInstrument.Status getStatus();
     Readouts getReadouts();
+    void pause();
+    void resume();
 }

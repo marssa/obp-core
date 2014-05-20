@@ -20,6 +20,7 @@ import org.obp.*;
 import org.obp.data.Body;
 
 import java.net.URI;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -95,5 +96,15 @@ public class RemoteObpInstance extends StringIdentified implements ObpInstance {
     @Override
     public int knownRemotes() {
         return 0;
+    }
+
+    @Override
+    public Collection<Instrument> getInstruments() {
+        return null;
+    }
+
+    @Override
+    public Instrument getInstrument(String id) {
+        return null;
     }
 }

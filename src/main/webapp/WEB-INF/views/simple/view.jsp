@@ -107,6 +107,8 @@
             element.css('color','red');
         } else if(readoutView.reliability == 'UNDEFINED') {
             element.css('color','lightgrey');
+        } else {
+            element.css('color','black');
         }
     }
 

@@ -19,6 +19,7 @@ package org.obp;
 import org.obp.data.Body;
 
 import java.net.URI;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -39,4 +40,6 @@ public interface ObpInstance extends Identified {
     void detachExplorer(Explorer explorer);
     boolean isHub();
     int knownRemotes();
+    Collection<Instrument> getInstruments();
+    Instrument getInstrument(String id);
 }

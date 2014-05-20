@@ -48,13 +48,26 @@ public abstract class BaseInstrument extends StringIdentified implements Instrum
     }
 
     @Override
-    public boolean isWorking() {
-        return status!=Status.OFF && status!=Status.MALFUNCTION;
+    public Readouts getReadouts() {
+        return readouts;
     }
 
     @Override
-    public Readouts getReadouts() {
-        return readouts;
+    public void pause() {
+        if(status==Status.OPERATIONAL) {
+            setStatus(Status.PAUSED);
+        } else {
+            throw new IllegalStateException("not operational, can't pause");
+        }
+    }
+
+    @Override
+    public void resume() {
+        if(status==Status.PAUSED) {
+            setStatus(Status.OPERATIONAL);
+        } else {
+            throw new IllegalStateException("not paused, can't resume");
+        }
     }
 
     protected void updateReadout(String name, Object value) {

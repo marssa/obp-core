@@ -81,7 +81,7 @@ public abstract class BaseObpInstance extends StringIdentified implements ObpIns
         Readouts readouts = new Readouts();
         for(String key : keys) {
             for(Instrument instrument : instrumentsByReliabilityReversed()) {
-                if(instrument.getReadouts().containsKey(key)) {
+                if(instrument.getStatus() == Instrument.Status.OPERATIONAL && instrument.getReadouts().containsKey(key)) {
                     readouts.putIfAbsent(key, instrument.getReadouts().get(key));
                 }
             }
@@ -93,8 +93,10 @@ public abstract class BaseObpInstance extends StringIdentified implements ObpIns
     public Readouts resolveReadouts() {
         Readouts readouts = new Readouts();
         for(Instrument instrument : instrumentsByReliabilityReversed()) {
-            for(Map.Entry<String,Readout> entry : instrument.getReadouts().entrySet()) {
-                readouts.putIfAbsent(entry.getKey(), entry.getValue());
+            if(instrument.getStatus() == Instrument.Status.OPERATIONAL) {
+                for(Map.Entry<String,Readout> entry : instrument.getReadouts().entrySet()) {
+                    readouts.putIfAbsent(entry.getKey(), entry.getValue());
+                }
             }
         }
         return readouts;
@@ -103,9 +105,11 @@ public abstract class BaseObpInstance extends StringIdentified implements ObpIns
     @Override
     public Readout resolveReadout(String name) {
         for(Instrument instrument : instrumentsByReliabilityReversed()) {
-            Readout readout = instrument.getReadouts().get(name);
-            if(readout!=null) {
-                return readout;
+            if(instrument.getStatus() == Instrument.Status.OPERATIONAL) {
+                Readout readout = instrument.getReadouts().get(name);
+                if(readout!=null) {
+                    return readout;
+                }
             }
         }
         return null;
@@ -115,8 +119,10 @@ public abstract class BaseObpInstance extends StringIdentified implements ObpIns
     public List<Readout> getAllReadouts() {
         List<Readout> infos = new ArrayList<>();
         for(Instrument instrument : instruments.values()) {
-            for(Map.Entry<String,Readout> entry : instrument.getReadouts().entrySet()) {
-                infos.add(entry.getValue());
+            if(instrument.getStatus() == Instrument.Status.OPERATIONAL) {
+                for(Map.Entry<String,Readout> entry : instrument.getReadouts().entrySet()) {
+                    infos.add(entry.getValue());
+                }
             }
         }
         return infos;
@@ -132,5 +138,16 @@ public abstract class BaseObpInstance extends StringIdentified implements ObpIns
         // TODO: remove duplicates and perform general verification
 
         return bodies;
+    }
+
+
+    @Override
+    public Collection<Instrument> getInstruments() {
+        return Collections.unmodifiableCollection(instruments.values());
+    }
+
+    @Override
+    public Instrument getInstrument(String id) {
+        return instruments.get(id);
     }
 }

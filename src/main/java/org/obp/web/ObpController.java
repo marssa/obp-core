@@ -57,7 +57,7 @@ public class ObpController {
 
     @RequestMapping("/simple/view")
     public String simpleSelection() {
-        return "simple/main";
+        return "simple/view";
     }
 
     @RequestMapping("/simple/position")
