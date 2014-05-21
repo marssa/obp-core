@@ -14,16 +14,29 @@
     <script src="<c:url value="/scripts/jquery-2.0.3.min.js"/>"></script>
     <meta http-equiv="refresh" content="3"/>
 </head>
-<body style="margin-left: 10px">
-<div id="backButton" style="width: 300px; text-align: center; font-size: 1em">
-    <div class="shortButton" onclick="location.href='<c:url value="/simple/view"/>'">back</div>
-</div>
-<table class='tabularData' style="width: 300px">
+<body>
+<div class="shortButton" onclick="location.href='<c:url value="/simple/view"/>'">back</div>
+<table class='tabularData'>
     <obp:attribute name="true wind speed" value=""/>
     <obp:attribute name="true wind angle" value=""/>
     <obp:attribute name="rel. wind speed" value="${speed}"/>
     <obp:attribute name="rel. wind angle" value="${angle}"/>
     <obp:attribute name="wind temperature" value="${temperature}"/>
 </table>
+<script type="text/javascript">
+    function doLayout() {
+        var docWidth = $(document).width();
+        $("body").css("font-size",docWidth/30+"px");
+    }
+
+    $(window).resize(function() {
+        doLayout();
+    })
+
+    $(function() {
+        doLayout();
+    })
+
+</script>
 </body>
 </html>

@@ -17,6 +17,7 @@
 package org.obp;
 
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,14 +29,21 @@ import java.util.UUID;
  * Created by Robert Jaremczak
  * Date: 2014-3-10
  */
+
+@Component
 public class DefaultDataInstrument extends BaseInstrument {
 
     private static Logger logger = Logger.getLogger(DefaultDataInstrument.class);
+
+    public DefaultDataInstrument() {
+        this("/defaults.properties");
+    }
 
     public DefaultDataInstrument(String resourceName) {
         super(UUID.randomUUID(), "defaults", "predefined default data");
         logger.info("init default attributes");
         loadDefaultsFromResource(resourceName);
+        setStatus(Status.OPERATIONAL);
     }
 
     @Override
@@ -64,5 +72,10 @@ public class DefaultDataInstrument extends BaseInstrument {
         } catch (Exception e) {
             return str;
         }
+    }
+
+    @Override
+    public void updateReadout(String name, Object value) {
+        super.updateReadout(name, value);
     }
 }

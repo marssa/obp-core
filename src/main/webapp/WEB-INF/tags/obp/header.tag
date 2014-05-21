@@ -6,7 +6,7 @@
 <%@ attribute name="btnHome" required="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<div style="display: inline-block; clear:both; width: 24em; margin-bottom: 5px">
+<div style="display: inline-block; clear:both; width: 100%; margin-bottom: 5px">
     <div style="float: left">
         <h1>${headline}</h1><br>
         <span class="faded" style="font-size: 80%">OBP-${obpConfig.buildId}</span>

@@ -86,9 +86,9 @@
                 <span id="water" class="propValue">n/a</span>
             </div>
             <br>
-            <div class="obpButton clickable" onclick="location.href='<c:url value="/simple/manifest"/>'">
-                <span class="propLabel">Info</span></br>
-                <span class="propValue">login & details</span>
+            <div class="obpButton clickable" onclick="location.href='<c:url value="/simple/more"/>'">
+                <span class="propLabel">More...</span></br>
+                <span class="propValue">available features</span>
             </div>
         </td>
     </tr>

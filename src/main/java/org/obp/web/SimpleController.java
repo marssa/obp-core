@@ -39,34 +39,39 @@ import static org.obp.Readout.*;
  */
 
 @Controller
-public class ObpController {
+public class SimpleController {
 
     @Autowired
     private LocalObpInstance obp;
 
     @RequestMapping("/simple/manifest")
-    public String realmDetails(ModelMap model) {
+    public String manifest(ModelMap model) {
         model.addAttribute("realm", obp);
         return "simple/manifest";
     }
 
     @RequestMapping("/simple/start")
-    public String simpleStart() {
+    public String start() {
         return "simple/start";
     }
 
     @RequestMapping("/simple/view")
-    public String simpleSelection() {
+    public String view() {
         return "simple/view";
     }
 
     @RequestMapping("/simple/position")
-    public String simplePositionDetails() {
+    public String position() {
         return "simple/position";
     }
 
+    @RequestMapping("/simple/more")
+    public String more() {
+        return "simple/more";
+    }
+
     @RequestMapping("/simple/navigation")
-    public String simpleNavigationDetails(ModelMap model) {
+    public String navigation(ModelMap model) {
         Readouts readouts = obp.resolveReadouts(SPEED_OVER_GROUND,TRUE_NORTH_COURSE,LONGITUDE,LATITUDE);
         model.addAttribute("sog", readouts.formatKnots(SPEED_OVER_GROUND));
         model.addAttribute("cog", readouts.formatAngle(TRUE_NORTH_COURSE));
@@ -75,7 +80,7 @@ public class ObpController {
     }
 
     @RequestMapping("/simple/wind")
-    public String simpleWindDetails(ModelMap model) {
+    public String wind(ModelMap model) {
         Readouts readouts = obp.resolveReadouts(WIND_TEMPERATURE,WIND_SPEED,WIND_ANGLE);
         model.addAttribute("speed", readouts.formatKnots(WIND_SPEED));
         model.addAttribute("angle", readouts.formatAngle(WIND_ANGLE));
@@ -84,7 +89,7 @@ public class ObpController {
     }
 
     @RequestMapping("/simple/map")
-    public String simpleMap(ModelMap model) {
+    public String map(ModelMap model) {
         model.addAllAttributes(obp.resolveReadouts(LATITUDE, LONGITUDE));
         model.addAttribute("localName",obp.getName());
         model.addAttribute("localDescription",obp.getDescription());
@@ -107,7 +112,7 @@ public class ObpController {
 
     @ResponseBody
     @RequestMapping("/simple/viewDataFeed")
-    public Map<String,Object> all() {
+    public Map<String,Object> viewDataFeed() {
         Readouts readouts = obp.resolveReadouts(LATITUDE, LONGITUDE, SPEED_OVER_GROUND, TRUE_NORTH_COURSE, WIND_SPEED, WIND_TEMPERATURE, TIME);
         Map<String,Object> map = new HashMap<>();
         //map.put("sog", readouts.formatKnots(SPEED_OVER_GROUND));

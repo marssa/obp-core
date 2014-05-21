@@ -13,13 +13,11 @@
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
     <link rel="stylesheet" href="<c:url value="/styles/obp.css"/>"/>
     <script src="<c:url value="/scripts/jquery-2.0.3.min.js"/>"></script>
+    <script src="<c:url value="/scripts/layout.js"/>"></script>
 </head>
 <body>
 <obp:header headline="Instruments" btnHome="false"/>
-<br>
-<div id="backButton" style="width: 300px; text-align: center; font-size: 1em">
-    <div class="shortButton" onclick="location.href='<c:url value="/simple/view"/>'">back</div>
-</div>
+<div class="shortButton" onclick="location.href='<c:url value="/simple/more"/>'">back</div>
 <table class='tabularData'>
     <c:forEach items="${instruments}" var="instrument">
         <tr>
@@ -33,10 +31,10 @@
             <td>
                 <c:choose>
                     <c:when test="${instrument.status eq 'OPERATIONAL'}">
-                        <input type="button" value="pause" onclick="pauseInstrument('${instrument.id}')">
+                        <input class="button" type="button" value="pause" onclick="pauseInstrument('${instrument.id}')">
                     </c:when>
                     <c:when test="${instrument.status eq 'PAUSED'}">
-                        <input type="button" value="resume" onclick="resumeInstrument('${instrument.id}')">
+                        <input class="button" type="button" value="resume" onclick="resumeInstrument('${instrument.id}')">
                     </c:when>
                 </c:choose>
             </td>
@@ -63,7 +61,6 @@
             }
         });
     }
-
 </script>
 </body>
 </html>

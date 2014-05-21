@@ -76,6 +76,9 @@ public class LocalObpInstance extends BaseObpInstance {
     @Autowired
     private RemoteBodiesService remoteBodiesService;
 
+    @Autowired
+    private DefaultDataInstrument defaultDataInstrument;
+
     private ScheduledExecutorService scanner;
 
     private AtomicReference<Route> intendedRouteRef = new AtomicReference<>();
@@ -94,7 +97,7 @@ public class LocalObpInstance extends BaseObpInstance {
     public void init() {
         attachInstrument(nmeaGpsReceiver);
         attachInstrument(nmeaWindVane);
-        attachInstrument(new DefaultDataInstrument("/defaults.properties"));
+        attachInstrument(defaultDataInstrument);//new DefaultDataInstrument("/defaults.properties"));
         attachInstrument(new SystemTimeInstrument());
         attachExplorer(new DummyRadar());
 

@@ -11,29 +11,12 @@
 <head>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
     <link rel="stylesheet" href="<c:url value="/styles/obp.css"/>"/>
-    <style>
-        .shortButton {
-            padding: 10px 20px;
-            font-weight: normal;
-            font-size: 1em;
-            border: 2px solid white;
-            border-radius: 20px;
-            margin: 10px;
-            color: white;
-        }
-
-        .shortButton:hover {
-            background-color: #6f9dba;
-            cursor: pointer;
-        }
-    </style>
     <script src="<c:url value="/scripts/jquery-2.0.3.min.js"/>"></script>
+    <script scr="<c:url value="/scripts/layout.js"/>"></script>
 </head>
-<body style="text-align: left">
-<div id="backButton" style="display: inline-block; width: 300px; text-align: center; font-size: 1em">
-    <div class="shortButton" onclick="location.href='<c:url value="/simple/map"/>'">back</div>
-</div>
-<table id="dataList" class="dataList" style="font-size: small">
+<body>
+<div class="shortButton" onclick="location.href='<c:url value="/simple/map"/>'">back</div>
+<table id="dataList" class="tabularData">
     <tr>
         <td>Fix time:</td>
         <td><span id="fixTime">n/a</span> UTC</td>
@@ -93,13 +76,19 @@
 <script type="text/javascript">
 
     $(function () {
+        doLayout();
         setInterval("ajaxd()", 3000);
         ajaxd();
-        doLayout();
     });
 
     function doLayout() {
+        var docWidth = $(document).width();
+        $("body").css("font-size",docWidth/30+"px");
     }
+
+    $(window).resize(function() {
+        doLayout();
+    })
 
     function ajaxd() {
         $.ajax({
