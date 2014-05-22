@@ -15,6 +15,7 @@
     <div class="button" onclick="location.href='<c:url value="/simple/view"/>'">back</div>
     <div class="button" onclick="location.href='<c:url value="/simple/instruments"/>'">list of instruments</div>
     <div class="button" onclick="location.href='<c:url value="/simple/manifest"/>'">local manifest</div>
+    <div class="button" onclick="location.href='<c:url value="/simple/defaults"/>'">default values</div>
 </div>
 <script type="text/javascript">
     function doLayout() {

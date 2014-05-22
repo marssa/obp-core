@@ -31,7 +31,7 @@
                 <span style="color: white">${entry.name}</span>
             </td>
             <td style="text-align: left">
-                ${fn:substring(entry.value,0,11)}
+                ${fn:substring(entry.value,0,12)}
             </td>
             <td style="text-align: left">
                     <small>${entry.reliability}</small>

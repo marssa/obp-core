@@ -100,8 +100,7 @@
         element.text(readoutView.value);
         if(!readoutView.local) {
             element.css('color','green');
-        }
-        if(readoutView.reliability == 'MANUAL') {
+        } else if(readoutView.reliability == 'MANUAL') {
             element.css('color','blue');
         } else if(readoutView.reliability == 'LOW') {
             element.css('color','red');

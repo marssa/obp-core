@@ -36,7 +36,7 @@ table.tabularData {
     width: 100%;
     border-width: 0.1em;
     background-color: #62628b;
-    font-size: 1em;
+    font-size: 0.85em;
 }
 
 table.tabularData th {
@@ -58,13 +58,14 @@ table.tabularData td {
 }
 
 .button {
-    padding: 10px 20px;
+    padding: 0.5em 1em;
     font-weight: normal;
     font-size: 1em;
-    border: 0.1em solid white;
+    border: 0.15em solid white;
     border-radius: 1em;
-    margin: 10px;
+    margin: 0.2em;
     color: white;
+    background-color: #4e6d83;
     text-align: center;
 }
 
@@ -108,7 +109,7 @@ body {
     padding: 0.2em 0.5em;
     font-weight: normal;
     font-size: 1em;
-    border: 0.1em solid white;
+    border: 0.15em solid white;
     border-radius: 1em;
     color: white;
     text-align: center;

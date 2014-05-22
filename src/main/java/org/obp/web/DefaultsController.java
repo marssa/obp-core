@@ -19,6 +19,7 @@ package org.obp.web;
 import org.obp.DefaultDataInstrument;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -31,6 +32,12 @@ public class DefaultsController {
 
     @Autowired
     private DefaultDataInstrument defaultDataInstrument;
+
+    @RequestMapping("/simple/defaults")
+    public String manifest(ModelMap model) {
+        model.addAttribute("readouts", defaultDataInstrument.getReadouts());
+        return "simple/defaults";
+    }
 
     @RequestMapping("/secure/defaults/update")
     public void updateDefaultValue(String name, String value) {
