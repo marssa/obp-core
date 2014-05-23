@@ -19,12 +19,19 @@ form, td {
     vertical-align: baseline;
 }
 
-.inputField {
-    padding: 10px 20px;
-    font-weight: normal;
+.inputLabel {
+    padding: 0.2em 0.4em;
     font-size: 1em;
-    border: 2px solid white;
-    border-radius: 20px;
+    color: #4e6d83;
+    background-color: transparent;
+    border: none;
+}
+
+.inputField {
+    padding: 0.2em 0.4em;
+    font-size: 1em;
+    border: 0.15em solid white;
+    border-radius: 0.5em;
 }
 
 .liveData {
@@ -113,6 +120,7 @@ body {
     border-radius: 1em;
     color: white;
     text-align: center;
+    background-color: #4e6d83;
 }
 
 .shortButton:hover {

@@ -18,17 +18,14 @@
 <body>
 <obp:header headline="Defaults" btnHome="false"/>
 <div class="shortButton" onclick="location.href='<c:url value="/simple/more"/>'">back</div>
-<table class='tabularData'>
-    <c:forEach items="${defaultValues}" var="entry">
-        <tr>
-            <td style="text-align: left">
-                <span style="color: white">${entry.key}</span><br>
-            </td>
-            <td>
-                <span style="color: white">${entry.value}</span><br>
-            </td>
-        </tr>
+<div>
+    <c:forEach items="${readouts}" var="entry">
+        <form id="updateValue" action="<c:url value="/secure/defaults/update"/>">
+            <input style="width: 35%" class="inputLabel" type="text" name="name" value="${entry.key}" readonly="readonly"/>
+            <input style="width: 35%; margin-right: 5%" class="inputField" type="text" name="value" value="${entry.value}"/>
+            <input class="shortButton" type="submit" value="update"/>
+        </form>
     </c:forEach>
-</table>
+</div>
 </body>
 </html>

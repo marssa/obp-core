@@ -59,7 +59,7 @@ public class MaritimeCloudAgent implements BroadcastListener<IntendedRouteBroadc
     private static Logger logger = Logger.getLogger(MaritimeCloudAgent.class);
 
     public static final int BROADCAST_RADIUS = 50000;
-    public static final int OPERATIONS_TIMEOUT = 60;
+    public static final int OPERATIONS_TIMEOUT = 120;
     public static final int BEACON_PERIOD = 60;
 
     private ScheduledExecutorService broadcaster = Executors.newScheduledThreadPool(1);
