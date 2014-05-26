@@ -26,7 +26,7 @@
             cursor: pointer;
         }
     </style>
-    <script src="<c:url value="/scripts/jquery-2.0.3.min.js"/>"></script>
+    <script src="<c:url value="/scripts/jquery-2.1.1.min.js"/>"></script>
     <script type="text/javascript"
             src="https://maps.googleapis.com/maps/api/js?key=${obpConfig.googleApiKey}&sensor=true">
     </script>

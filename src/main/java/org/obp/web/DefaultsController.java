@@ -18,10 +18,14 @@ package org.obp.web;
 
 import org.obp.DefaultDataInstrument;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
  * Created by Robert Jaremczak
@@ -41,8 +45,12 @@ public class DefaultsController {
     }
 
     @RequestMapping("/secure/defaults/update")
-    public String updateDefaultValue(@RequestParam String name, @RequestParam String value) {
-        defaultDataInstrument.updateReadout(name, new Double(value));
-        return "forward:/simple/defaults";
+    public ResponseEntity updateDefaultValue(@RequestParam String name, @RequestParam String value) {
+        try {
+            defaultDataInstrument.updateReadout(name, new Double(value));
+        } catch (Exception e) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity(HttpStatus.OK);
     }
 }

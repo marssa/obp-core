@@ -11,7 +11,7 @@
 <head>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
     <link rel="stylesheet" href="<c:url value="/styles/obp.css"/>"/>
-    <script src="<c:url value="/scripts/jquery-2.0.3.min.js"/>"></script>
+    <script src="<c:url value="/scripts/jquery-2.1.1.min.js"/>"></script>
     <meta http-equiv="refresh" content="3"/>
 </head>
 <body>

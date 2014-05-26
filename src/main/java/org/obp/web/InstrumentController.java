@@ -51,26 +51,26 @@ public class InstrumentController {
     }
 
     @RequestMapping("/secure/instrument/pause")
-    public ResponseEntity<String> pause(@RequestParam String id) {
+    public ResponseEntity pause(@RequestParam String id) {
         Instrument instrument = obp.getInstrument(id);
         if(instrument==null) {
-            return new ResponseEntity<String>("uknown instrument "+id, HttpStatus.NOT_FOUND);
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
         } else if(instrument.getStatus()!= Instrument.Status.OPERATIONAL) {
-            return new ResponseEntity<String>("instrument not operational", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
         instrument.pause();
-        return new ResponseEntity<String>(HttpStatus.OK);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @RequestMapping("/secure/instrument/resume")
-    public ResponseEntity<String> resume(@RequestParam String id) {
+    public ResponseEntity resume(@RequestParam String id) {
         Instrument instrument = obp.getInstrument(id);
         if(instrument==null) {
-            return new ResponseEntity<String>("uknown instrument "+id, HttpStatus.NOT_FOUND);
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
         } else if(instrument.getStatus()!= Instrument.Status.PAUSED) {
-            return new ResponseEntity<String>("instrument not paused", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
         instrument.resume();
-        return new ResponseEntity<String>(HttpStatus.OK);
+        return new ResponseEntity(HttpStatus.OK);
     }
 }

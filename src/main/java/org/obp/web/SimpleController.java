@@ -115,13 +115,10 @@ public class SimpleController {
     public Map<String,Object> viewDataFeed() {
         Readouts readouts = obp.resolveReadouts(LATITUDE, LONGITUDE, SPEED_OVER_GROUND, TRUE_NORTH_COURSE, WIND_SPEED, WIND_TEMPERATURE, TIME);
         Map<String,Object> map = new HashMap<>();
-        //map.put("sog", readouts.formatKnots(SPEED_OVER_GROUND));
         map.put("sog", readouts.speedInKnots(SPEED_OVER_GROUND));
         map.put("cog", readouts.angle(TRUE_NORTH_COURSE));
         map.put("wind", readouts.speedInKnots(WIND_SPEED));
         map.put("position", formatPosition(readouts));
-//        map.put("latitude", readouts.angle(LATITUDE));
-//        map.put("longitude", readouts.angle(LONGITUDE));
         map.put("water",ReadoutView.NA);
         map.put("depth",ReadoutView.NA);
         map.put("dateTime", readouts.dateTime(TIME));

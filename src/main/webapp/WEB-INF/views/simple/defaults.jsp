@@ -12,7 +12,7 @@
 <head>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
     <link rel="stylesheet" href="<c:url value="/styles/obp.css"/>"/>
-    <script src="<c:url value="/scripts/jquery-2.0.3.min.js"/>"></script>
+    <script src="<c:url value="/scripts/jquery-2.1.1.min.js"/>"></script>
     <script src="<c:url value="/scripts/layout.js"/>"></script>
 </head>
 <body>
@@ -20,12 +20,28 @@
 <div class="shortButton" onclick="location.href='<c:url value="/simple/more"/>'">back</div>
 <div>
     <c:forEach items="${readouts}" var="entry">
-        <form id="updateValue" action="<c:url value="/secure/defaults/update"/>">
+        <form>
             <input style="width: 35%" class="inputLabel" type="text" name="name" value="${entry.key}" readonly="readonly"/>
             <input style="width: 35%; margin-right: 5%" class="inputField" type="text" name="value" value="${entry.value}"/>
-            <input class="shortButton" type="submit" value="update"/>
+            <input class="shortButton" type="button" value="update" onclick="doUpdate(this.form)"/>
         </form>
     </c:forEach>
 </div>
+<script type="text/javascript">
+    function doUpdate(formObj) {
+        var elements = formObj.elements;
+        $.ajax({
+            type: "GET",
+            url: "<c:url value="/secure/defaults/update"/>",
+            data: "name="+elements.namedItem("name").value+"&value="+elements.namedItem("value").value,
+            success: function(data){
+                location.reload();
+            },
+            error: function() {
+                alert("update failed");
+            }
+        });
+    }
+</script>
 </body>
 </html>
