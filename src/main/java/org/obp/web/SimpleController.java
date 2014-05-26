@@ -96,6 +96,14 @@ public class SimpleController {
         return "simple/map";
     }
 
+    @RequestMapping("/simple/map-ecc")
+    public String mapEcc(ModelMap model) {
+        model.addAllAttributes(obp.resolveReadouts(LATITUDE, LONGITUDE));
+        model.addAttribute("localName",obp.getName());
+        model.addAttribute("localDescription",obp.getDescription());
+        return "simple/map-ecc";
+    }
+
     private ReadoutView formatPosition(Readouts readouts) {
         if(readouts.containsAllKeys(LATITUDE,LONGITUDE)) {
             Readout latitude = readouts.get(LATITUDE);

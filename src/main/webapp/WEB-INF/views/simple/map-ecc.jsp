@@ -1,0 +1,116 @@
+<%--
+  Created by Robert Jaremczak
+  Date: 2014-05-26
+--%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="obp" tagdir="/WEB-INF/tags/obp"%>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Marsec demo</title>
+  	<meta charset="utf-8" />
+
+  	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+    <style>
+
+    body {
+        padding: 0;
+        margin: 0;
+    }
+    html, body, #map {
+        height: 100%;
+    }
+    
+    .info {
+        padding: 6px 8px;
+        font: 14px/16px Arial, Helvetica, sans-serif;
+        background: white;
+        background: rgba(255,255,255,0.8);
+        box-shadow: 0 0 15px rgba(0,0,0,0.2);
+        border-radius: 5px;
+    }
+    .info h4 {
+        margin: 0 0 5px;
+        color: #777;
+    }
+
+    </style>
+    
+</head>
+<body>
+    <div id="map"></div>
+
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+    	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js" type="text/javascript"></script>
+
+    <script>
+    
+    var map = new L.Map('map', {
+        minZoom: 2,
+        maxZoom: 20,
+        crs: L.CRS.EPSG3857
+    }).setView([${latitude},${longitude}], 13);
+    
+    var osmlayer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    var enctransparentlandlayer = new L.TileLayer.WMS("http://services.ecc.no/wms/wms_ip/marsec", {
+        layers: 'cells',
+        format: 'image/png',
+        styles: 'style-id-2142',
+        attribution: '<a href="http://primar.org/">PRIMAR</a>',
+        transparent: true
+    }).addTo(map);
+
+    L.control.scale({imperial: false, maxWidth: 200}).addTo(map);
+
+    var enclayers = [enctransparentlandlayer];
+    var START_DEPTH = 10;
+    setDepth(START_DEPTH);
+    function setDepth(depth) {
+        for (var i = 0; i < enclayers.length; i++) {
+            enclayers[i].setParams({ SAFETY_DEPTH: depth, SAFETY_CONTOUR: depth, DEEP_CONTOUR: depth });
+        }
+    }
+
+    function depthSelectOnChange(sel) {
+        var depth = sel.options[sel.selectedIndex].value;
+        setDepth(depth);
+    }
+
+    var depthControl = L.control({position: 'bottomright'});
+    depthControl.onAdd = function (map) {
+
+        var div = L.DomUtil.create('div', 'info');
+        L.DomEvent.disableClickPropagation(div);
+
+        var select = "ENC Depth: <select id=\"depthselect\" onchange=\"depthSelectOnChange(this);\">";
+
+        var depth = 2;
+        while (depth < 80) {
+            select += "<option value=\"" + depth + "\"";
+            if (depth == START_DEPTH) {
+                select += " selected ";
+            } 
+            select += ">" + depth + "m</option>"
+        
+            if (depth < 10) depth = depth + 2;
+            else if (depth < 30) depth = depth + 5;
+            else depth = depth + 10;
+        }
+    
+        select += "</select>";
+        div.innerHTML = select;
+
+        return div;
+    };
+    depthControl.addTo(map);
+    
+    </script>
+</body>
+</html>
