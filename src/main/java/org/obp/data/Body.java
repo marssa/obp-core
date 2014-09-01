@@ -16,8 +16,7 @@
 
 package org.obp.data;
 
-import org.obp.StringIdentified;
-import org.obp.data.Coordinates;
+import org.obp.Entity;
 import org.obp.utils.DmaUtil;
 
 import java.util.ArrayList;
@@ -28,19 +27,26 @@ import java.util.UUID;
  * Created by Robert Jaremczak
  * Date: 2013-10-24
  */
-public class Body extends StringIdentified {
+public class Body implements Entity {
 
+    private String id;
+    private String name;
+    private String description;
     private Coordinates coordinates;
     private volatile Route route;
 
     public Body(String name, double latitude, double longitude) {
-        super(UUID.randomUUID(),name,"");
+        this.id = UUID.randomUUID().toString();
+        this.name = name;
+        this.description = "";
         this.coordinates = new Coordinates(latitude,longitude);
         this.route = null;
     }
 
     public Body(String id, String name, double latitude, double longitude, List<dk.dma.epd.common.prototype.enavcloud.intendedroute.Waypoint> waypoints) {
-        super(id,name,"");
+        this.id = id;
+        this.name = name;
+        this.description = "";
         this.coordinates = new Coordinates(latitude,longitude);
         setRouteWaypoints(waypoints);
     }
@@ -67,5 +73,20 @@ public class Body extends StringIdentified {
 
     public Route getRoute() {
         return route;
+    }
+
+    @Override
+    public String getId() {
+        return null;
+    }
+
+    @Override
+    public String getName() {
+        return null;
+    }
+
+    @Override
+    public String getDescription() {
+        return null;
     }
 }

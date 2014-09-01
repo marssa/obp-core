@@ -28,13 +28,33 @@ import java.util.UUID;
  * Created by Robert Jaremczak
  * Date: 2013-12-17
  */
-public class RemoteObpInstance extends StringIdentified implements ObpInstance {
+public class RemoteObpInstance implements ObpInstance {
 
+    private String id;
+    private String name;
+    private String description;
     private URI uri;
 
     public RemoteObpInstance(URI uri) {
-        super(UUID.randomUUID(),"remote obp at "+uri,"");
+        this.id = UUID.randomUUID().toString();
+        this.name = uri.toString();
+        this.description = "";
         this.uri = uri;
+    }
+
+    @Override
+    public String getId() {
+        return null;
+    }
+
+    @Override
+    public String getName() {
+        return null;
+    }
+
+    @Override
+    public String getDescription() {
+        return null;
     }
 
     @Override

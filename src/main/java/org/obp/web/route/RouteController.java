@@ -16,7 +16,6 @@
 
 package org.obp.web.route;
 
-import org.obp.StringIdentified;
 import org.obp.data.Body;
 import org.obp.data.Coordinates;
 import org.obp.data.Waypoint;
@@ -24,8 +23,6 @@ import org.obp.local.LocalObpInstance;
 import org.obp.remote.RemoteBodiesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -62,7 +59,7 @@ public class RouteController {
         List<BodyRouteDto> list = new ArrayList<>();
         for(Body body : remoteBodiesService.getAll()) {
             BodyRouteDto bodyRouteDto = new BodyRouteDto();
-            bodyRouteDto.body = new StringIdentified(body.getId(),body.getName(),body.getDescription());
+            bodyRouteDto.body = new Body("",1,1);
             bodyRouteDto.position = body.getCoordinates();
             bodyRouteDto.path = convertFromWaypoints(body.getRoute().getWaypoints());
             list.add(bodyRouteDto);

@@ -70,11 +70,11 @@ public class NmeaGpsReceiver extends NmeaBaseInstrument {
 
     @Autowired
     public NmeaGpsReceiver(
-            @Value("${obp.local.nmea.gpsReceiver.uuid}") UUID uuid,
+            @Value("${obp.local.nmea.gpsReceiver.id}") String id,
             @Value("${obp.local.nmea.gpsReceiver.name}") String name,
             @Value("${obp.local.nmea.gpsReceiver.description}") String description,
             @Value("${obp.local.nmea.gpsReceiver.device}}") String deviceUri) {
-        super(uuid, name, description, deviceUri,LATITUDE,LONGITUDE,ALTITUDE, SPEED_OVER_GROUND,TRUE_NORTH_COURSE);
+        super(id, name, description, deviceUri,LATITUDE,LONGITUDE,ALTITUDE, SPEED_OVER_GROUND,TRUE_NORTH_COURSE);
     }
 
     @Override

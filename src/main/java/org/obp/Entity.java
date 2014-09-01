@@ -20,8 +20,8 @@ package org.obp;
  * Created by Robert Jaremczak
  * Date: 2013-11-18
  */
-public interface Identified {
-    Object getId();
+public interface Entity {
+    String getId();
     String getName();
     String getDescription();
 }

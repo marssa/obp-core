@@ -20,7 +20,7 @@ package org.obp;
  * Created by Robert Jaremczak
  * Date: 2013-11-18
  */
-public interface Instrument extends Identified {
+public interface Instrument extends Entity {
     public static final String NO_VALUE = "0";
 
     public static enum Status {

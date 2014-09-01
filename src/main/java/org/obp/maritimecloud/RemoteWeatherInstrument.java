@@ -43,7 +43,7 @@ public class RemoteWeatherInstrument extends BaseInstrument {
     private int pollingInterval = POLLING_INTERVAL;
 
     public RemoteWeatherInstrument(ScheduledExecutorService executorService, final MaritimeCloudAgent maritimeCloudAgent) {
-        super(UUID.randomUUID(), "remoteWeatherService", "weather data from nearest OBP within defined range");
+        super(UUID.randomUUID().toString(), "remoteWeatherService", "weather data from nearest OBP within defined range");
         this.executorService = executorService;
         setStatus(Status.OPERATIONAL);
 

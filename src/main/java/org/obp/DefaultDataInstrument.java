@@ -40,7 +40,7 @@ public class DefaultDataInstrument extends BaseInstrument {
     }
 
     public DefaultDataInstrument(String resourceName) {
-        super(UUID.randomUUID(), "defaults", "predefined default data");
+        super(UUID.randomUUID().toString(), "defaults", "predefined default data");
         logger.info("init default attributes");
         loadDefaultsFromResource(resourceName);
         setStatus(Status.OPERATIONAL);

@@ -86,11 +86,11 @@ public class LocalObpInstance extends BaseObpInstance {
 
     @Autowired
     public LocalObpInstance(
-            @Value("${obp.local.uuid}") UUID uuid,
+            @Value("${obp.local.id}") String id,
             @Value("${obp.local.name}") String name,
             @Value("${obp.local.description}") String description,
             @Value("${obp.local.organization}") String organization) {
-        super(uuid, name, description, organization);
+        super(id, name, description, organization);
     }
 
     @PostConstruct

@@ -93,15 +93,15 @@ public class SimpleController {
         model.addAllAttributes(obp.resolveReadouts(LATITUDE, LONGITUDE));
         model.addAttribute("localName",obp.getName());
         model.addAttribute("localDescription",obp.getDescription());
-        return "simple/map";
+        return "simple/map-ecc";
     }
 
-    @RequestMapping("/simple/map-ecc")
+    @RequestMapping("/simple/map-gm")
     public String mapEcc(ModelMap model) {
         model.addAllAttributes(obp.resolveReadouts(LATITUDE, LONGITUDE));
         model.addAttribute("localName",obp.getName());
         model.addAttribute("localDescription",obp.getDescription());
-        return "simple/map-ecc";
+        return "simple/map-gm";
     }
 
     private ReadoutView formatPosition(Readouts readouts) {

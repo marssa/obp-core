@@ -22,15 +22,34 @@ import java.util.*;
  * Created by Robert Jaremczak
  * Date: 2013-10-24
  */
-public abstract class BaseInstrument extends StringIdentified implements Instrument {
+public abstract class BaseInstrument implements Instrument {
 
+    private String id;
+    private String name;
+    private String description;
     private Readouts readouts;
     private volatile Status status = Status.OFF;
 
-    public BaseInstrument(UUID id, String name, String description) {
-        super(id, name, description);
-
+    public BaseInstrument(String id, String name, String description) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
         this.readouts = Readouts.newConcurrent();
+    }
+
+    @Override
+    public String getId() {
+        return null;
+    }
+
+    @Override
+    public String getName() {
+        return null;
+    }
+
+    @Override
+    public String getDescription() {
+        return null;
     }
 
     @Override

@@ -27,17 +27,22 @@ import java.util.concurrent.ConcurrentMap;
  * Created by Robert Jaremczak
  * Date: 2013-11-28
  */
-public abstract class BaseObpInstance extends StringIdentified implements ObpInstance {
+public abstract class BaseObpInstance implements ObpInstance {
 
     private static Logger logger = Logger.getLogger(BaseObpInstance.class);
 
     protected ConcurrentMap<Object,Instrument> instruments = new ConcurrentHashMap<>();
     protected ConcurrentMap<Object, Explorer> explorers = new ConcurrentHashMap<>();
 
+    private String id;
+    private String name;
+    private String description;
     private String organization;
 
-    public BaseObpInstance(UUID uuid, String name, String description, String organization) {
-        super(uuid, name, description);
+    public BaseObpInstance(String id, String name, String description, String organization) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
         this.organization = organization;
     }
 
@@ -48,6 +53,21 @@ public abstract class BaseObpInstance extends StringIdentified implements ObpIns
     @Override
     public void attachInstrument(Instrument instrument) {
         instruments.put(instrument.getId(), instrument);
+    }
+
+    @Override
+    public String getId() {
+        return id;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public String getDescription() {
+        return description;
     }
 
     @Override

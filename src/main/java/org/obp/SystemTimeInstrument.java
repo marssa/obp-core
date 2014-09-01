@@ -28,7 +28,7 @@ import static org.obp.Readout.TIME;
 public class SystemTimeInstrument extends BaseInstrument {
 
     public SystemTimeInstrument() {
-        super(UUID.randomUUID(), "timeServer", "system time server");
+        super(UUID.randomUUID().toString(), "timeServer", "system time server");
         setStatus(Status.OPERATIONAL);
     }
 

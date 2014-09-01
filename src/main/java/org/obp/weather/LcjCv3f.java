@@ -57,12 +57,12 @@ public class LcjCv3f extends NmeaBaseInstrument {
 
     @Autowired
     public LcjCv3f(
-            @Value("${obp.local.nmea.lcjCv3fm6.uuid}") UUID uuid,
+            @Value("${obp.local.nmea.lcjCv3fm6.id}") String id,
             @Value("${obp.local.nmea.lcjCv3fm6.name}") String name,
             @Value("${obp.local.nmea.lcjCv3fm6.description}") String description,
             @Value("${obp.local.nmea.lcjCv3fm6.device}") String deviceUri) {
 
-        super(uuid, name, description, deviceUri, WIND_TEMPERATURE, WIND_ANGLE, WIND_SPEED);
+        super(id, name, description, deviceUri, WIND_TEMPERATURE, WIND_ANGLE, WIND_SPEED);
     }
 
     @PostConstruct

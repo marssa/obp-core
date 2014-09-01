@@ -16,15 +16,34 @@
 
 package org.obp;
 
-import java.util.UUID;
-
 /**
  * Created by Robert Jaremczak
  * Date: 2013-10-24
  */
-public abstract class BaseExplorer extends StringIdentified implements Explorer {
+public abstract class BaseExplorer implements Explorer {
 
-    public BaseExplorer(UUID uuid, String name, String description) {
-        super(uuid, name, description);
+    private String id;
+    private String name;
+    private String description;
+
+    public BaseExplorer(String id, String name, String description) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+    }
+
+    @Override
+    public String getId() {
+        return null;
+    }
+
+    @Override
+    public String getName() {
+        return null;
+    }
+
+    @Override
+    public String getDescription() {
+        return null;
     }
 }

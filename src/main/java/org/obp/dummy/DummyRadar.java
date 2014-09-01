@@ -37,7 +37,7 @@ public class DummyRadar extends BaseExplorer {
     private List<Body> bodies;
 
     public DummyRadar() {
-        super(UUID.randomUUID(), "dummyRadar", "dummy radar as external bodies explorer");
+        super(UUID.randomUUID().toString(), "dummyRadar", "dummy radar as external bodies explorer");
     }
 
     @PostConstruct

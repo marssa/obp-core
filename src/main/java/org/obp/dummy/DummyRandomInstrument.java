@@ -48,7 +48,7 @@ public class DummyRandomInstrument extends BaseInstrument {
     private Map<String, DoubleRange> attributeRanges;
 
     public DummyRandomInstrument(String name, String description, Map<String, DoubleRange> attributeRanges) {
-        super(UUID.randomUUID(), name, description);
+        super(UUID.randomUUID().toString(), name, description);
         this.attributeRanges = attributeRanges;
         setStatus(Status.OPERATIONAL);
     }

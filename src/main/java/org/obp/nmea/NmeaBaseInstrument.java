@@ -34,8 +34,8 @@ public abstract class NmeaBaseInstrument extends BaseInstrument {
     private LineListener lineListener;
     private String deviceUri;
 
-    public NmeaBaseInstrument(UUID uuid, String name, String description, String deviceUri, String... keys) {
-        super(uuid, name, description);
+    public NmeaBaseInstrument(String id, String name, String description, String deviceUri, String... keys) {
+        super(id, name, description);
         this.deviceUri = deviceUri;
     }
 

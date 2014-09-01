@@ -8,45 +8,28 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Marsec demo</title>
+    <title>Map view</title>
   	<meta charset="utf-8" />
-
-  	<meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
-    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
-    <style>
-
-    body {
-        padding: 0;
-        margin: 0;
-    }
-    html, body, #map {
-        height: 100%;
-    }
-    
-    .info {
-        padding: 6px 8px;
-        font: 14px/16px Arial, Helvetica, sans-serif;
-        background: white;
-        background: rgba(255,255,255,0.8);
-        box-shadow: 0 0 15px rgba(0,0,0,0.2);
-        border-radius: 5px;
-    }
-    .info h4 {
-        margin: 0 0 5px;
-        color: #777;
-    }
-
-    </style>
-    
-</head>
-<body>
-    <div id="map"></div>
-
-    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+    <link rel="stylesheet" href="<c:url value="/styles/obp.css"/>"/>
     <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js" type="text/javascript"></script>
+    <style>
 
+        body {
+            padding: 0;
+            margin: 0;
+        }
+        html, body, #map {
+            height: 100%;
+        }
+
+        .info h4 {
+            margin: 0 0 5px;
+            color: #777;
+        }
+
+    </style>
     <script>
 
         var theMap;
@@ -224,5 +207,19 @@
             theMap.addLayer(mapMyPath);
         }
     </script>
+</head>
+<body>
+    <div style="text-align: center">
+        <div style="display: inline-block; width: 100px">
+            <div class="shortButton" onclick="location.href='<c:url value="/simple/view"/>'">back</div>
+        </div>
+        <div style="display: inline-block; width: 120px">
+            <div class="shortButton" onclick="location.href='<c:url value="/simple/position"/>'">details</div>
+        </div>
+        <div style="display: inline-block; width: 140px">
+            <div class="shortButton" onclick="newRoute()">new route</div>
+        </div>
+    </div>
+    <div style="height: 93%" id="map"></div>
 </body>
 </html>
