@@ -171,8 +171,8 @@ public class Readouts implements Map<String, Readout> {
         return readoutMap.put(key, value);
     }
 
-    public Object putIfAbsent(String key, Readout value) {
-        Object o = readoutMap.get(key);
+    public Readout putIfAbsent(String key, Readout value) {
+        Readout o = readoutMap.get(key);
         return o==null ? readoutMap.put(key, value) : o;
     }
 
