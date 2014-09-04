@@ -39,17 +39,17 @@ public abstract class BaseInstrument implements Instrument {
 
     @Override
     public String getId() {
-        return null;
+        return id;
     }
 
     @Override
     public String getName() {
-        return null;
+        return name;
     }
 
     @Override
     public String getDescription() {
-        return null;
+        return description;
     }
 
     @Override
