@@ -1,0 +1,1 @@
+java -jar /home/utilite/MaritimeCloud_0.1.1/distribution/maritimecloud-server/target/maritimecloud-server-0.1.6-SNAPSHOT.jar -rest 9099 &

@@ -1,0 +1,18 @@
+#!/bin/bash
+
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+USER=utilite
+
+start() {
+ su -c '/home/utilite/MaritimeCloud_0.1.1/start-server.sh' - $USER
+}
+
+stop() {
+ su -c '/home/utilite/MaritimeCloud_0.1.1/stop-server.sh' - $USER
+}
+
+case $1 in
+  start|stop) $1;;
+  restart) stop; start;;
+  *) echo "Run as $0 <start|stop|restart>"; exit 1;;
+esac
