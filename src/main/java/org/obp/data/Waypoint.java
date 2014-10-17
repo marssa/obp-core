@@ -16,61 +16,32 @@
 
 package org.obp.data;
 
-import java.util.UUID;
-
 /**
  * Created by Robert Jaremczak
  * Date: 2013-10-22
  */
 public class Waypoint extends Coordinates {
-    private UUID uuid;
-    private int revision;
-    private double portsideXtd;
-    private double starboardXtd;
-    private double turnRadius;
-    private long departureTime;
-    private long arrivalTime;
-    private double speed;
+    private long eta = 0;
 
-    public Waypoint(double latitude, double longitude, double turnRadius) {
-        this(null,1,latitude,longitude,Double.NaN,Double.NaN,turnRadius,0,0,Double.NaN);
+    public Waypoint(double latitude, double longitude, long eta) {
+        super(latitude, longitude);
+        this.eta = eta;
     }
 
-    public Waypoint(UUID uuid, int revision, double latitude, double longitude,
-                    double portsideXtd, double starboardXtd, double turnRadius,
-                    long departureTime, long arrivalTime, double speed) {
+    public Waypoint(double latitude, double longitude) {
         super(latitude,longitude);
-        this.uuid = uuid;
-        this.revision = revision;
-        this.portsideXtd = portsideXtd;
-        this.starboardXtd = starboardXtd;
-        this.turnRadius = turnRadius;
-        this.departureTime = departureTime;
-        this.arrivalTime = arrivalTime;
-        this.speed = speed;
-    }
-
-    public UUID getUuid() {
-        return uuid;
-    }
-
-    public int getRevision() {
-        return revision;
-    }
-
-    public double getPortsideXtd() {
-        return portsideXtd;
-    }
-
-    public double getStarboardXtd() {
-        return starboardXtd;
-    }
-
-    public double getTurnRadius() {
-        return turnRadius;
     }
 
     public Coordinates getCoordinates() {
         return new Coordinates(this);
     }
+
+    public long getEta() {
+        return eta;
+    }
+
+    public boolean isValidEta() {
+        return eta > 0;
+    }
+
 }

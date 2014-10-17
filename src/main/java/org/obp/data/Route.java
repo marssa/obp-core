@@ -27,9 +27,15 @@ import java.util.Stack;
  */
 public class Route {
     private List<Waypoint> waypoints;
+    private Waypoint projectedPosition;
 
     public Route(List<Waypoint> waypoints) {
         this.waypoints = Collections.unmodifiableList(waypoints);
+    }
+
+    public Route(List<Waypoint> waypoints, Waypoint projectedPosition) {
+        this(waypoints);
+        this.projectedPosition = projectedPosition;
     }
 
     public List<Waypoint> getWaypoints() {
@@ -42,6 +48,10 @@ public class Route {
             list.add(wp.getCoordinates());
         }
         return list;
+    }
+
+    public Waypoint getProjectedPosition() {
+        return projectedPosition;
     }
 
     public static Route randomStartingAt(Coordinates position) {

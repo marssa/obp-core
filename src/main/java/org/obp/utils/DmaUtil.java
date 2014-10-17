@@ -36,7 +36,7 @@ public class DmaUtil {
             Waypoint wp = new Waypoint();
             wp.setLatitude(waypoint.getLatitude());
             wp.setLongitude(waypoint.getLongitude());
-            wp.setTurnRad(waypoint.getTurnRadius());
+            wp.setTurnRad(0.0);
             list.add(wp);
         }
         return list;
@@ -45,7 +45,7 @@ public class DmaUtil {
     public static List<org.obp.data.Waypoint> convertWaypointsFromDmaFormat(List<Waypoint> waypoints) {
         List<org.obp.data.Waypoint> list = new ArrayList<>();
         for(dk.dma.epd.common.prototype.enavcloud.intendedroute.Waypoint wp : waypoints) {
-            list.add(new org.obp.data.Waypoint(wp.getLatitude(),wp.getLongitude(), wp.getTurnRad()));
+            list.add(new org.obp.data.Waypoint(wp.getLatitude(),wp.getLongitude()));
         }
         return list;
     }
