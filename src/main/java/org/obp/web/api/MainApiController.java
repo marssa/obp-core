@@ -18,7 +18,7 @@ package org.obp.web.api;
 
 import org.apache.commons.lang3.Range;
 import org.obp.local.LocalObpInstance;
-import org.obp.web.config.ObpConfig;
+import org.obp.Configuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -48,7 +48,7 @@ public class MainApiController {
     private LocalObpInstance obpInstance;
 
     @Autowired
-    private ObpConfig config;
+    private Configuration config;
 
     @ResponseBody
     @RequestMapping("/{apiLevel:\\d+\\.\\d+}/info")

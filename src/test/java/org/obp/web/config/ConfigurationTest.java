@@ -18,28 +18,29 @@ package org.obp.web.config;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.obp.Configuration;
 
 /**
  * Created by Robert Jaremczak
  * Date: 2014-4-8
  */
-public class ObpConfigTest {
+public class ConfigurationTest {
 
-    ObpConfig obpConfig = new ObpConfig();
+    Configuration config = new Configuration();
 
     @Test
     public void testShortOsInfo() {
-        Assert.assertTrue(obpConfig.getShortOsInfo().length() > 2);
+        Assert.assertTrue(config.getShortOsInfo().length() > 2);
     }
 
     @Test
     public void testShortJavaInfo() {
-        Assert.assertTrue(obpConfig.getShortJavaInfo().length() > 2);
+        Assert.assertTrue(config.getShortJavaInfo().length() > 2);
     }
 
     @Test
     public void testShortHostInfo() {
-        Assert.assertTrue(obpConfig.getShortHostInfo().length() > 2);
+        Assert.assertTrue(config.getShortHostInfo().length() > 2);
     }
 
 }

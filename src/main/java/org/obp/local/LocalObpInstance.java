@@ -31,7 +31,7 @@ import org.obp.maritimecloud.WeatherService;
 import org.obp.remote.RemoteBodiesService;
 import org.obp.remote.RemoteObpLocator;
 import org.obp.weather.LcjCv3f;
-import org.obp.web.config.ObpConfig;
+import org.obp.Configuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -39,7 +39,6 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.net.URI;
-import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -65,7 +64,7 @@ public class LocalObpInstance extends BaseObpInstance {
     private LcjCv3f nmeaWindVane;
 
     @Autowired
-    private ObpConfig config;
+    private Configuration config;
 
     @Autowired
     private RemoteObpLocator remoteObpLocator;

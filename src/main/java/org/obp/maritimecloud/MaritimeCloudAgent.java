@@ -34,6 +34,7 @@ import net.maritimecloud.util.function.Consumer;
 import net.maritimecloud.util.geometry.PositionReader;
 import net.maritimecloud.util.geometry.PositionTime;
 import org.apache.log4j.Logger;
+import org.obp.Configuration;
 import org.obp.data.Body;
 import org.obp.data.Route;
 import org.obp.remote.RemoteBodiesService;
@@ -65,36 +66,13 @@ public class MaritimeCloudAgent implements BroadcastListener<IntendedRouteBroadc
     private ScheduledExecutorService broadcaster = Executors.newScheduledThreadPool(1);
     private MaritimeCloudClient client;
 
-    @Value("${obp.local.name}")
-    private String name;
-
-    @Value("${obp.local.description}")
-    private String description;
-
-    @Value("${obp.local.organization}")
-    private String organization;
-
-    @Value("${obp.maritimecloud.client.uri}")
-    private String clientUri;
-
-    @Value("${obp.maritimecloud.server.uri}")
-    private String serverUri;
-
-    @Value("${obp.maritimecloud.service.enabled}")
-    private boolean serviceEnabled;
-
-    @Value("${obp.maritimecloud.broadcast.beacon.enabled}")
-    private boolean broadcastBeaconEnabled;
-
-    @Value("${obp.maritimecloud.broadcast.beacon.period}")
-    private int broadcastBeaconPeriod;
-
-    @Value("${obp.maritimecloud.broadcast.beacon.listener.enabled}")
-    private boolean broadcastBeaconListenerEnabled;
-
     private boolean intendedRouteListenerEnabled = true;
 
     private boolean intendedRouteBroadcastEnabled = true;
+
+
+    @Autowired
+    private Configuration config;
 
     @Autowired
     private RemoteObpLocator obpLocator;
@@ -104,12 +82,12 @@ public class MaritimeCloudAgent implements BroadcastListener<IntendedRouteBroadc
 
     private void buildAndConnectClient(PositionReader positionReader) {
         logger.info("init client");
-        MaritimeCloudClientConfiguration conf = MaritimeCloudClientConfiguration.create(clientUri);
+        MaritimeCloudClientConfiguration conf = MaritimeCloudClientConfiguration.create(config.getClientUri());
         conf.setPositionReader(positionReader);
-        conf.setHost(serverUri);
-        conf.properties().setName(name);
-        conf.properties().setDescription(description);
-        conf.properties().setOrganization(organization);
+        conf.setHost(config.getServerUri());
+        conf.properties().setName(config.getName());
+        conf.properties().setDescription(config.getDescription());
+        conf.properties().setOrganization(config.getOrganization());
         logger.info("configuration:\n\n"+dumpConfiguration(conf));
         client = conf.build();
 
@@ -133,7 +111,7 @@ public class MaritimeCloudAgent implements BroadcastListener<IntendedRouteBroadc
     }
 
     public void connect(PositionReader positionReader, AtomicReference<Route> intendedRouteRef) {
-        if(serviceEnabled) {
+        if(config.isServiceEnabled()) {
             logger.info("connecting ...");
             buildAndConnectClient(positionReader);
             if(isConnected()) {
@@ -154,36 +132,29 @@ public class MaritimeCloudAgent implements BroadcastListener<IntendedRouteBroadc
     }
 
     public void startObpBroadcast() {
-        if(broadcastBeaconEnabled) {
+        if(config.isBroadcastBeaconEnabled()) {
             logger.debug("start OBP beacon");
-            broadcaster.scheduleAtFixedRate(new Runnable() {
-                @Override
-                public void run() {
-                    broadcast(new ObpBroadcast(name), BROADCAST_RADIUS);
-                }
-            }, BEACON_PERIOD, broadcastBeaconPeriod, TimeUnit.SECONDS);
+            broadcaster.scheduleAtFixedRate(
+                    () -> broadcast(new ObpBroadcast(config.getName()), BROADCAST_RADIUS),
+                    BEACON_PERIOD, config.getBroadcastBeaconPeriod(), TimeUnit.SECONDS);
         }
     }
 
     public void startIntendedRouteBroadcast(final AtomicReference<Route> intendedRouteRef) {
         if(intendedRouteBroadcastEnabled) {
             logger.debug("start intended route broadcast");
-            broadcaster.scheduleAtFixedRate(new Runnable() {
-                @Override
-                public void run() {
-                    IntendedRouteBroadcast bcast = new IntendedRouteBroadcast();
-                    IntendedRouteMessage msg = new IntendedRouteMessage();
-                    msg.setWaypoints(new ArrayList<Waypoint>(
-                            DmaUtil.convertWaypointsToDmaFormat(intendedRouteRef.get().getWaypoints())));
-                    bcast.setRoute(msg);
-                    broadcast(bcast, BROADCAST_RADIUS);
-                }
-            }, BEACON_PERIOD, broadcastBeaconPeriod, TimeUnit.SECONDS);
+            broadcaster.scheduleAtFixedRate(() -> {
+                IntendedRouteBroadcast bcast = new IntendedRouteBroadcast();
+                IntendedRouteMessage msg = new IntendedRouteMessage();
+                msg.setWaypoints(new ArrayList<>(DmaUtil.convertWaypointsToDmaFormat(intendedRouteRef.get().getWaypoints())));
+                bcast.setRoute(msg);
+                broadcast(bcast, BROADCAST_RADIUS);
+            }, BEACON_PERIOD, config.getBroadcastBeaconPeriod(), TimeUnit.SECONDS);
         }
     }
 
     private void startBroadcastListener() {
-        if(broadcastBeaconListenerEnabled) {
+        if(config.isBroadcastBeaconListenerEnabled()) {
             logger.debug("add OBP announcement listener");
             client.broadcastListen(ObpBroadcast.class, obpLocator);
         }

@@ -27,7 +27,7 @@
         <property name="suffix" value=".jsp"/>
         <property name="attributesMap">
             <map>
-                <entry key="obpConfig" value-ref="obpConfig"/>
+                <entry key="obpConfig" value-ref="configuration"/>
             </map>
         </property>
     </bean>

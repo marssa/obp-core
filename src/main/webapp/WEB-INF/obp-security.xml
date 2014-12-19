@@ -2,10 +2,8 @@
 <beans:beans xmlns="http://www.springframework.org/schema/security"
              xmlns:beans="http://www.springframework.org/schema/beans"
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-             xsi:schemaLocation="http://www.springframework.org/schema/beans
-           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-           http://www.springframework.org/schema/security
-           http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+             xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+           http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd">
 
     <!--<global-method-security secured-annotations="enabled" />-->
 
@@ -49,6 +47,9 @@
                       authorities="ROLE_USER, ROLE_ADMIN" />
                 <user name="marsecxl"
                       password="$2a$10$fCMUEc4bxLPN3PKpoXFpeu3KtdiQghl.60.Y0MKWI71U4UbYNcbD."
+                      authorities="ROLE_USER" />
+                <user name="bridge"
+                      password="$2a$04$I3Hv/lvtseg4er8yBR.Gm.Nm3mdNC/QwitWTGhv6j5J01xtEmJKp."
                       authorities="ROLE_USER" />
             </user-service>
         </authentication-provider>

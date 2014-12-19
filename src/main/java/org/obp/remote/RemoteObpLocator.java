@@ -46,13 +46,8 @@ public class RemoteObpLocator implements BroadcastListener<ObpBroadcast> {
     private ConcurrentMap<UUID,RemoteObpInstance> remoteInstances;
     private List<ObpInstance> remotes;
 
-    @Autowired
-    public RemoteObpLocator(@Value("#{'${obp.remote.uris}'.split(',')}") URI[] remoteUris) {
-        List<ObpInstance> instances =  new ArrayList<>(remoteUris.length);
-        for(URI uri : remoteUris) {
-            instances.add(new RemoteObpInstance(uri));
-        }
-        remotes = new CopyOnWriteArrayList<>(instances);
+    public RemoteObpLocator() {
+        remotes = new CopyOnWriteArrayList<>();
         remoteInstances = new ConcurrentHashMap<>();
     }
 
