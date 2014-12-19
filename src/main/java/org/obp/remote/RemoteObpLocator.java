@@ -16,17 +16,10 @@
 
 package org.obp.remote;
 
-import net.maritimecloud.net.broadcast.BroadcastListener;
-import net.maritimecloud.net.broadcast.BroadcastMessageHeader;
 import org.apache.log4j.Logger;
 import org.obp.ObpInstance;
-import org.obp.maritimecloud.ObpBroadcast;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -39,7 +32,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 
 @Service
-public class RemoteObpLocator implements BroadcastListener<ObpBroadcast> {
+public class RemoteObpLocator {
 
     private Logger logger = Logger.getLogger(RemoteObpLocator.class);
 
@@ -76,10 +69,5 @@ public class RemoteObpLocator implements BroadcastListener<ObpBroadcast> {
 
     public int knownRemotes() {
         return remotes.size();
-    }
-
-    @Override
-    public void onMessage(BroadcastMessageHeader header, ObpBroadcast broadcast) {
-        logger.info("OBP beacon message received: "+broadcast);
     }
 }

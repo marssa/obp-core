@@ -17,7 +17,8 @@
 package org.obp.data;
 
 import org.obp.Entity;
-import org.obp.utils.DmaUtil;
+import org.obp.maritimecloud.MessageConverters;
+import org.obp.maritimecloud.WaypointMsg;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,20 +44,20 @@ public class Body implements Entity {
         this.route = null;
     }
 
-    public Body(String id, String name, double latitude, double longitude, List<dk.dma.epd.common.prototype.enavcloud.intendedroute.Waypoint> waypoints) {
+    public Body(String id, String name, double latitude, double longitude, List<Waypoint> waypoints) {
         this.id = id;
         this.name = name;
         this.description = "";
         this.coordinates = new Coordinates(latitude,longitude);
-        setRouteWaypoints(waypoints);
+        this.route = new Route(waypoints);
     }
 
     public Coordinates getCoordinates() {
         return coordinates;
     }
 
-    public void setRouteWaypoints(List<dk.dma.epd.common.prototype.enavcloud.intendedroute.Waypoint> waypoints) {
-        this.route = new Route(DmaUtil.convertWaypointsFromDmaFormat(waypoints));
+    public void setRouteWaypoints(List<WaypointMsg> waypoints) {
+        this.route = new Route(MessageConverters.messagesToWaypoints(waypoints));
     }
 
     public void setRoute(Route route) {

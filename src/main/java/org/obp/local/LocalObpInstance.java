@@ -103,12 +103,12 @@ public class LocalObpInstance extends BaseObpInstance {
         scanner = Executors.newScheduledThreadPool(1);
 
         randomizeIntendedRoute();
-        maritimeCloudAgent.connect(createPositionReader(),intendedRouteRef);
+        maritimeCloudAgent.connect(createPositionReader(),intendedRouteRef, this);
         if(maritimeCloudAgent.isConnected()) {
             if(config.isRemoteWeatherScanner()) {
                 attachInstrument(new RemoteWeatherInstrument(scanner, maritimeCloudAgent));
             } else {
-                maritimeCloudAgent.registerService(WeatherService.SIP, WeatherService.callback(this));
+                maritimeCloudAgent.registerService(new WeatherService(this));
             }
         }
 

@@ -16,16 +16,9 @@
 
 package org.obp.maritimecloud;
 
-import net.maritimecloud.net.service.invocation.InvocationCallback;
-import net.maritimecloud.net.service.spi.Service;
-import net.maritimecloud.net.service.spi.ServiceInitiationPoint;
-import net.maritimecloud.net.service.spi.ServiceMessage;
 import org.apache.log4j.Logger;
 import org.obp.ObpInstance;
 import org.obp.Readouts;
-import org.obp.utils.AngleUtil;
-import org.obp.utils.SpeedUtil;
-import org.obp.utils.TemperatureUtil;
 
 import static org.obp.Readout.*;
 
@@ -33,42 +26,28 @@ import static org.obp.Readout.*;
  * Created by Robert Jaremczak
  * Date: 2014-3-11
  */
-public class WeatherService extends Service {
-
+public class WeatherService extends AbstractWeatherEndpoint {
     private static Logger logger = Logger.getLogger(WeatherService.class);
 
-    public static InvocationCallback<Request, Response> callback(final ObpInstance obpInstance) {
-        return new InvocationCallback<Request, Response>() {
-            @Override
-            public void process(Request message, Context<Response> context) {
-                logger.debug("weather service invoked by "+context.getCaller());
-                Readouts readouts = obpInstance.resolveReadouts(WIND_SPEED, WIND_ANGLE, WIND_TEMPERATURE, LATITUDE, LONGITUDE);
-                Response response = new Response();
-                response.windSpeed = readouts.getDouble(WIND_SPEED);
-                response.windAngle = readouts.getDouble(WIND_ANGLE);
-                response.windTemperature = readouts.getDouble(WIND_TEMPERATURE);
-                response.latitude = readouts.getDouble(LATITUDE);
-                response.longitude = readouts.getDouble(LONGITUDE);
-                context.complete(response);
-            }
-        };
+    private ObpInstance obpInstance;
+
+    public WeatherService(ObpInstance obpInstance) {
+        this.obpInstance = obpInstance;
     }
 
-    public static final ServiceInitiationPoint<Request> SIP = new ServiceInitiationPoint<>(Request.class);
+    @Override
+    protected WindMsg checkWind(Context context) {
+        logger.debug("weather service invoked by "+context.getCaller());
 
-    public static class Request extends ServiceMessage<Response> {};
+        Readouts readouts = obpInstance.resolveReadouts(WIND_SPEED, WIND_ANGLE, WIND_TEMPERATURE, LATITUDE, LONGITUDE);
+        WindMsg msg = new WindMsg();
+        msg.setWindSpeed(readouts.getDouble(WIND_SPEED));
+        msg.setWindAngle(readouts.getDouble(WIND_ANGLE));
+        msg.setWindTemperature(readouts.getDouble(WIND_TEMPERATURE));
 
-    public static class Response extends ServiceMessage<Void> {
-
-        public double latitude;
-        public double longitude;
-        public double windSpeed;
-        public double windAngle;
-        public double windTemperature;
-
-        @Override
-        public String toString() {
-            return SpeedUtil.format(windSpeed)+" "+ AngleUtil.format(windAngle)+" "+ TemperatureUtil.format(windTemperature);
-        }
+        // TODO: add true wind calculation here
+        msg.setTrueWindAngle(msg.getWindAngle());
+        msg.setTrueWindSpeed(msg.getWindSpeed());
+        return msg;
     }
 }

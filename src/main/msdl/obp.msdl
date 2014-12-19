@@ -1,0 +1,36 @@
+namespace org.obp.maritimecloud;
+
+broadcast MovementMsg {
+    1: double sog;
+    2: double cog;
+    3: double heading;
+}
+
+message PositionMsg {
+    1: double latitude;
+    2: double longitude;
+}
+
+message WaypointMsg {
+    1: double latitude;
+    2: double longitude;
+    3: int64 eta;
+}
+
+broadcast IntendedRouteMsg {
+    1: list<WaypointMsg> waypoints;
+    2: PositionMsg projectedPosition;
+    3: int projectedSegmentNum;
+}
+
+message WindMsg {
+    1: double windSpeed;
+    2: double windAngle;
+    5: double windTemperature;
+    3: double trueWindSpeed;
+    4: double trueWindAngle;
+}
+
+endpoint WeatherEndpoint {
+    WindMsg checkWind();
+}

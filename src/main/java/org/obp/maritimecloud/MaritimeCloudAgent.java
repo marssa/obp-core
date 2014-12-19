@@ -16,38 +16,34 @@
 
 package org.obp.maritimecloud;
 
-import dk.dma.epd.common.prototype.enavcloud.intendedroute.IntendedRouteBroadcast;
-import dk.dma.epd.common.prototype.enavcloud.intendedroute.IntendedRouteMessage;
-import dk.dma.epd.common.prototype.enavcloud.intendedroute.Waypoint;
 import net.maritimecloud.core.id.MaritimeId;
-import net.maritimecloud.net.ConnectionFuture;
-import net.maritimecloud.net.MaritimeCloudClient;
-import net.maritimecloud.net.MaritimeCloudClientConfiguration;
-import net.maritimecloud.net.broadcast.*;
-import net.maritimecloud.net.service.ServiceEndpoint;
-import net.maritimecloud.net.service.ServiceInvocationFuture;
-import net.maritimecloud.net.service.invocation.InvocationCallback;
-import net.maritimecloud.net.service.registration.ServiceRegistration;
-import net.maritimecloud.net.service.spi.ServiceInitiationPoint;
-import net.maritimecloud.net.service.spi.ServiceMessage;
-import net.maritimecloud.util.function.Consumer;
+import net.maritimecloud.mms.MmsClient;
+import net.maritimecloud.mms.MmsClientConfiguration;
+import net.maritimecloud.mms.MmsFuture;
+import net.maritimecloud.mms.endpoint.EndpointLocal;
+import net.maritimecloud.mms.endpoint.EndpointLocator;
+import net.maritimecloud.net.BroadcastMessage;
+import net.maritimecloud.net.EndpointImplementation;
+import net.maritimecloud.util.geometry.Position;
 import net.maritimecloud.util.geometry.PositionReader;
-import net.maritimecloud.util.geometry.PositionTime;
 import org.apache.log4j.Logger;
 import org.obp.Configuration;
+import org.obp.ObpInstance;
+import org.obp.Readouts;
 import org.obp.data.Body;
 import org.obp.data.Route;
 import org.obp.remote.RemoteBodiesService;
-import org.obp.remote.RemoteObpLocator;
-import org.obp.utils.DmaUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PreDestroy;
-import java.util.ArrayList;
-import java.util.concurrent.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+
+import static org.obp.Readout.SPEED_OVER_GROUND;
+import static org.obp.Readout.TRUE_NORTH_COURSE;
 
 /**
  * Created by Robert Jaremczak
@@ -55,7 +51,7 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 
 @Service
-public class MaritimeCloudAgent implements BroadcastListener<IntendedRouteBroadcast> {
+public class MaritimeCloudAgent {
 
     private static Logger logger = Logger.getLogger(MaritimeCloudAgent.class);
 
@@ -64,25 +60,20 @@ public class MaritimeCloudAgent implements BroadcastListener<IntendedRouteBroadc
     public static final int BEACON_PERIOD = 60;
 
     private ScheduledExecutorService broadcaster = Executors.newScheduledThreadPool(1);
-    private MaritimeCloudClient client;
+    private MmsClient client;
 
     private boolean intendedRouteListenerEnabled = true;
-
     private boolean intendedRouteBroadcastEnabled = true;
-
 
     @Autowired
     private Configuration config;
-
-    @Autowired
-    private RemoteObpLocator obpLocator;
 
     @Autowired
     private RemoteBodiesService remoteBodiesService;
 
     private void buildAndConnectClient(PositionReader positionReader) {
         logger.info("init client");
-        MaritimeCloudClientConfiguration conf = MaritimeCloudClientConfiguration.create(config.getClientUri());
+        MmsClientConfiguration conf = MmsClientConfiguration.create(config.getClientUri());
         conf.setPositionReader(positionReader);
         conf.setHost(config.getServerUri());
         conf.properties().setName(config.getName());
@@ -100,7 +91,7 @@ public class MaritimeCloudAgent implements BroadcastListener<IntendedRouteBroadc
         }
     }
 
-    private String dumpConfiguration(MaritimeCloudClientConfiguration conf) {
+    private String dumpConfiguration(MmsClientConfiguration conf) {
         StringBuilder sb = new StringBuilder();
         sb.append("id: ").append(conf.getId()).append("\n");
         sb.append("name: ").append(conf.properties().getName()).append("\n");
@@ -110,16 +101,15 @@ public class MaritimeCloudAgent implements BroadcastListener<IntendedRouteBroadc
         return sb.toString();
     }
 
-    public void connect(PositionReader positionReader, AtomicReference<Route> intendedRouteRef) {
+    public void connect(PositionReader positionReader, AtomicReference<Route> intendedRouteRef, ObpInstance obpInstance) {
         if(config.isServiceEnabled()) {
             logger.info("connecting ...");
             buildAndConnectClient(positionReader);
             if(isConnected()) {
-                startObpBroadcast();
+                startObpBroadcast(obpInstance);
                 startIntendedRouteBroadcast(intendedRouteRef);
                 startBroadcastListener();
                 startIntendedRouteListener();
-
                 logger.info("done.");
             } else {
                 logger.warn("unable to connect to MaritimeCloud server");
@@ -131,12 +121,25 @@ public class MaritimeCloudAgent implements BroadcastListener<IntendedRouteBroadc
         return client!=null && client.connection()!=null ? client.connection().isConnected() : false;
     }
 
-    public void startObpBroadcast() {
+    public <T extends EndpointLocal> T getNearestEndpoint(Class<T> clazz, int radius) {
+        EndpointLocator<T> locator = client.endpointFind(clazz).withinDistanceOf(radius);
+        MmsFuture<T> endpoint = locator.findNearest();
+        return endpoint.join();
+    }
+
+    public void startObpBroadcast(final ObpInstance obpInstance) {
         if(config.isBroadcastBeaconEnabled()) {
             logger.debug("start OBP beacon");
-            broadcaster.scheduleAtFixedRate(
-                    () -> broadcast(new ObpBroadcast(config.getName()), BROADCAST_RADIUS),
-                    BEACON_PERIOD, config.getBroadcastBeaconPeriod(), TimeUnit.SECONDS);
+            broadcaster.scheduleAtFixedRate(() -> {
+                Readouts readouts = obpInstance.resolveReadouts(SPEED_OVER_GROUND, TRUE_NORTH_COURSE);
+                MovementMsg msg = new MovementMsg();
+                msg.setCog(readouts.getDouble(SPEED_OVER_GROUND));
+                msg.setSog(readouts.getDouble(TRUE_NORTH_COURSE));
+
+                // TODO: add actual heading here
+                msg.setHeading(msg.getCog());
+                broadcast(msg, BROADCAST_RADIUS);
+            }, BEACON_PERIOD, config.getBroadcastBeaconPeriod(), TimeUnit.SECONDS);
         }
     }
 
@@ -144,11 +147,9 @@ public class MaritimeCloudAgent implements BroadcastListener<IntendedRouteBroadc
         if(intendedRouteBroadcastEnabled) {
             logger.debug("start intended route broadcast");
             broadcaster.scheduleAtFixedRate(() -> {
-                IntendedRouteBroadcast bcast = new IntendedRouteBroadcast();
-                IntendedRouteMessage msg = new IntendedRouteMessage();
-                msg.setWaypoints(new ArrayList<>(DmaUtil.convertWaypointsToDmaFormat(intendedRouteRef.get().getWaypoints())));
-                bcast.setRoute(msg);
-                broadcast(bcast, BROADCAST_RADIUS);
+                IntendedRouteMsg msg = new IntendedRouteMsg();
+                msg.addAllWaypoints(MessageConverters.waypointsToMessages(intendedRouteRef.get().getWaypoints()));
+                broadcast(msg, BROADCAST_RADIUS);
             }, BEACON_PERIOD, config.getBroadcastBeaconPeriod(), TimeUnit.SECONDS);
         }
     }
@@ -156,60 +157,33 @@ public class MaritimeCloudAgent implements BroadcastListener<IntendedRouteBroadc
     private void startBroadcastListener() {
         if(config.isBroadcastBeaconListenerEnabled()) {
             logger.debug("add OBP announcement listener");
-            client.broadcastListen(ObpBroadcast.class, obpLocator);
+            client.broadcastListen(MovementMsg.class,
+                    (context, broadcast) -> logger.info("OBP beacon message received: "+broadcast));
         }
     }
 
     private void startIntendedRouteListener() {
         if(intendedRouteListenerEnabled) {
             logger.debug("add intended route broadcast listener");
-            client.broadcastListen(IntendedRouteBroadcast.class, this);
+            client.broadcastListen(IntendedRouteMsg.class, (context, broadcast) -> {
+                MaritimeId id = context.getBroadcaster();
+                Position pos = context.getBroadcasterPosition();
+                logger.debug("intended route announcement received from "+id);
+                remoteBodiesService.put(new Body(id.toString(), id.toString(),
+                        pos.getLatitude(), pos.getLongitude(),
+                        MessageConverters.messagesToWaypoints(broadcast.getWaypoints())));
+            });
         }
     }
 
-    public <T, S extends ServiceMessage<T>> void registerService(ServiceInitiationPoint<S> sip, InvocationCallback<S,T> callback) {
-        logger.debug("register service: "+sip.getName());
-        ServiceRegistration sr =client.serviceRegister(sip, callback);
-        try {
-            sr.awaitRegistered(OPERATIONS_TIMEOUT, TimeUnit.SECONDS);
-            logger.debug("registered.");
-        } catch (InterruptedException e) {
-            logger.error("error registering service",e);
-        }
-    }
-
-    public <T, S extends ServiceMessage<T>> T callNearestServiceProvider(ServiceInitiationPoint<S>  sip, S request, int radius) {
-        try {
-            ConnectionFuture<ServiceEndpoint<S, T>> locator = client.serviceLocate(sip).withinDistanceOf(radius).nearest();
-            ServiceEndpoint<S, T> se = locator.get(OPERATIONS_TIMEOUT, TimeUnit.SECONDS);
-            if(se!=null) {
-                ServiceInvocationFuture<T> invoke = se.invoke(request);
-                return invoke.get(OPERATIONS_TIMEOUT, TimeUnit.SECONDS);
-            }
-        } catch (TimeoutException e) {
-            // intentionally swallowed
-        }
-        catch (Exception e) {
-            logger.warn("exception calling remote service "+sip.getName(),e);
-        }
-
-        return null;
+    public <T extends EndpointImplementation> void registerService(T impl) {
+        logger.debug("register service: " + impl.getEndpointName());
+        client.endpointRegister(impl);
     }
 
     public void broadcast(BroadcastMessage message, int radius) {
         try {
-            if (client != null) {
-                BroadcastOptions broadcastOptions = new BroadcastOptions();
-                broadcastOptions.setBroadcastRadius(radius);
-                broadcastOptions.setReceiverAckEnabled(true);
-
-                BroadcastFuture bf = client.broadcast(message, broadcastOptions);
-                bf.onAck(new Consumer<BroadcastMessage.Ack>() {
-                    public void accept(BroadcastMessage.Ack t) {
-                        logger.debug("received by " + t.getId());
-                    }
-                });
-            }
+            if (client != null) { client.withBroadcast(message).toArea(radius).send(); }
         } catch (Exception e) {
             logger.warn("MaritimeCloud broadcasting error",e);
         }
@@ -242,14 +216,5 @@ public class MaritimeCloudAgent implements BroadcastListener<IntendedRouteBroadc
                 logger.warn("client is not terminated");
             }
         }
-    }
-
-    @Override
-    public void onMessage(BroadcastMessageHeader broadcastMessageHeader, IntendedRouteBroadcast intendedRouteBroadcast) {
-        MaritimeId id = broadcastMessageHeader.getId();
-        PositionTime pt = broadcastMessageHeader.getPosition();
-        logger.debug("intended route announcement received from "+id+":\n"+intendedRouteBroadcast.getRoute());
-        IntendedRouteMessage msg = intendedRouteBroadcast.getRoute();
-        remoteBodiesService.put(new Body(id.toString(), id.toString(), pt.getLatitude(), pt.getLongitude(),msg.getWaypoints()));
     }
 }

@@ -16,12 +16,14 @@
 
 package org.obp.maritimecloud;
 
+import net.maritimecloud.mms.MmsFuture;
 import org.apache.log4j.Logger;
 import org.obp.BaseInstrument;
 import org.obp.Readout;
 import org.obp.Reliability;
 import org.obp.utils.DistanceUtil;
 
+import javax.xml.ws.Endpoint;
 import java.util.UUID;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -48,29 +50,27 @@ public class RemoteWeatherInstrument extends BaseInstrument {
         setStatus(Status.OPERATIONAL);
 
         logger.info("init remote weather instrument, radius: "+ DistanceUtil.format(radius)+", polling interval: "+pollingInterval+" s");
-        this.executorService.scheduleWithFixedDelay(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    WeatherService.Response response = maritimeCloudAgent.callNearestServiceProvider(
-                            WeatherService.SIP,
-                            new WeatherService.Request(),
-                            radius);
-
-                    if (response != null) {
-                        updateReadout(WIND_SPEED, response.windSpeed);
-                        updateReadout(WIND_ANGLE, response.windAngle);
-                        updateReadout(WIND_TEMPERATURE, response.windTemperature);
+        this.executorService.scheduleWithFixedDelay(() -> {
+            try {
+                WeatherEndpoint endpoint = maritimeCloudAgent.getNearestEndpoint(WeatherEndpoint.class, radius);
+                if (endpoint != null) {
+                    WindMsg msg = endpoint.checkWind().join();
+                    if(msg!=null) {
+                        updateReadout(WIND_SPEED, msg.getWindSpeed());
+                        updateReadout(WIND_ANGLE, msg.getWindAngle());
+                        updateReadout(WIND_TEMPERATURE, msg.getWindTemperature());
                         setStatus(Status.OPERATIONAL);
                         logger.debug("remote weather data received");
                     } else {
-                        logger.debug("unable to retrieve remote weather data");
-                        setStatus(Status.OFF);
+                        logger.debug("endpoint unable to respond with wind data");
                     }
-                } catch (Exception e) {
-                    logger.error("error polling remote weather service", e);
-                    setStatus(Status.MALFUNCTION);
+                } else {
+                    logger.debug("unable to connect to weather endpoint");
+                    setStatus(Status.OFF);
                 }
+            } catch (Exception e) {
+                logger.error("error polling remote weather service", e);
+                setStatus(Status.MALFUNCTION);
             }
         }, pollingInterval, pollingInterval, TimeUnit.SECONDS);
     }
