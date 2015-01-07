@@ -16,6 +16,7 @@
 
 package org.obp.maritimecloud;
 
+import net.maritimecloud.net.MessageHeader;
 import org.apache.log4j.Logger;
 import org.obp.ObpInstance;
 import org.obp.Readouts;
@@ -36,8 +37,8 @@ public class WeatherService extends AbstractWeatherEndpoint {
     }
 
     @Override
-    protected WindMsg checkWind(Context context) {
-        logger.debug("weather service invoked by "+context.getCaller());
+    protected WindMsg checkWind(MessageHeader header) {
+        logger.debug("weather service invoked by "+header.getSender());
 
         Readouts readouts = obpInstance.resolveReadouts(WIND_SPEED, WIND_ANGLE, WIND_TEMPERATURE, LATITUDE, LONGITUDE);
         WindMsg msg = new WindMsg();

@@ -16,14 +16,11 @@
 
 package org.obp.maritimecloud;
 
-import net.maritimecloud.mms.MmsFuture;
 import org.apache.log4j.Logger;
 import org.obp.BaseInstrument;
-import org.obp.Readout;
 import org.obp.Reliability;
 import org.obp.utils.DistanceUtil;
 
-import javax.xml.ws.Endpoint;
 import java.util.UUID;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;

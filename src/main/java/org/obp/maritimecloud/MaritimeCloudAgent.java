@@ -17,13 +17,13 @@
 package org.obp.maritimecloud;
 
 import net.maritimecloud.core.id.MaritimeId;
-import net.maritimecloud.mms.MmsClient;
-import net.maritimecloud.mms.MmsClientConfiguration;
-import net.maritimecloud.mms.MmsFuture;
-import net.maritimecloud.mms.endpoint.EndpointLocal;
-import net.maritimecloud.mms.endpoint.EndpointLocator;
+import net.maritimecloud.net.LocalEndpoint;
+import net.maritimecloud.net.mms.MmsBroadcastOptions;
+import net.maritimecloud.net.mms.MmsClient;
+import net.maritimecloud.net.mms.MmsClientConfiguration;
 import net.maritimecloud.net.BroadcastMessage;
 import net.maritimecloud.net.EndpointImplementation;
+import net.maritimecloud.net.mms.MmsEndpointLocator;
 import net.maritimecloud.util.geometry.Position;
 import net.maritimecloud.util.geometry.PositionReader;
 import org.apache.log4j.Logger;
@@ -121,10 +121,11 @@ public class MaritimeCloudAgent {
         return client!=null && client.connection()!=null ? client.connection().isConnected() : false;
     }
 
-    public <T extends EndpointLocal> T getNearestEndpoint(Class<T> clazz, int radius) {
-        EndpointLocator<T> locator = client.endpointFind(clazz).withinDistanceOf(radius);
-        MmsFuture<T> endpoint = locator.findNearest();
-        return endpoint.join();
+    public <T extends LocalEndpoint> T getNearestEndpoint(Class<T> clazz, int radius) {
+        MmsEndpointLocator<T> locator = client.endpointLocate(clazz).withinDistanceOf(radius);
+        //MmsFuture<T> endpoint = locator.findNearest();
+        //client.
+        return null;
     }
 
     public void startObpBroadcast(final ObpInstance obpInstance) {
@@ -157,18 +158,18 @@ public class MaritimeCloudAgent {
     private void startBroadcastListener() {
         if(config.isBroadcastBeaconListenerEnabled()) {
             logger.debug("add OBP announcement listener");
-            client.broadcastListen(MovementMsg.class,
-                    (context, broadcast) -> logger.info("OBP beacon message received: "+broadcast));
+            client.broadcastSubscribe(MovementMsg.class,
+                    (context, broadcast) -> logger.info("OBP beacon message received: " + broadcast));
         }
     }
 
     private void startIntendedRouteListener() {
         if(intendedRouteListenerEnabled) {
             logger.debug("add intended route broadcast listener");
-            client.broadcastListen(IntendedRouteMsg.class, (context, broadcast) -> {
-                MaritimeId id = context.getBroadcaster();
-                Position pos = context.getBroadcasterPosition();
-                logger.debug("intended route announcement received from "+id);
+            client.broadcastSubscribe(IntendedRouteMsg.class, (header, broadcast) -> {
+                MaritimeId id = header.getSender();
+                Position pos = header.getSenderPosition();
+                logger.debug("intended route announcement received from " + id);
                 remoteBodiesService.put(new Body(id.toString(), id.toString(),
                         pos.getLatitude(), pos.getLongitude(),
                         MessageConverters.messagesToWaypoints(broadcast.getWaypoints())));
@@ -183,7 +184,9 @@ public class MaritimeCloudAgent {
 
     public void broadcast(BroadcastMessage message, int radius) {
         try {
-            if (client != null) { client.withBroadcast(message).toArea(radius).send(); }
+            if (client != null) {
+                client.broadcast(message, new MmsBroadcastOptions().toArea(radius));
+            }
         } catch (Exception e) {
             logger.warn("MaritimeCloud broadcasting error",e);
         }
