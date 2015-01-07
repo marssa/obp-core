@@ -17,6 +17,7 @@
 package org.obp.maritimecloud;
 
 import net.maritimecloud.core.id.MaritimeId;
+import net.maritimecloud.net.EndpointInvocationFuture;
 import net.maritimecloud.net.LocalEndpoint;
 import net.maritimecloud.net.mms.MmsBroadcastOptions;
 import net.maritimecloud.net.mms.MmsClient;
@@ -37,6 +38,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PreDestroy;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -122,10 +124,8 @@ public class MaritimeCloudAgent {
     }
 
     public <T extends LocalEndpoint> T getNearestEndpoint(Class<T> clazz, int radius) {
-        MmsEndpointLocator<T> locator = client.endpointLocate(clazz).withinDistanceOf(radius);
-        //MmsFuture<T> endpoint = locator.findNearest();
-        //client.
-        return null;
+        List<T> endpoints = client.endpointLocate(clazz).withinDistanceOf(radius).findAll().join();
+        return endpoints.isEmpty() ? null : endpoints.get(0);
     }
 
     public void startObpBroadcast(final ObpInstance obpInstance) {
