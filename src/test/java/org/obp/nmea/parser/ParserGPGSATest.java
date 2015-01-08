@@ -46,7 +46,7 @@ public class ParserGPGSATest {
         Map<String,Object> am = parser.parse(line.scanner());
         Assert.assertEquals(GpsFixMode.AUTO, am.get(GPS_FIX_MODE));
         Assert.assertEquals(GpsFixType.FIX3D, am.get(GPS_FIX_TYPE));
-        Assert.assertEquals(8, am.get(GPS_EFFECTIVE_SATELLITES));
+        Assert.assertEquals((byte)8, am.get(GPS_EFFECTIVE_SATELLITES));
         Assert.assertEquals(1.7, (double)am.get(PDOP),0.0001);
         Assert.assertEquals(1.0, (double)am.get(HDOP),0.0001);
         Assert.assertEquals(1.3, (double)am.get(VDOP),0.0001);

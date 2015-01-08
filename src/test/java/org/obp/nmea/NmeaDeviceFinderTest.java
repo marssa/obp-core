@@ -33,6 +33,7 @@ public class NmeaDeviceFinderTest {
     private NmeaDeviceFinder finder = new NmeaDeviceFinder();
 
     @Test
+    @Ignore
     public void shouldPassExactDeviceName() throws Exception {
         final String portName = "/dev/tty.usbserial";
         NmeaDevice device = finder.findAndOpen(portName);

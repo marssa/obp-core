@@ -47,7 +47,7 @@ public class ParserGPGGATest {
         Assert.assertTrue(parser.recognizes(line));
         Map<String,Object> am = parser.parse(line.scanner());
         Assert.assertEquals(new DateTime(DateTimeZone.UTC).withTime(8, 44, 21, 963).getMillis(), am.get(TIME));
-        Assert.assertEquals(3, am.get(GPS_EFFECTIVE_SATELLITES));
+        Assert.assertEquals((byte)3, am.get(GPS_EFFECTIVE_SATELLITES));
     }
 
 }

@@ -124,8 +124,7 @@ public class MaritimeCloudAgent {
     }
 
     public <T extends LocalEndpoint> T getNearestEndpoint(Class<T> clazz, int radius) {
-        List<T> endpoints = client.endpointLocate(clazz).withinDistanceOf(radius).findAll().join();
-        return endpoints.isEmpty() ? null : endpoints.get(0);
+        return client.endpointLocate(clazz).withinDistanceOf(radius).findNearest().join();
     }
 
     public void startObpBroadcast(final ObpInstance obpInstance) {
