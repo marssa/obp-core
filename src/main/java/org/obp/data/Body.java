@@ -20,6 +20,7 @@ import org.obp.Entity;
 import org.obp.maritimecloud.MessageConverters;
 import org.obp.maritimecloud.WaypointMsg;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -28,7 +29,7 @@ import java.util.UUID;
  * Created by Robert Jaremczak
  * Date: 2013-10-24
  */
-public class Body implements Entity {
+public class Body implements Entity, Serializable {
 
     private String id;
     private String name;
@@ -78,16 +79,16 @@ public class Body implements Entity {
 
     @Override
     public String getId() {
-        return null;
+        return id;
     }
 
     @Override
     public String getName() {
-        return null;
+        return name;
     }
 
     @Override
     public String getDescription() {
-        return null;
+        return description;
     }
 }

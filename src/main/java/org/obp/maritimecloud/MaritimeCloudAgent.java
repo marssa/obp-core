@@ -95,6 +95,7 @@ public class MaritimeCloudAgent {
 
     private String dumpConfiguration(MmsClientConfiguration conf) {
         StringBuilder sb = new StringBuilder();
+        sb.append("server: ").append(conf.getHost()).append("\n");
         sb.append("id: ").append(conf.getId()).append("\n");
         sb.append("name: ").append(conf.properties().getName()).append("\n");
         sb.append("description: ").append(conf.properties().getDescription()).append("\n");

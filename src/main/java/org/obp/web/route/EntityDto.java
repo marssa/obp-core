@@ -17,19 +17,20 @@
 package org.obp.web.route;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import org.obp.Entity;
-import org.obp.data.Coordinates;
-
-import java.util.List;
 
 /**
  * Created by Robert Jaremczak
- * Date: 2014-4-18
+ * Date: 2015-1-21
  */
-
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.NON_PRIVATE)
-class BodyRouteDto {
-    EntityDto body;
-    Coordinates position;
-    List<WaypointDto> path;
+public class EntityDto {
+    String id;
+    String name;
+    String description;
+
+    public EntityDto(String id, String name, String description) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+    }
 }
