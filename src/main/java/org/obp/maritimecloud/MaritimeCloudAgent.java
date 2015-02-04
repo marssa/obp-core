@@ -17,14 +17,12 @@
 package org.obp.maritimecloud;
 
 import net.maritimecloud.core.id.MaritimeId;
-import net.maritimecloud.net.EndpointInvocationFuture;
+import net.maritimecloud.net.BroadcastMessage;
+import net.maritimecloud.net.EndpointImplementation;
 import net.maritimecloud.net.LocalEndpoint;
 import net.maritimecloud.net.mms.MmsBroadcastOptions;
 import net.maritimecloud.net.mms.MmsClient;
 import net.maritimecloud.net.mms.MmsClientConfiguration;
-import net.maritimecloud.net.BroadcastMessage;
-import net.maritimecloud.net.EndpointImplementation;
-import net.maritimecloud.net.mms.MmsEndpointLocator;
 import net.maritimecloud.util.geometry.Position;
 import net.maritimecloud.util.geometry.PositionReader;
 import org.apache.log4j.Logger;
@@ -38,7 +36,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PreDestroy;
-import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -61,7 +58,7 @@ public class MaritimeCloudAgent {
     public static final int OPERATIONS_TIMEOUT = 120;
     public static final int BEACON_PERIOD = 60;
 
-    private ScheduledExecutorService broadcaster = Executors.newScheduledThreadPool(1);
+    private ScheduledExecutorService broadcaster = Executors.newSingleThreadScheduledExecutor();
     private MmsClient client;
 
     private boolean intendedRouteListenerEnabled = true;
@@ -95,7 +92,7 @@ public class MaritimeCloudAgent {
 
     private String dumpConfiguration(MmsClientConfiguration conf) {
         StringBuilder sb = new StringBuilder();
-        sb.append("server: ").append(conf.getHost()).append("\n");
+        sb.append("server: ").append(conf.getHost());
         sb.append("id: ").append(conf.getId()).append("\n");
         sb.append("name: ").append(conf.properties().getName()).append("\n");
         sb.append("description: ").append(conf.properties().getDescription()).append("\n");
