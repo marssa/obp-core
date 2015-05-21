@@ -17,7 +17,6 @@
 package org.obp.web.route;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import org.obp.Entity;
 import org.obp.data.Coordinates;
 
 import java.util.List;

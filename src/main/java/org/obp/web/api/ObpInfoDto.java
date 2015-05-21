@@ -19,7 +19,6 @@ package org.obp.web.api;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 
 import java.net.URI;
-import java.util.UUID;
 
 /**
  * Created by Robert Jaremczak

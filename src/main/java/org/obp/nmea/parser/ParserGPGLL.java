@@ -16,10 +16,9 @@
 
 package org.obp.nmea.parser;
 
-import org.obp.Readouts;
-import org.obp.nmea.NmeaParser;
 import org.obp.nmea.NmeaLine;
 import org.obp.nmea.NmeaLineScanner;
+import org.obp.nmea.NmeaParser;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;

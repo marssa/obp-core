@@ -18,7 +18,6 @@ package org.obp.nmea.parser;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.obp.Readouts;
 import org.obp.nmea.NmeaBufferedReader;
 import org.obp.nmea.NmeaLine;
 

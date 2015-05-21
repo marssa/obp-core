@@ -18,7 +18,6 @@ package org.obp.nmea.parser;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.obp.Readouts;
 import org.obp.nmea.NmeaBufferedReader;
 import org.obp.nmea.NmeaLine;
 
@@ -27,7 +26,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 
-import static org.obp.Readout.*;
+import static org.obp.Readout.SPEED_OVER_GROUND;
+import static org.obp.Readout.TRUE_NORTH_COURSE;
 
 /**
  * Created by Robert Jaremczak

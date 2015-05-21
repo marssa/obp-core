@@ -19,8 +19,6 @@ package org.obp.nmea;
 import org.apache.log4j.Logger;
 import org.obp.BaseInstrument;
 
-import java.util.Collection;
-import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 
 /**

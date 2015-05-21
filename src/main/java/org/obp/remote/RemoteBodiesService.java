@@ -20,18 +20,13 @@ import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 import org.obp.data.Body;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
-import org.springframework.cache.ehcache.EhCacheCacheManager;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Stack;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 /**
  * Created by Robert Jaremczak

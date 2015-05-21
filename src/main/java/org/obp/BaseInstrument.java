@@ -16,7 +16,7 @@
 
 package org.obp;
 
-import java.util.*;
+import java.util.Map;
 
 /**
  * Created by Robert Jaremczak

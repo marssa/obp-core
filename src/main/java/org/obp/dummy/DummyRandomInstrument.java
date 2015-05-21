@@ -16,8 +16,8 @@
 
 package org.obp.dummy;
 
-import org.obp.Readouts;
 import org.obp.BaseInstrument;
+import org.obp.Readouts;
 import org.obp.Reliability;
 
 import java.util.Map;

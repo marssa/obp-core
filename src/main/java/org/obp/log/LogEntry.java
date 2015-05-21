@@ -19,7 +19,9 @@ package org.obp.log;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.util.Date;
 
 /**

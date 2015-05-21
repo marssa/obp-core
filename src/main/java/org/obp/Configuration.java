@@ -17,15 +17,12 @@
 package org.obp;
 
 import org.obp.utils.MapUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.ServletContext;
-import java.net.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.net.InetAddress;
+import java.net.URI;
+import java.net.UnknownHostException;
 
 /**
  * Created by Robert Jaremczak

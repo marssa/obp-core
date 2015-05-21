@@ -24,7 +24,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import java.nio.charset.StandardCharsets;
-import java.util.regex.Pattern;
 
 import static jssc.SerialPort.*;
 

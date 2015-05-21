@@ -23,15 +23,14 @@ import org.obp.*;
 import org.obp.data.Body;
 import org.obp.data.Coordinates;
 import org.obp.data.Route;
-import org.obp.gps.NmeaGpsReceiver;
 import org.obp.dummy.DummyRadar;
+import org.obp.gps.NmeaGpsReceiver;
 import org.obp.maritimecloud.MaritimeCloudAgent;
 import org.obp.maritimecloud.RemoteWeatherInstrument;
 import org.obp.maritimecloud.WeatherService;
 import org.obp.remote.RemoteBodiesService;
 import org.obp.remote.RemoteObpLocator;
 import org.obp.weather.LcjCv3f;
-import org.obp.Configuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -44,9 +43,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static org.obp.Readout.LATITUDE;
-import static org.obp.Readout.LONGITUDE;
-import static org.obp.Readout.TIME;
+import static org.obp.Readout.*;
 
 /**
  * Created by Robert Jaremczak

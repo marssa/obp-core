@@ -20,10 +20,6 @@ import junit.framework.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
 /**
  * Created by Robert Jaremczak
  * Date: 2013-12-5

@@ -153,7 +153,7 @@
         <dependency>
             <groupId>net.maritimecloud.mms</groupId>
             <artifactId>mc-mms-client</artifactId>
-            <version>0.3-SNAPSHOT</version>
+            <version>0.3-RC2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

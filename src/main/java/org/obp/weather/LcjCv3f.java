@@ -18,7 +18,9 @@ package org.obp.weather;
 
 import org.apache.log4j.Logger;
 import org.obp.Reliability;
-import org.obp.nmea.*;
+import org.obp.nmea.NmeaBaseInstrument;
+import org.obp.nmea.NmeaDeviceFinder;
+import org.obp.nmea.NmeaLine;
 import org.obp.nmea.parser.ParserIIMWV;
 import org.obp.nmea.parser.ParserWIXDR;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +29,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import java.util.UUID;
 
 import static org.obp.Readout.*;
 

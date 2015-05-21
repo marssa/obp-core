@@ -18,7 +18,6 @@ package org.obp.maritimecloud;
 
 import org.obp.data.Waypoint;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
