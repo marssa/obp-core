@@ -201,14 +201,14 @@ public class MaritimeCloudAgent {
                 logger.error("broadcaster termination error",e);
             }
 
-            client.close();
+            client.shutdown();
             try {
                 client.awaitTermination(OPERATIONS_TIMEOUT, TimeUnit.SECONDS);
             } catch (InterruptedException e) {
                 logger.error("timeout waiting for client to close");
             }
 
-            if(!client.isClosed()) {
+            if(!client.isShutdown()) {
                 logger.warn("client is not closed");
             }
 

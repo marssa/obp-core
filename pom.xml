@@ -132,13 +132,6 @@
             <scope>provided</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.tomcat</groupId>
-            <artifactId>tomcat7-websocket</artifactId>
-            <version>7.0.47</version>
-            <scope>provided</scope>
-        </dependency>
-
         <!-- test -->
 
         <dependency>
@@ -152,7 +145,7 @@
 
         <dependency>
             <groupId>net.maritimecloud.mms</groupId>
-            <artifactId>mc-mms-client</artifactId>
+            <artifactId>mc-mms-client-javaee</artifactId>
             <version>0.3-RC2-SNAPSHOT</version>
         </dependency>
         <dependency>
