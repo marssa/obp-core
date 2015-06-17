@@ -14,29 +14,32 @@
  * limitations under the License.
  */
 
-package org.obp.nmea;
+package org.obp;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import java.util.UUID;
+
+import static org.obp.Readout.TIME;
 
 /**
  * Created by Robert Jaremczak
- * Date: 2013-10-6
+ * Date: 2013-11-28
  */
-public class NmeaDeviceTest {
 
-    @Test
-    @Ignore
-    public void testReadFromBU353() throws Exception {
-        try(NmeaDevice device = NmeaDevice.createAndOpen("/dev/tty.usbserial")) {
-            NmeaBufferedReader reader = device.getReader();
-            NmeaLine line;
-            int counter = 20;
-            while(counter > 0) {
-                System.out.println(reader.fetchLine());
-                counter--;
-            }
-        }
+public class SystemTimeDevice extends BaseDevice {
+
+    public SystemTimeDevice() {
+        super(UUID.randomUUID().toString(), "timeServer", "system time server");
+        setStatus(Status.OPERATIONAL);
     }
 
+    @Override
+    public Reliability getReliability() {
+        return Reliability.MANUAL;
+    }
+
+    @Override
+    public Readouts getReadouts() {
+        updateReadout(TIME, System.currentTimeMillis());
+        return super.getReadouts();
+    }
 }

@@ -17,7 +17,7 @@
 package org.obp.nmea;
 
 import org.apache.log4j.Logger;
-import org.obp.BaseInstrument;
+import org.obp.BaseDevice;
 
 import java.util.concurrent.CountDownLatch;
 
@@ -25,22 +25,22 @@ import java.util.concurrent.CountDownLatch;
  * Created by Robert Jaremczak
  * Date: 2013-12-16
  */
-public abstract class NmeaBaseInstrument extends BaseInstrument {
+public abstract class NmeaBaseDevice extends BaseDevice {
 
-    private static Logger logger = Logger.getLogger(NmeaBaseInstrument.class);
+    private static Logger logger = Logger.getLogger(NmeaBaseDevice.class);
 
     private LineListener lineListener;
     private String deviceUri;
 
-    public NmeaBaseInstrument(String id, String name, String description, String deviceUri, String... keys) {
+    public NmeaBaseDevice(String id, String name, String description, String deviceUri, String... keys) {
         super(id, name, description);
         this.deviceUri = deviceUri;
     }
 
-    protected void initLineListener(NmeaDeviceFinder deviceFinder, String deviceUri) {
+    protected void initLineListener(NmeaConnectionFinder deviceFinder, String deviceUri) {
         logger.info("initKeys "+getName());
         try {
-            NmeaDevice device = deviceFinder.findAndOpen(deviceUri);
+            NmeaConnection device = deviceFinder.findAndOpen(deviceUri);
             if(device==null) {
                 logger.error("port not found for pattern: "+deviceUri);
                 setStatus(Status.OFF);
@@ -64,15 +64,15 @@ public abstract class NmeaBaseInstrument extends BaseInstrument {
         setStatus(Status.OFF);
     }
 
-    protected abstract void parseLine(NmeaLine line);
+    protected abstract void parseLine(NmeaSentence line);
 
     class LineListener implements Runnable {
 
         private volatile boolean stop = false;
         private CountDownLatch done = new CountDownLatch(1);
-        private NmeaDevice device;
+        private NmeaConnection device;
 
-        LineListener(NmeaDevice device) throws Exception {
+        LineListener(NmeaConnection device) throws Exception {
             this.device = device;
         }
 

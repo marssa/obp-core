@@ -16,8 +16,8 @@
 
 package org.obp.nmea.parser;
 
-import org.obp.nmea.NmeaLine;
-import org.obp.nmea.NmeaLineScanner;
+import org.obp.nmea.NmeaSentence;
+import org.obp.nmea.NmeaSentenceScanner;
 import org.obp.nmea.NmeaParser;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +36,7 @@ import static org.obp.Readout.WIND_SPEED;
 public class ParserIIMWV implements NmeaParser {
 
     @Override
-    public boolean recognizes(NmeaLine line) {
+    public boolean recognizes(NmeaSentence line) {
         return line.getName().equals("IIMWV") && line.getDataSize() >= 5 &&
                 line.getData(1).equals("R") &&
                 line.getData(3).equals("N") &&
@@ -44,7 +44,7 @@ public class ParserIIMWV implements NmeaParser {
     }
 
     @Override
-    public Map<String,Object> parse(NmeaLineScanner scanner) {
+    public Map<String,Object> parse(NmeaSentenceScanner scanner) {
         Map<String,Object> map = new HashMap<>();
         map.put(WIND_ANGLE, scanner.nextDouble());
         map.put(WIND_SPEED, scanner.skip().nextVelocityKnots());

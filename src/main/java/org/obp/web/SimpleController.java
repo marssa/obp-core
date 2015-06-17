@@ -112,7 +112,7 @@ public class SimpleController {
                     LatitudeUtil.toStringShort(latitude.getDouble())+" "+
                     LongitudeUtil.toStringShort(longitude.getDouble()),
                     latitude.getReliability().combineWith(longitude.getReliability()),
-                    latitude.getInstrument().isLocal() && longitude.getInstrument().isLocal());
+                    latitude.getDevice().isLocal() && longitude.getDevice().isLocal());
         } else {
             return ReadoutView.NA;
         }

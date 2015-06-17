@@ -16,8 +16,8 @@
 
 package org.obp.nmea.parser;
 
-import org.obp.nmea.NmeaLine;
-import org.obp.nmea.NmeaLineScanner;
+import org.obp.nmea.NmeaSentence;
+import org.obp.nmea.NmeaSentenceScanner;
 import org.obp.nmea.NmeaParser;
 import org.springframework.stereotype.Service;
 
@@ -35,14 +35,14 @@ import static org.obp.Readout.*;
 public class ParserGPGGA implements NmeaParser {
 
     @Override
-    public boolean recognizes(NmeaLine line) {
+    public boolean recognizes(NmeaSentence line) {
         return line.getName().equals("GPGGA") && line.getDataSize() >= 13 &&
                 line.getData(9).equals("M") &&
                 line.getData(11).equals("M");
     }
 
     @Override
-    public Map<String,Object> parse(NmeaLineScanner scanner) {
+    public Map<String,Object> parse(NmeaSentenceScanner scanner) {
         Map<String,Object> map = new HashMap<>();
         map.put(TIME, scanner.nextUtcHHMMSS());
         map.put(LATITUDE, scanner.nextLatitudeDDMM());

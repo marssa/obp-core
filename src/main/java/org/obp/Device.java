@@ -14,21 +14,23 @@
  * limitations under the License.
  */
 
-package org.obp.web.route;
-
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import org.obp.data.Coordinates;
-
-import java.util.List;
+package org.obp;
 
 /**
  * Created by Robert Jaremczak
- * Date: 2014-4-18
+ * Date: 2013-11-18
  */
+public interface Device extends Entity {
+    public static final String NO_VALUE = "0";
 
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.NON_PRIVATE)
-class BodyRouteDto {
-    EntityDto body;
-    Coordinates position;
-    List<WaypointDto> path;
+    public static enum Status {
+        OFF, MALFUNCTION, PAUSED, OPERATIONAL;
+    }
+
+    boolean isLocal();
+    Reliability getReliability();
+    BaseDevice.Status getStatus();
+    Readouts getReadouts();
+    void pause();
+    void resume();
 }

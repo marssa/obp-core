@@ -17,7 +17,7 @@
 package org.obp;
 
 import org.apache.log4j.Logger;
-import org.obp.data.Body;
+import org.obp.data.Vessel;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -31,7 +31,7 @@ public abstract class BaseObpInstance implements ObpInstance {
 
     private static Logger logger = Logger.getLogger(BaseObpInstance.class);
 
-    protected ConcurrentMap<Object,Instrument> instruments = new ConcurrentHashMap<>();
+    protected ConcurrentMap<Object,Device> instruments = new ConcurrentHashMap<>();
     protected ConcurrentMap<Object, Explorer> explorers = new ConcurrentHashMap<>();
 
     private String id;
@@ -51,8 +51,8 @@ public abstract class BaseObpInstance implements ObpInstance {
     }
 
     @Override
-    public void attachInstrument(Instrument instrument) {
-        instruments.put(instrument.getId(), instrument);
+    public void attachInstrument(Device device) {
+        instruments.put(device.getId(), device);
     }
 
     @Override
@@ -71,8 +71,8 @@ public abstract class BaseObpInstance implements ObpInstance {
     }
 
     @Override
-    public void detachInstrument(Instrument instrument) {
-        instruments.remove(instrument.getId());
+    public void detachInstrument(Device device) {
+        instruments.remove(device.getId());
     }
 
     @Override
@@ -85,11 +85,11 @@ public abstract class BaseObpInstance implements ObpInstance {
         explorers.remove(explorer.getId());
     }
 
-    private List<Instrument> instrumentsByReliabilityReversed() {
-        List<Instrument> list = new ArrayList<>(instruments.values());
-        Collections.sort(list, new Comparator<Instrument>() {
+    private List<Device> instrumentsByReliabilityReversed() {
+        List<Device> list = new ArrayList<>(instruments.values());
+        Collections.sort(list, new Comparator<Device>() {
             @Override
-            public int compare(Instrument i1, Instrument i2) {
+            public int compare(Device i1, Device i2) {
                 return i2.getReliability().compareTo(i1.getReliability());
             }
         });
@@ -100,9 +100,9 @@ public abstract class BaseObpInstance implements ObpInstance {
     public Readouts resolveReadouts(String... keys) {
         Readouts readouts = new Readouts();
         for(String key : keys) {
-            for(Instrument instrument : instrumentsByReliabilityReversed()) {
-                if(instrument.getStatus() == Instrument.Status.OPERATIONAL && instrument.getReadouts().containsKey(key)) {
-                    readouts.putIfAbsent(key, instrument.getReadouts().get(key));
+            for(Device device : instrumentsByReliabilityReversed()) {
+                if(device.getStatus() == Device.Status.OPERATIONAL && device.getReadouts().containsKey(key)) {
+                    readouts.putIfAbsent(key, device.getReadouts().get(key));
                 }
             }
         }
@@ -112,9 +112,9 @@ public abstract class BaseObpInstance implements ObpInstance {
     @Override
     public Readouts resolveReadouts() {
         Readouts readouts = new Readouts();
-        for(Instrument instrument : instrumentsByReliabilityReversed()) {
-            if(instrument.getStatus() == Instrument.Status.OPERATIONAL) {
-                for(Map.Entry<String,Readout> entry : instrument.getReadouts().entrySet()) {
+        for(Device device : instrumentsByReliabilityReversed()) {
+            if(device.getStatus() == Device.Status.OPERATIONAL) {
+                for(Map.Entry<String,Readout> entry : device.getReadouts().entrySet()) {
                     readouts.putIfAbsent(entry.getKey(), entry.getValue());
                 }
             }
@@ -124,9 +124,9 @@ public abstract class BaseObpInstance implements ObpInstance {
 
     @Override
     public Readout resolveReadout(String name) {
-        for(Instrument instrument : instrumentsByReliabilityReversed()) {
-            if(instrument.getStatus() == Instrument.Status.OPERATIONAL) {
-                Readout readout = instrument.getReadouts().get(name);
+        for(Device device : instrumentsByReliabilityReversed()) {
+            if(device.getStatus() == Device.Status.OPERATIONAL) {
+                Readout readout = device.getReadouts().get(name);
                 if(readout!=null) {
                     return readout;
                 }
@@ -138,9 +138,9 @@ public abstract class BaseObpInstance implements ObpInstance {
     @Override
     public List<Readout> getAllReadouts() {
         List<Readout> infos = new ArrayList<>();
-        for(Instrument instrument : instruments.values()) {
-            if(instrument.getStatus() == Instrument.Status.OPERATIONAL) {
-                for(Map.Entry<String,Readout> entry : instrument.getReadouts().entrySet()) {
+        for(Device device : instruments.values()) {
+            if(device.getStatus() == Device.Status.OPERATIONAL) {
+                for(Map.Entry<String,Readout> entry : device.getReadouts().entrySet()) {
                     infos.add(entry.getValue());
                 }
             }
@@ -149,8 +149,8 @@ public abstract class BaseObpInstance implements ObpInstance {
     }
 
     @Override
-    public List<Body> getBodies() {
-        List<Body> bodies = new ArrayList<>();
+    public List<Vessel> getBodies() {
+        List<Vessel> bodies = new ArrayList<>();
         for(Explorer explorer : explorers.values()) {
             bodies.addAll(explorer.scan());
         }
@@ -162,12 +162,12 @@ public abstract class BaseObpInstance implements ObpInstance {
 
 
     @Override
-    public Collection<Instrument> getInstruments() {
+    public Collection<Device> getInstruments() {
         return Collections.unmodifiableCollection(instruments.values());
     }
 
     @Override
-    public Instrument getInstrument(String id) {
+    public Device getInstrument(String id) {
         return instruments.get(id);
     }
 }

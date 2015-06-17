@@ -20,11 +20,11 @@ package org.obp.nmea;
  * Created by Robert Jaremczak
  * Date: 2013-10-4
  */
-public class NmeaLine {
+public class NmeaSentence {
     private String name;
     private String[] data;
 
-    public NmeaLine(String name, String[] data) {
+    public NmeaSentence(String name, String[] data) {
         this.name = name;
         this.data = data;
     }
@@ -37,8 +37,8 @@ public class NmeaLine {
         return data[index];
     }
 
-    public NmeaLineScanner scanner() {
-        return new NmeaLineScanner(data);
+    public NmeaSentenceScanner scanner() {
+        return new NmeaSentenceScanner(data);
     }
 
     public int getDataSize() {

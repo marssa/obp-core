@@ -16,8 +16,8 @@
 
 package org.obp.nmea.parser;
 
-import org.obp.nmea.NmeaLine;
-import org.obp.nmea.NmeaLineScanner;
+import org.obp.nmea.NmeaSentence;
+import org.obp.nmea.NmeaSentenceScanner;
 import org.obp.nmea.NmeaParser;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +35,7 @@ import static org.obp.Readout.TRUE_NORTH_COURSE;
 @Service
 public class ParserGPVTG implements NmeaParser {
     @Override
-    public boolean recognizes(NmeaLine line) {
+    public boolean recognizes(NmeaSentence line) {
         return line.getName().equals("GPVTG") &&
                 line.getDataSize() >= 8 &&
                 line.getData(1).equals("T") &&
@@ -43,7 +43,7 @@ public class ParserGPVTG implements NmeaParser {
     }
 
     @Override
-    public Map<String,Object> parse(NmeaLineScanner scanner) {
+    public Map<String,Object> parse(NmeaSentenceScanner scanner) {
         Map<String,Object> map = new HashMap<>();
         map.put(TRUE_NORTH_COURSE, scanner.nextDoubleOrNaN());
         map.put(SPEED_OVER_GROUND, scanner.skip(5).nextDouble());

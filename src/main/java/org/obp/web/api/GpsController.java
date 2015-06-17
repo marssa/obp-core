@@ -16,7 +16,7 @@
 
 package org.obp.web.api;
 
-import org.obp.gps.NmeaGpsReceiver;
+import org.obp.gps.GpsDevice;
 import org.obp.local.LocalObpInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -36,7 +36,7 @@ import static org.obp.Readout.*;
 public class GpsController {
 
     @Autowired
-    private NmeaGpsReceiver gpsReceiver;
+    private GpsDevice gpsDevice;
 
     @Autowired
     private LocalObpInstance obpInstance;
@@ -44,8 +44,8 @@ public class GpsController {
     @ResponseBody
     @RequestMapping("/gps/all")
     public Map<String,Object> all() {
-        Map<String,Object> map = gpsReceiver.getReadouts().toValueMap();
-        map.put("dateTime", gpsReceiver.getReadouts().formatDateTime(TIME));
+        Map<String,Object> map = gpsDevice.getReadouts().toValueMap();
+        map.put("dateTime", gpsDevice.getReadouts().formatDateTime(TIME));
         return map;
     }
 

@@ -1,6 +1,6 @@
 package org.obp.web;
 
-import org.obp.Instrument;
+import org.obp.Device;
 import org.obp.local.LocalObpInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,12 +27,12 @@ public class InstrumentController {
 
     @RequestMapping("/simple/instruments")
     public String instruments(ModelMap model) {
-        List<Instrument> instruments = new ArrayList<>(obp.getInstruments());
-        Collections.sort(instruments, new Comparator<Instrument>() {
+        List<Device> devices = new ArrayList<>(obp.getInstruments());
+        Collections.sort(devices, new Comparator<Device>() {
 
-            private String orderStr(Instrument instrument) {
-                String name = instrument.getName();
-                switch(instrument.getStatus()) {
+            private String orderStr(Device device) {
+                String name = device.getName();
+                switch(device.getStatus()) {
                     case OPERATIONAL: return "0"+name;
                     case PAUSED: return "0"+name;
                     default: return "9"+name;
@@ -40,36 +40,36 @@ public class InstrumentController {
             }
 
             @Override
-            public int compare(Instrument o1, Instrument o2) {
+            public int compare(Device o1, Device o2) {
                 return orderStr(o1).compareTo(orderStr(o2));
             }
 
         });
-        model.addAttribute("instruments",instruments);
+        model.addAttribute("instruments", devices);
         return "simple/instruments";
     }
 
     @RequestMapping("/secure/instrument/pause")
     public ResponseEntity pause(@RequestParam String id) {
-        Instrument instrument = obp.getInstrument(id);
-        if(instrument==null) {
+        Device device = obp.getInstrument(id);
+        if(device ==null) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
-        } else if(instrument.getStatus()!= Instrument.Status.OPERATIONAL) {
+        } else if(device.getStatus()!= Device.Status.OPERATIONAL) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
-        instrument.pause();
+        device.pause();
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @RequestMapping("/secure/instrument/resume")
     public ResponseEntity resume(@RequestParam String id) {
-        Instrument instrument = obp.getInstrument(id);
-        if(instrument==null) {
+        Device device = obp.getInstrument(id);
+        if(device ==null) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
-        } else if(instrument.getStatus()!= Instrument.Status.PAUSED) {
+        } else if(device.getStatus()!= Device.Status.PAUSED) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
-        instrument.resume();
+        device.resume();
         return new ResponseEntity(HttpStatus.OK);
     }
 }

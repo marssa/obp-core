@@ -16,7 +16,7 @@
 
 package org.obp;
 
-import org.obp.data.Body;
+import org.obp.data.Vessel;
 
 import java.net.URI;
 import java.util.Collection;
@@ -29,17 +29,17 @@ import java.util.List;
 public interface ObpInstance extends Entity {
     String getOrganization();
     URI getUri();
-    List<Body> getBodies();
+    List<Vessel> getBodies();
     Readouts resolveReadouts(String... keys);
     Readouts resolveReadouts();
     Readout resolveReadout(String key);
     List<Readout> getAllReadouts();
-    void attachInstrument(Instrument instrument);
-    void detachInstrument(Instrument instrument);
+    void attachInstrument(Device device);
+    void detachInstrument(Device device);
     void attachExplorer(Explorer explorer);
     void detachExplorer(Explorer explorer);
     boolean isHub();
     int knownRemotes();
-    Collection<Instrument> getInstruments();
-    Instrument getInstrument(String id);
+    Collection<Device> getInstruments();
+    Device getInstrument(String id);
 }

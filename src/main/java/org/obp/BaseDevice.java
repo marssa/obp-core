@@ -22,7 +22,7 @@ import java.util.Map;
  * Created by Robert Jaremczak
  * Date: 2013-10-24
  */
-public abstract class BaseInstrument implements Instrument {
+public abstract class BaseDevice implements Device {
 
     private String id;
     private String name;
@@ -30,7 +30,7 @@ public abstract class BaseInstrument implements Instrument {
     private Readouts readouts;
     private volatile Status status = Status.OFF;
 
-    public BaseInstrument(String id, String name, String description) {
+    public BaseDevice(String id, String name, String description) {
         this.id = id;
         this.name = name;
         this.description = description;

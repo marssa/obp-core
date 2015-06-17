@@ -16,7 +16,7 @@
 
 package org.obp.dummy;
 
-import org.obp.BaseInstrument;
+import org.obp.BaseDevice;
 import org.obp.Readouts;
 import org.obp.Reliability;
 
@@ -27,7 +27,7 @@ import java.util.UUID;
  * Created by Robert Jaremczak
  * Date: 2013-10-27
  */
-public class DummyRandomInstrument extends BaseInstrument {
+public class DummyRandomDevice extends BaseDevice {
 
     public static class DoubleRange {
         private double min;
@@ -47,7 +47,7 @@ public class DummyRandomInstrument extends BaseInstrument {
 
     private Map<String, DoubleRange> attributeRanges;
 
-    public DummyRandomInstrument(String name, String description, Map<String, DoubleRange> attributeRanges) {
+    public DummyRandomDevice(String name, String description, Map<String, DoubleRange> attributeRanges) {
         super(UUID.randomUUID().toString(), name, description);
         this.attributeRanges = attributeRanges;
         setStatus(Status.OPERATIONAL);

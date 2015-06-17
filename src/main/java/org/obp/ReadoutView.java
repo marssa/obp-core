@@ -36,7 +36,7 @@ public class ReadoutView {
     public ReadoutView(String value, Readout readout) {
         this.value = value;
         this.reliability = readout.getReliability();
-        this.local = readout.getInstrument().isLocal();
+        this.local = readout.getDevice().isLocal();
     }
 
     @Override

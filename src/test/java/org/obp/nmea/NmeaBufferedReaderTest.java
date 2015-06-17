@@ -38,7 +38,7 @@ public class NmeaBufferedReaderTest {
     @Test
     public void shouldReadAndMatchProperLines() throws IOException {
         NmeaBufferedReader reader = new NmeaBufferedReader(LINES);
-        NmeaLine message = reader.fetchLine();
+        NmeaSentence message = reader.fetchLine();
         Assert.assertNotNull(message);
 
         Assert.assertEquals("GPGSV", message.getName());

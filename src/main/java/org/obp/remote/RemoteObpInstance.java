@@ -17,7 +17,7 @@
 package org.obp.remote;
 
 import org.obp.*;
-import org.obp.data.Body;
+import org.obp.data.Vessel;
 
 import java.net.URI;
 import java.util.Collection;
@@ -68,7 +68,7 @@ public class RemoteObpInstance implements ObpInstance {
     }
 
     @Override
-    public List<Body> getBodies() {
+    public List<Vessel> getBodies() {
         return null;
     }
 
@@ -93,11 +93,11 @@ public class RemoteObpInstance implements ObpInstance {
     }
 
     @Override
-    public void attachInstrument(Instrument instrument) {
+    public void attachInstrument(Device device) {
     }
 
     @Override
-    public void detachInstrument(Instrument instrument) {
+    public void detachInstrument(Device device) {
     }
 
     @Override
@@ -119,12 +119,12 @@ public class RemoteObpInstance implements ObpInstance {
     }
 
     @Override
-    public Collection<Instrument> getInstruments() {
+    public Collection<Device> getInstruments() {
         return null;
     }
 
     @Override
-    public Instrument getInstrument(String id) {
+    public Device getInstrument(String id) {
         return null;
     }
 }

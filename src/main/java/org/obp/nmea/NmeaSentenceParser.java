@@ -14,23 +14,13 @@
  * limitations under the License.
  */
 
-package org.obp;
+package org.obp.nmea;
 
 /**
  * Created by Robert Jaremczak
- * Date: 2013-11-18
+ * Date: 2013-10-6
  */
-public interface Instrument extends Entity {
-    public static final String NO_VALUE = "0";
-
-    public static enum Status {
-        OFF, MALFUNCTION, PAUSED, OPERATIONAL;
-    }
-
-    boolean isLocal();
-    Reliability getReliability();
-    BaseInstrument.Status getStatus();
-    Readouts getReadouts();
-    void pause();
-    void resume();
+public interface NmeaSentenceParser<T> {
+    public boolean recognizes(NmeaSentence line);
+    public T parse(NmeaSentenceScanner scanner);
 }

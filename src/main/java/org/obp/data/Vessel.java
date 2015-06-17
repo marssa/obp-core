@@ -29,7 +29,7 @@ import java.util.UUID;
  * Created by Robert Jaremczak
  * Date: 2013-10-24
  */
-public class Body implements Entity, Serializable {
+public class Vessel implements Entity, Serializable {
 
     private String id;
     private String name;
@@ -37,7 +37,7 @@ public class Body implements Entity, Serializable {
     private Coordinates coordinates;
     private volatile Route route;
 
-    public Body(String name, double latitude, double longitude) {
+    public Vessel(String name, double latitude, double longitude) {
         this.id = UUID.randomUUID().toString();
         this.name = name;
         this.description = "";
@@ -45,7 +45,7 @@ public class Body implements Entity, Serializable {
         this.route = null;
     }
 
-    public Body(String id, String name, double latitude, double longitude, List<Waypoint> waypoints) {
+    public Vessel(String id, String name, double latitude, double longitude, List<Waypoint> waypoints) {
         this.id = id;
         this.name = name;
         this.description = "";

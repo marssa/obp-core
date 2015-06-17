@@ -38,7 +38,7 @@ public class NmeaBufferedReader {
     private static Logger logger = Logger.getLogger(NmeaBufferedReader.class);
 
     private BufferedReader reader;
-    private NmeaLine lastLine;
+    private NmeaSentence lastLine;
 
     public NmeaBufferedReader(InputStream is) {
         reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.US_ASCII));
@@ -80,7 +80,7 @@ public class NmeaBufferedReader {
             Matcher matcher = LINE_PATTERN.matcher(line);
             if(matcher.matches()) {
                 if(lineIsValid(line, matcher)) {
-                    lastLine = new NmeaLine(
+                    lastLine = new NmeaSentence(
                             matcher.group(LINE_NAME_GROUP),
                             matcher.group(LINE_DATA_GROUP).split(DATA_SEPARATOR));
                     return true;
@@ -94,11 +94,11 @@ public class NmeaBufferedReader {
         return false;
     }
 
-    public NmeaLine getLine() {
+    public NmeaSentence getLine() {
         return lastLine;
     }
 
-    public NmeaLine fetchLine() throws IOException {
+    public NmeaSentence fetchLine() throws IOException {
         if(lineReady()) {
             return getLine();
         }

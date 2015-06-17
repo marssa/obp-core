@@ -29,19 +29,19 @@ import java.util.*;
  */
 
 @Service
-public class NmeaDeviceFinder {
+public class NmeaConnectionFinder {
     public static final int MESSAGES_TO_READ = 10;
 
-    private static Logger logger = Logger.getLogger(NmeaDeviceFinder.class);
+    private static Logger logger = Logger.getLogger(NmeaConnectionFinder.class);
 
     private boolean listenAndValidate(String portName, Set<String> requiredMessages) throws Exception {
         try {
             Set<String> remaining = new HashSet<>(requiredMessages);
-            try(NmeaDevice device = NmeaDevice.createAndOpen(portName)) {
+            try(NmeaConnection device = NmeaConnection.createAndOpen(portName)) {
                 if(device.isOpened()) {
                     NmeaBufferedReader reader = device.getReader();
                     for(int i=0; i<MESSAGES_TO_READ; i++) {
-                        NmeaLine line = reader.fetchLine();
+                        NmeaSentence line = reader.fetchLine();
                         if(line!=null) {
                             remaining.remove(line.getName());
                             if(remaining.isEmpty()) {
@@ -69,10 +69,10 @@ public class NmeaDeviceFinder {
     /**
      * synchronized on purpose, to avoid possible race conditions
      */
-    public synchronized NmeaDevice findAndOpen(String deviceUri) throws Exception {
+    public synchronized NmeaConnection findAndOpen(String deviceUri) throws Exception {
         String[] tokens = deviceUri.split(" ");
         if(tokens.length==1) {
-            return NmeaDevice.createAndOpen(tokens[0]);
+            return NmeaConnection.createAndOpen(tokens[0]);
         }
 
         String devicePrefix = tokens[0];
@@ -82,10 +82,10 @@ public class NmeaDeviceFinder {
         List<String> portNames = findMatchingIdentifiers(devicePrefix);
         if(!portNames.isEmpty()) {
             for(String portName : portNames) {
-                logger.debug("checking device "+portName);
+                logger.debug("checking port "+portName);
                 if(listenAndValidate(portName, requiredMessages)) {
                     logger.info("found "+portName);
-                    return NmeaDevice.createAndOpen(portName);
+                    return NmeaConnection.createAndOpen(portName);
                 }
             }
         }

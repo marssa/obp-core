@@ -16,8 +16,8 @@
 
 package org.obp.nmea.parser;
 
-import org.obp.nmea.NmeaLine;
-import org.obp.nmea.NmeaLineScanner;
+import org.obp.nmea.NmeaSentence;
+import org.obp.nmea.NmeaSentenceScanner;
 import org.obp.nmea.NmeaParser;
 import org.springframework.stereotype.Service;
 
@@ -35,14 +35,14 @@ import static org.obp.Readout.WIND_TEMPERATURE;
 public class ParserWIXDR implements NmeaParser {
 
     @Override
-    public boolean recognizes(NmeaLine line) {
+    public boolean recognizes(NmeaSentence line) {
         return line.getName().equals("WIXDR") && line.getDataSize() >= 3 &&
                 line.getData(0).equals("C") &&
                 line.getData(2).equals("C");
     }
 
     @Override
-    public Map<String,Object> parse(NmeaLineScanner scanner) {
+    public Map<String,Object> parse(NmeaSentenceScanner scanner) {
         Map<String,Object> map = new HashMap<>();
         map.put(WIND_TEMPERATURE, scanner.skip().nextDouble());
         return map;

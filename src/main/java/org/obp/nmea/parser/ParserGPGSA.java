@@ -16,8 +16,8 @@
 
 package org.obp.nmea.parser;
 
-import org.obp.nmea.NmeaLine;
-import org.obp.nmea.NmeaLineScanner;
+import org.obp.nmea.NmeaSentence;
+import org.obp.nmea.NmeaSentenceScanner;
 import org.obp.nmea.NmeaParser;
 import org.springframework.stereotype.Service;
 
@@ -35,11 +35,11 @@ import static org.obp.Readout.*;
 public class ParserGPGSA implements NmeaParser {
 
     @Override
-    public boolean recognizes(NmeaLine line) {
+    public boolean recognizes(NmeaSentence line) {
         return line.getName().equals("GPGSA") && line.getDataSize() >= 17;
     }
 
-    private byte parseSatellitesUsed(NmeaLineScanner sc) {
+    private byte parseSatellitesUsed(NmeaSentenceScanner sc) {
         byte num = 0;
         for(int i=0; i<12; i++) {
             if(sc.nextByte()>0) {
@@ -50,7 +50,7 @@ public class ParserGPGSA implements NmeaParser {
     }
 
     @Override
-    public Map<String,Object> parse(NmeaLineScanner scanner) {
+    public Map<String,Object> parse(NmeaSentenceScanner scanner) {
         Map<String,Object> map = new HashMap<>();
         map.put(GPS_FIX_MODE, GpsFixMode.fromString(scanner.next()));
         map.put(GPS_FIX_TYPE, GpsFixType.fromString(scanner.next()));

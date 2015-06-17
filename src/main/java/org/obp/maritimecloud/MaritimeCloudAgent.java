@@ -29,9 +29,9 @@ import org.apache.log4j.Logger;
 import org.obp.Configuration;
 import org.obp.ObpInstance;
 import org.obp.Readouts;
-import org.obp.data.Body;
+import org.obp.data.Vessel;
 import org.obp.data.Route;
-import org.obp.remote.RemoteBodiesService;
+import org.obp.remote.VesselService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -68,7 +68,7 @@ public class MaritimeCloudAgent {
     private Configuration config;
 
     @Autowired
-    private RemoteBodiesService remoteBodiesService;
+    private VesselService vesselService;
 
     private void buildAndConnectClient(PositionReader positionReader) {
         logger.info("init client");
@@ -167,7 +167,7 @@ public class MaritimeCloudAgent {
                 MaritimeId id = header.getSender();
                 Position pos = header.getSenderPosition();
                 logger.debug("intended route announcement received from " + id);
-                remoteBodiesService.put(new Body(id.toString(), id.toString(),
+                vesselService.put(new Vessel(id.toString(), id.toString(),
                         pos.getLatitude(), pos.getLongitude(),
                         MessageConverters.messagesToWaypoints(broadcast.getWaypoints())));
             });

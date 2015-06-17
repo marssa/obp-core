@@ -21,7 +21,7 @@ import org.joda.time.DateTimeZone;
 import org.junit.Assert;
 import org.junit.Test;
 import org.obp.nmea.NmeaBufferedReader;
-import org.obp.nmea.NmeaLine;
+import org.obp.nmea.NmeaSentence;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -40,7 +40,7 @@ public class ParserGPRMCTest {
     public void shouldParseValidLines() throws IOException {
         InputStream is = new ByteArrayInputStream("$GPRMC,084426.963,V,5109.8210,N,01653.4292,E,,,161013,,,N*78".getBytes());
         NmeaBufferedReader reader = new NmeaBufferedReader(is);
-        NmeaLine line = reader.fetchLine();
+        NmeaSentence line = reader.fetchLine();
         Assert.assertNotNull(line);
         Assert.assertTrue(parser.recognizes(line));
         Map<String,Object> am = parser.parse(line.scanner());

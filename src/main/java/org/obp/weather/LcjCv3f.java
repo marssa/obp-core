@@ -18,9 +18,9 @@ package org.obp.weather;
 
 import org.apache.log4j.Logger;
 import org.obp.Reliability;
-import org.obp.nmea.NmeaBaseInstrument;
-import org.obp.nmea.NmeaDeviceFinder;
-import org.obp.nmea.NmeaLine;
+import org.obp.nmea.NmeaBaseDevice;
+import org.obp.nmea.NmeaConnectionFinder;
+import org.obp.nmea.NmeaSentence;
 import org.obp.nmea.parser.ParserIIMWV;
 import org.obp.nmea.parser.ParserWIXDR;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +40,7 @@ import static org.obp.Readout.*;
  */
 
 @Component
-public class LcjCv3f extends NmeaBaseInstrument {
+public class LcjCv3f extends NmeaBaseDevice {
 
     private static Logger logger = Logger.getLogger(LcjCv3f.class);
 
@@ -48,7 +48,7 @@ public class LcjCv3f extends NmeaBaseInstrument {
     private String deviceUri;
 
     @Autowired
-    private NmeaDeviceFinder deviceFinder;
+    private NmeaConnectionFinder deviceFinder;
 
     @Autowired
     private ParserWIXDR parserWIXDR;
@@ -72,7 +72,7 @@ public class LcjCv3f extends NmeaBaseInstrument {
     }
 
     @Override
-    protected void parseLine(NmeaLine line) {
+    protected void parseLine(NmeaSentence line) {
         if(parserWIXDR.recognizes(line)) {
             updateReadouts(parserWIXDR.parse(line.scanner()));
         } else if(parserIIMWV.recognizes(line)) {

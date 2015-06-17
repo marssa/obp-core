@@ -27,7 +27,7 @@
     <c:forEach items="${realm.allReadouts}" var="entry">
         <tr>
             <td style="text-align: left">
-                <span>${entry.instrument.name}.</span>
+                <span>${entry.device.name}.</span>
                 <span style="color: white">${entry.name}</span>
             </td>
             <td style="text-align: left">

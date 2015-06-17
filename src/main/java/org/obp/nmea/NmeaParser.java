@@ -23,6 +23,6 @@ import java.util.Map;
  * Date: 2013-11-26
  */
 public interface NmeaParser {
-    public boolean recognizes(NmeaLine line);
-    public Map<String,Object> parse(NmeaLineScanner scanner);
+    public boolean recognizes(NmeaSentence line);
+    public Map<String,Object> parse(NmeaSentenceScanner scanner);
 }

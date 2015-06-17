@@ -16,7 +16,7 @@
 
 package org.obp;
 
-import org.obp.data.Body;
+import org.obp.data.Vessel;
 
 import java.util.List;
 
@@ -25,5 +25,5 @@ import java.util.List;
  * Date: 2013-11-18
  */
 public interface Explorer extends Entity {
-    List<Body> scan();
+    List<Vessel> scan();
 }

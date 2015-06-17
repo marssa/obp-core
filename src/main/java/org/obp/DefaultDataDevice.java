@@ -31,15 +31,15 @@ import java.util.UUID;
  */
 
 @Component
-public class DefaultDataInstrument extends BaseInstrument {
+public class DefaultDataDevice extends BaseDevice {
 
-    private static Logger logger = Logger.getLogger(DefaultDataInstrument.class);
+    private static Logger logger = Logger.getLogger(DefaultDataDevice.class);
 
-    public DefaultDataInstrument() {
+    public DefaultDataDevice() {
         this("/defaults.properties");
     }
 
-    public DefaultDataInstrument(String resourceName) {
+    public DefaultDataDevice(String resourceName) {
         super(UUID.randomUUID().toString(), "defaults", "predefined default data");
         logger.info("init default attributes");
         loadDefaultsFromResource(resourceName);

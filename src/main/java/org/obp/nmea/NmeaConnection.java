@@ -27,8 +27,8 @@ import java.io.IOException;
  * Created by Robert Jaremczak
  * Date: 2013-10-6
  */
-public class NmeaDevice implements AutoCloseable {
-    private static Logger logger = Logger.getLogger(NmeaDevice.class);
+public class NmeaConnection implements AutoCloseable {
+    private static Logger logger = Logger.getLogger(NmeaConnection.class);
 
     public static final int BAUD_RATE = 4800;
     public static final int DATA_BITS = SerialPort.DATABITS_8;
@@ -37,7 +37,7 @@ public class NmeaDevice implements AutoCloseable {
 
     private SerialPort serialPort;
 
-    public NmeaDevice(String portName) throws Exception {
+    public NmeaConnection(String portName) throws Exception {
         serialPort = new SerialPort(portName);
         logger.debug("open NMEA device on port "+portName);
         if(serialPort.isOpened()) {
@@ -71,8 +71,8 @@ public class NmeaDevice implements AutoCloseable {
         }
     }
 
-    public static final NmeaDevice createAndOpen(String portName) throws Exception {
-        NmeaDevice device = new NmeaDevice(portName);
+    public static final NmeaConnection createAndOpen(String portName) throws Exception {
+        NmeaConnection device = new NmeaConnection(portName);
         if(!device.isOpened()) {
             device.open();
             return device;

@@ -19,7 +19,7 @@ package org.obp.nmea.parser;
 import org.junit.Assert;
 import org.junit.Test;
 import org.obp.Readout;
-import org.obp.nmea.NmeaLine;
+import org.obp.nmea.NmeaSentence;
 
 import java.io.IOException;
 import java.util.Map;
@@ -35,14 +35,14 @@ public class ParserWIXDRTest extends ParserTest {
 
     @Test
     public void shouldRejectInvalidLine() throws IOException {
-        NmeaLine line = lineFrom("$WIXDR,F,024.0,C,,");
+        NmeaSentence line = lineFrom("$WIXDR,F,024.0,C,,");
         Assert.assertNotNull(line);
         Assert.assertFalse(parser.recognizes(line));
     }
 
     @Test
     public void shouldParseValidLine() throws IOException {
-        NmeaLine line = lineFrom("$WIXDR,C,024.0,C,,");
+        NmeaSentence line = lineFrom("$WIXDR,C,024.0,C,,");
         Assert.assertNotNull(line);
         Assert.assertTrue(parser.recognizes(line));
         Map<String,Object> am = parser.parse(line.scanner());

@@ -18,7 +18,7 @@ package org.obp.nmea.parser;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.obp.nmea.NmeaLine;
+import org.obp.nmea.NmeaSentence;
 import org.obp.utils.SpeedUtil;
 
 import java.io.IOException;
@@ -37,14 +37,14 @@ public class ParserIIMWVTest extends ParserTest {
 
     @Test
     public void shouldRejectInvalidLine() throws IOException {
-        NmeaLine line = lineFrom("$IIMWV,B4D3,8D5D,4200,2EFF,F7,");
+        NmeaSentence line = lineFrom("$IIMWV,B4D3,8D5D,4200,2EFF,F7,");
         Assert.assertNotNull(line);
         Assert.assertFalse(parser.recognizes(line));
     }
 
     @Test
     public void shouldParseValidLine() throws IOException {
-        NmeaLine line = lineFrom("$IIMWV,270.0,R,1.12,N,A");
+        NmeaSentence line = lineFrom("$IIMWV,270.0,R,1.12,N,A");
         Assert.assertNotNull(line);
         Assert.assertTrue(parser.recognizes(line));
         Map<String,Object> am = parser.parse(line.scanner());

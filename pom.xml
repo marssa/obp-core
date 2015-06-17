@@ -145,7 +145,7 @@
 
         <dependency>
             <groupId>net.maritimecloud.mms</groupId>
-            <artifactId>mc-mms-client-javaee</artifactId>
+            <artifactId>mc-mms-client</artifactId>
             <version>0.3</version>
         </dependency>
         <dependency>

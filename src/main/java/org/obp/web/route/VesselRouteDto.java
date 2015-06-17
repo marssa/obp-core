@@ -14,32 +14,21 @@
  * limitations under the License.
  */
 
-package org.obp;
+package org.obp.web.route;
 
-import java.util.UUID;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import org.obp.data.Coordinates;
 
-import static org.obp.Readout.TIME;
+import java.util.List;
 
 /**
  * Created by Robert Jaremczak
- * Date: 2013-11-28
+ * Date: 2014-4-18
  */
 
-public class SystemTimeInstrument extends BaseInstrument {
-
-    public SystemTimeInstrument() {
-        super(UUID.randomUUID().toString(), "timeServer", "system time server");
-        setStatus(Status.OPERATIONAL);
-    }
-
-    @Override
-    public Reliability getReliability() {
-        return Reliability.MANUAL;
-    }
-
-    @Override
-    public Readouts getReadouts() {
-        updateReadout(TIME, System.currentTimeMillis());
-        return super.getReadouts();
-    }
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.NON_PRIVATE)
+class VesselRouteDto {
+    EntityDto body;
+    Coordinates position;
+    List<WaypointDto> path;
 }

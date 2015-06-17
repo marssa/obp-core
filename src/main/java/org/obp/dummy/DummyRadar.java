@@ -18,7 +18,7 @@ package org.obp.dummy;
 
 import org.apache.log4j.Logger;
 import org.obp.BaseExplorer;
-import org.obp.data.Body;
+import org.obp.data.Vessel;
 
 import javax.annotation.PostConstruct;
 import java.util.Arrays;
@@ -34,7 +34,7 @@ import java.util.UUID;
 public class DummyRadar extends BaseExplorer {
     private static Logger logger = Logger.getLogger(DummyRadar.class);
 
-    private List<Body> bodies;
+    private List<Vessel> bodies;
 
     public DummyRadar() {
         super(UUID.randomUUID().toString(), "dummyRadar", "dummy radar as external bodies explorer");
@@ -43,14 +43,14 @@ public class DummyRadar extends BaseExplorer {
     @PostConstruct
     protected void init() {
         bodies = Collections.unmodifiableList(Arrays.asList(
-                new Body("Pinta",1,1),
-                new Body("Nina",2,2),
-                new Body("Santa Maria",3,3)
+                new Vessel("Pinta",1,1),
+                new Vessel("Nina",2,2),
+                new Vessel("Santa Maria",3,3)
         ));
     }
 
     @Override
-    public List<Body> scan() {
+    public List<Vessel> scan() {
         return bodies;
     }
 }

@@ -16,11 +16,11 @@
 
 package org.obp.web.route;
 
-import org.obp.data.Body;
+import org.obp.data.Vessel;
 import org.obp.data.Coordinates;
 import org.obp.data.Waypoint;
 import org.obp.local.LocalObpInstance;
-import org.obp.remote.RemoteBodiesService;
+import org.obp.remote.VesselService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,7 +42,7 @@ public class RouteController {
     private LocalObpInstance localObpInstance;
 
     @Autowired
-    private RemoteBodiesService remoteBodiesService;
+    private VesselService vesselService;
 
     @ResponseBody
     @RequestMapping("/local/ownPath")
@@ -55,14 +55,14 @@ public class RouteController {
 
     @ResponseBody
     @RequestMapping("/local/otherRoutes")
-    public List<BodyRouteDto> otherRoutes() {
-        List<BodyRouteDto> list = new ArrayList<>();
-        for(Body body : remoteBodiesService.getAll()) {
-            BodyRouteDto bodyRouteDto = new BodyRouteDto();
-            bodyRouteDto.body = new EntityDto(body.getId(), body.getName(), body.getDescription());
-            bodyRouteDto.position = body.getCoordinates();
-            bodyRouteDto.path = convertFromWaypoints(body.getRoute().getWaypoints());
-            list.add(bodyRouteDto);
+    public List<VesselRouteDto> otherRoutes() {
+        List<VesselRouteDto> list = new ArrayList<>();
+        for(Vessel vessel : vesselService.getAll()) {
+            VesselRouteDto vesselRouteDto = new VesselRouteDto();
+            vesselRouteDto.body = new EntityDto(vessel.getId(), vessel.getName(), vessel.getDescription());
+            vesselRouteDto.position = vessel.getCoordinates();
+            vesselRouteDto.path = convertFromWaypoints(vessel.getRoute().getWaypoints());
+            list.add(vesselRouteDto);
         }
         return list;
     }

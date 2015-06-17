@@ -16,7 +16,7 @@
 
 package org.obp.web;
 
-import org.obp.DefaultDataInstrument;
+import org.obp.DefaultDataDevice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +34,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class DefaultsController {
 
     @Autowired
-    private DefaultDataInstrument defaultDataInstrument;
+    private DefaultDataDevice defaultDataInstrument;
 
     @RequestMapping("/simple/defaults")
     public String manifest(ModelMap model) {

@@ -18,10 +18,10 @@ package org.obp.gps;
 
 import org.apache.log4j.Logger;
 import org.obp.Reliability;
-import org.obp.nmea.NmeaBaseInstrument;
-import org.obp.nmea.NmeaDeviceFinder;
-import org.obp.nmea.NmeaLine;
-import org.obp.nmea.NmeaLineScanner;
+import org.obp.nmea.NmeaBaseDevice;
+import org.obp.nmea.NmeaConnectionFinder;
+import org.obp.nmea.NmeaSentence;
+import org.obp.nmea.NmeaSentenceScanner;
 import org.obp.nmea.parser.*;
 import org.obp.utils.GpsUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,8 +38,8 @@ import static org.obp.Readout.*;
  * Date: 2013-10-5
  */
 @Component
-public class NmeaGpsReceiver extends NmeaBaseInstrument {
-    private static Logger logger = Logger.getLogger(NmeaGpsReceiver.class);
+public class GpsDevice extends NmeaBaseDevice {
+    private static Logger logger = Logger.getLogger(GpsDevice.class);
 
     private AggregateGPGSV aggregateGPGSV = new AggregateGPGSV();
 
@@ -47,7 +47,7 @@ public class NmeaGpsReceiver extends NmeaBaseInstrument {
     private String deviceUri;
 
     @Autowired
-    private NmeaDeviceFinder deviceFinder;
+    private NmeaConnectionFinder deviceFinder;
 
     @Autowired
     private ParserGPGLL parserGPGLL;
@@ -68,7 +68,7 @@ public class NmeaGpsReceiver extends NmeaBaseInstrument {
     private ParserGPGSA parserGPGSA;
 
     @Autowired
-    public NmeaGpsReceiver(
+    public GpsDevice(
             @Value("${obp.local.nmea.gpsReceiver.id}") String id,
             @Value("${obp.local.nmea.gpsReceiver.name}") String name,
             @Value("${obp.local.nmea.gpsReceiver.description}") String description,
@@ -77,8 +77,8 @@ public class NmeaGpsReceiver extends NmeaBaseInstrument {
     }
 
     @Override
-    protected void parseLine(NmeaLine line) {
-        NmeaLineScanner scanner = line.scanner();
+    protected void parseLine(NmeaSentence line) {
+        NmeaSentenceScanner scanner = line.scanner();
 
         if(parserGPGLL.recognizes(line)) {
             updateReadouts(parserGPGLL.parse(scanner));

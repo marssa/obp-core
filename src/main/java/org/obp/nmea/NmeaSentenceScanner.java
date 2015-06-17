@@ -25,21 +25,21 @@ import java.util.Iterator;
  * Created by Robert Jaremczak
  * Date: 2013-10-17
  */
-public class NmeaLineScanner implements Iterator<String> {
+public class NmeaSentenceScanner implements Iterator<String> {
     private String[] tokens;
     private int pointer = 0;
 
-    public NmeaLineScanner(String[] tokens) {
+    public NmeaSentenceScanner(String[] tokens) {
         this.tokens = tokens;
         pointer = 0;
     }
 
-    public NmeaLineScanner skip() {
+    public NmeaSentenceScanner skip() {
         this.pointer++;
         return this;
     }
 
-    public NmeaLineScanner skip(int tokens) {
+    public NmeaSentenceScanner skip(int tokens) {
         this.pointer += tokens;
         return this;
     }

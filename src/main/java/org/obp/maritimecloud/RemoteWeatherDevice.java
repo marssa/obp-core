@@ -17,7 +17,7 @@
 package org.obp.maritimecloud;
 
 import org.apache.log4j.Logger;
-import org.obp.BaseInstrument;
+import org.obp.BaseDevice;
 import org.obp.Reliability;
 import org.obp.utils.DistanceUtil;
 
@@ -31,9 +31,9 @@ import static org.obp.Readout.*;
  * Created by Robert Jaremczak
  * Date: 2014-3-19
  */
-public class RemoteWeatherInstrument extends BaseInstrument {
+public class RemoteWeatherDevice extends BaseDevice {
 
-    public static Logger logger = Logger.getLogger(RemoteWeatherInstrument.class);
+    public static Logger logger = Logger.getLogger(RemoteWeatherDevice.class);
     public static final int POLLING_INTERVAL = 60;
     public static final int MAX_RADIUS = 20000;
 
@@ -41,7 +41,7 @@ public class RemoteWeatherInstrument extends BaseInstrument {
     private int radius = MAX_RADIUS;
     private int pollingInterval = POLLING_INTERVAL;
 
-    public RemoteWeatherInstrument(ScheduledExecutorService executorService, final MaritimeCloudAgent maritimeCloudAgent) {
+    public RemoteWeatherDevice(ScheduledExecutorService executorService, final MaritimeCloudAgent maritimeCloudAgent) {
         super(UUID.randomUUID().toString(), "remoteWeatherService", "weather data from nearest OBP within defined range");
         this.executorService = executorService;
         setStatus(Status.OPERATIONAL);

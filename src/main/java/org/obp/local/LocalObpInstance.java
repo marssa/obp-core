@@ -20,15 +20,15 @@ import net.maritimecloud.util.geometry.PositionReader;
 import net.maritimecloud.util.geometry.PositionTime;
 import org.apache.log4j.Logger;
 import org.obp.*;
-import org.obp.data.Body;
+import org.obp.data.Vessel;
 import org.obp.data.Coordinates;
 import org.obp.data.Route;
 import org.obp.dummy.DummyRadar;
-import org.obp.gps.NmeaGpsReceiver;
+import org.obp.gps.GpsDevice;
 import org.obp.maritimecloud.MaritimeCloudAgent;
-import org.obp.maritimecloud.RemoteWeatherInstrument;
+import org.obp.maritimecloud.RemoteWeatherDevice;
 import org.obp.maritimecloud.WeatherService;
-import org.obp.remote.RemoteBodiesService;
+import org.obp.remote.VesselService;
 import org.obp.remote.RemoteObpLocator;
 import org.obp.weather.LcjCv3f;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +55,7 @@ public class LocalObpInstance extends BaseObpInstance {
     private static Logger logger = Logger.getLogger(LocalObpInstance.class);
 
     @Autowired
-    private NmeaGpsReceiver nmeaGpsReceiver;
+    private GpsDevice gpsDevice;
 
     @Autowired
     private LcjCv3f nmeaWindVane;
@@ -70,10 +70,10 @@ public class LocalObpInstance extends BaseObpInstance {
     private MaritimeCloudAgent maritimeCloudAgent;
 
     @Autowired
-    private RemoteBodiesService remoteBodiesService;
+    private VesselService vesselService;
 
     @Autowired
-    private DefaultDataInstrument defaultDataInstrument;
+    private DefaultDataDevice defaultDataInstrument;
 
     private ScheduledExecutorService scanner;
 
@@ -91,10 +91,10 @@ public class LocalObpInstance extends BaseObpInstance {
 
     @PostConstruct
     public void init() {
-        attachInstrument(nmeaGpsReceiver);
+        attachInstrument(gpsDevice);
         attachInstrument(nmeaWindVane);
         attachInstrument(defaultDataInstrument);//new DefaultDataInstrument("/defaults.properties"));
-        attachInstrument(new SystemTimeInstrument());
+        attachInstrument(new SystemTimeDevice());
         attachExplorer(new DummyRadar());
 
         scanner = Executors.newScheduledThreadPool(1);
@@ -103,7 +103,7 @@ public class LocalObpInstance extends BaseObpInstance {
         maritimeCloudAgent.connect(createPositionReader(),intendedRouteRef, this);
         if(maritimeCloudAgent.isConnected()) {
             if(config.isRemoteWeatherScanner()) {
-                attachInstrument(new RemoteWeatherInstrument(scanner, maritimeCloudAgent));
+                attachInstrument(new RemoteWeatherDevice(scanner, maritimeCloudAgent));
             } else {
                 maritimeCloudAgent.registerService(new WeatherService(this));
             }
@@ -115,10 +115,10 @@ public class LocalObpInstance extends BaseObpInstance {
     }
 
     private void initRemoteBodies() {
-        Body shadow = new Body("shadow",getPosition().getLatitude()-0.0005,getPosition().getLongitude());
+        Vessel shadow = new Vessel("shadow",getPosition().getLatitude()-0.0005,getPosition().getLongitude());
         shadow.setRoute(Route.randomStartingAt(shadow.getCoordinates()));
-        remoteBodiesService.put(shadow);
-        logger.debug("remote bodies: "+remoteBodiesService.getAll().size());
+        vesselService.put(shadow);
+        logger.debug("remote bodies: "+ vesselService.getAll().size());
     }
 
     @PreDestroy
@@ -141,7 +141,7 @@ public class LocalObpInstance extends BaseObpInstance {
     private PositionReader createPositionReader() {
         logger.info("waiting for position data ...");
         long tmax = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(15);
-        while(!nmeaGpsReceiver.isPositionReceived() && System.currentTimeMillis() < tmax) {
+        while(!gpsDevice.isPositionReceived() && System.currentTimeMillis() < tmax) {
             try {
                 Thread.sleep(200);
             } catch (InterruptedException e) {
@@ -149,7 +149,7 @@ public class LocalObpInstance extends BaseObpInstance {
             }
         }
 
-        if(!nmeaGpsReceiver.isPositionReceived()) {
+        if(!gpsDevice.isPositionReceived()) {
             logger.warn("position can't be determined");
         }
 

@@ -19,7 +19,7 @@ package org.obp.nmea.parser;
 import org.junit.Assert;
 import org.junit.Test;
 import org.obp.nmea.NmeaBufferedReader;
-import org.obp.nmea.NmeaLine;
+import org.obp.nmea.NmeaSentence;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -39,7 +39,7 @@ public class ParserGPGSATest {
     public void shouldParseValidLines() throws IOException {
         InputStream is = new ByteArrayInputStream("$GPGSA,A,3,11,20,01,17,14,32,19,31,,,,,1.7,1.0,1.3*3C".getBytes());
         NmeaBufferedReader reader = new NmeaBufferedReader(is);
-        NmeaLine line = reader.fetchLine();
+        NmeaSentence line = reader.fetchLine();
         Assert.assertNotNull(line);
         Assert.assertTrue(parser.recognizes(line));
         Map<String,Object> am = parser.parse(line.scanner());

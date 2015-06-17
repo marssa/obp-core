@@ -18,7 +18,7 @@ package org.obp.remote;
 
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
-import org.obp.data.Body;
+import org.obp.data.Vessel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
@@ -34,30 +34,30 @@ import java.util.Stack;
  */
 
 @Service
-public class RemoteBodiesService {
+public class VesselService {
     @Autowired
     private CacheManager cacheManager;
 
-    private Ehcache cache;
+    private Ehcache vesselsCache;
 
     @PostConstruct
     public void init() {
-        cache = (Ehcache)cacheManager.getCache("remoteBodies").getNativeCache();
+        vesselsCache = (Ehcache)cacheManager.getCache("vessels").getNativeCache();
     }
 
-    public Collection<Body> getAll() {
-        Collection<Body> bodies = new Stack<>();
-        for(Map.Entry<Object,Element> entry : cache.getAll(cache.getKeysWithExpiryCheck()).entrySet()) {
-            bodies.add((Body)entry.getValue().getObjectValue());
+    public Collection<Vessel> getAll() {
+        Collection<Vessel> bodies = new Stack<>();
+        for(Map.Entry<Object,Element> entry : vesselsCache.getAll(vesselsCache.getKeysWithExpiryCheck()).entrySet()) {
+            bodies.add((Vessel)entry.getValue().getObjectValue());
         }
         return bodies;
     }
 
     public void clear() {
-        cache.removeAll();
+        vesselsCache.removeAll();
     }
 
-    public void put(Body body) {
-        cache.put(new Element(body.getId(), body));
+    public void put(Vessel vessel) {
+        vesselsCache.put(new Element(vessel.getId(), vessel));
     }
 }

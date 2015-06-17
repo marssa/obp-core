@@ -22,7 +22,7 @@ import org.obp.nmea.NmeaMessage;
  * Created by Robert Jaremczak
  * Date: 2013-10-13
  */
-public class GPGSV extends NmeaMessage {
+public class GPGSV {
     public static final String SIGNATURE = "GPGSV";
 
     public static class SV {
@@ -87,7 +87,6 @@ public class GPGSV extends NmeaMessage {
         return sv.length;
     }
 
-    @Override
     public String getSignature() {
         return SIGNATURE;
     }

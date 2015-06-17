@@ -6,7 +6,7 @@
                   overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0"
                   timeToLiveSeconds="60" memoryStoreEvictionPolicy="LRU"/>
 
-    <cache name="remoteBodies" eternal="false"
+    <cache name="vessels" eternal="false"
            maxElementsInMemory="100" overflowToDisk="false" diskPersistent="false"
            timeToIdleSeconds="300" timeToLiveSeconds="300"/>
 

@@ -50,22 +50,22 @@ public class Readout {
             VDOP = "vdop",
             PDOP = "pdop";
 
-    private Instrument instrument;
+    private Device device;
     private Reliability reliability;
     private long updateTime;
     private String name;
     private Object value;
 
-    public Readout(Instrument instrument, Reliability reliability, String name, Object value) {
-        this.instrument = instrument;
+    public Readout(Device device, Reliability reliability, String name, Object value) {
+        this.device = device;
         this.reliability = reliability;
         this.name = name;
         this.value = value;
         this.updateTime = System.currentTimeMillis();
     }
 
-    public Instrument getInstrument() {
-        return instrument;
+    public Device getDevice() {
+        return device;
     }
 
     public Reliability getReliability() {
